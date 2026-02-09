@@ -24,3 +24,72 @@ yarn-error.log
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+
+# Symfony 8 specific
+/var/
+/vendor/
+/public/bundles/
+/public/webpack/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editor
+.idea/
+.vscode/
+*.swp
+*.swx
+*.swo
+*.swn
+*.swm
+*.sws
+*.swx~
+
+# Build directories
+/build/
+/dep/
+/dist/
+/out/
+/temp/
+*.tmp
+
+# Logs
+/logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+yarn-out.log
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test coverage
+/coverage/
+*.lcov
+*.cover
+
+# IDE specific
+*.sublime-project
+*.sublime-workspace
+*.idea
+*.iml
+*.vscode
+*.suo
+*.ntvs*.*
+*.njsproj
+*.sln
+*.swp
+*.swo
+*.swm
+*.sws
