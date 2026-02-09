@@ -1,0 +1,197 @@
+<main class="content">
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Logs</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        <a href="{{ path('admin_anonymous_visits_index') }}">All anonymous visits</a>
+      </li>
+    </ol>
+  </nav>
+
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Display a complete list of products visited by anonymous users',
+         'Access the traffic report of each user'] %}
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <h1 class="h4 pb-3">Anonymous visits</h1>
+      <!-- Features -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/6_log/partials/_search-form.html.twig' %}
+  </div>
+  <!-- No. of items per page> -->
+  {% include 'admin/_partials/select-items.html.twig'
+     with { 'items' : pageViews, 'item' : 'product', 'route_index': 'admin_anonymous_visits_index', 'route': '' } %}
+  <div class="row mt-1">
+    <div class="col-12 mb-4">
+      <div class="card border-light shadow-sm mb-4">
+        <div class="card-body">
+          <div class="table-responsive" id="page-visit-table">
+            <table class="table table-centered table-nowrap mb-0 rounded">
+              <thead class="thead-light text-center">
+                <tr>
+                  <!-- ID -->
+                  <th class="border-0">
+                    <span>ID</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : pageViews, 'sort_param': 'pg.id', 'label': 'ID'} %}</span>
+                  </th>
+                  <!-- ID -->
+                  <th class="border-0">
+                    <span>IP Address</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : pageViews, 'sort_param': 'pg.url', 'label': 'IP Address'} %}</span>
+                  </th>
+                  <!-- Product -->
+                  <th class="border-0 product">
+                    <span>Product</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : pageViews, 'sort_param': 'pr.id,pc.id', 'label': 'product'} %}</span>
+                  </th>
+                  <!-- Product referer) -->
+                  <th class="border-0 referer">
+                    <span>Product (referer)</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : pageViews, 'sort_param': 'refpr.id', 'label': 'product'} %}</span>
+                  </th>
+                  <!-- Visited on -->
+                  <th class="border-0">
+                    <span>Visited On</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : pageViews, 'sort_param': 'pg.created', 'label': 'date of visit'} %}</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                  {% for pageView in pageViews %}
+                    <tr>
+                      <td>{{pageView.id}}</td>
+                      <td>{{pageView.ipAddress}}</td>
+                      <td class="table-thumbnail">
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td class="">
+                                <div class="thumbnail">
+                                  <a href="{{ path('admin_anonymous_visits_index', {'pc': pageView.colorId, 'pc_url': pageView.imageSmall, 'pc_name': pageView.colors_full ~ ' (' ~ pageView.name ~ ')'}) }}">
+                                    <img class="img-border-hover" src="{{pageView.imageSmall ? asset(pageView.imageSmall)}}" class="img-fluid rounded-start" alt="...">
+                                  </a>
+                                </div>
+                              </td>
+                              <td>
+                                <table class="thumbnail-inner-table">
+                                  <tbody>
+                                    <tr>
+                                      <td class="">
+                                        <h6 class="thumbnail-title">
+                                          <a {% if search %} data-search-terms="{{search}}" data-text="{{ pageView.brand_full}}" id="text-highlight" {% endif %}
+                                          href="{{ path('admin_anonymous_visits_index', {'brand': pageView.brand}) }}">
+                                            <span class="border-hover">{{pageView.brand_full}}</span>
+                                          </a>
+                                          <a {% if search %} data-search-terms="{{search}}" data-text="{{ item.name}}" id="text-highlight" {% endif %}
+                                          href="{{ path('admin_anonymous_visits_index', {'product': pageView.product, 'product_name': pageView.name ~ ' ('~  pageView.brand_full ~ ')'}) }}">
+                                            <span class="border-hover">{{pageView.name}}</span>
+                                          </a>
+                                        </h6>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td class="">
+                                        <p class="thumbnail-text">
+                                          <a {% if search %} data-search-terms="{{search}}" data-text="{{ pageView.colors_full }}" id="text-highlight" {% endif %} href="{{ path('admin_anonymous_visits_index', {'colors': pageView.color, 'color_name': pageView.colors_full}) }}">
+                                            <span class="border-hover"> {{pageView.colors_full}}</span>
+                                          </a>
+                                          <a href="{{ path('admin_anonymous_visits_index', {'size': pageView.size}) }}">
+                                           <span class="border-hover">({{pageView.size}})</span>
+                                          </a>
+                                        </p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                      <td class="table-thumbnail-hidden">
+                        {% if pageView.imageSmallRef %}
+                        <table class="thumbnail-inner-table">
+                          <tbody>
+                            <tr>
+                              <td class="">
+                                <div class="thumbnail">
+                                  <a href="{{ path('admin_anonymous_visits_index', {'pc': pageView.refColorId, 'pc_url': pageView.imageSmallRef, 'pc_name': pageView.refColor_full}) }}">
+                                    <img class="img-border-hover" src="{{pageView.imageSmallRef ? asset(pageView.imageSmallRef)}}" class="img-fluid rounded-start" alt="...">
+                                  </a>
+                                </div>
+                              </td>
+                              <td>
+                                <table>
+                                  <tbody>
+                                    <tr>
+                                      <td class="">
+                                        <h6 class="thumbnail-title">
+                                          <a {% if search %} data-search-terms="{{search}}" data-text="{{ pageView.refBrand_full}}" id="text-highlight" {% endif %}
+                                          href="{{ path('admin_anonymous_visits_index', {'brand': pageView.refBrand}) }}">
+                                            <span class="border-hover">{{pageView.refBrand_full}}</span>
+                                          </a>
+                                        <a {% if search %} data-search-terms="{{search}}" data-text="{{ pageView.refName}}" id="text-highlight" {% endif %}
+                                          href="{{ path('admin_anonymous_visits_index', {'product': pageView.refProduct, 'name': pageView.refName ~ ' ('~  pageView.refBrand_full ~ ')'}) }}">
+                                            <span class="border-hover">{{pageView.refName}}</span>
+                                        </a>
+                                        </h6>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td class="">
+                                        <p class="thumbnail-text">
+                                          <a {% if search %} data-search-terms="{{search}}" data-text="{{ pageView.refColor_full }}" id="text-highlight" {% endif %} href="{{ path('admin_anonymous_visits_index', {'colors': pageView.refColor, 'color_name': pageView.refColor_full}) }}">
+                                            <span class="border-hover"> {{pageView.refColor_full}}</span>
+                                          </a>
+                                          <a href="{{ path('admin_anonymous_visits_index', {'size': pageView.refSize}) }}">
+                                           <span class="border-hover">({{pageView.refSize}})</span>
+                                          </a>
+                                        </p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        {% else %}
+                          <div class="text-center">
+                          {% if pageView.refererRoute %}
+                            <a href="{{ pageView.referer}}">
+                             <span class="border-hover">{{pageView.refererRoute|replace({'_': " "})|title}}</span>
+                            </a>
+                          {% else %}
+                            {{pageView.refererRoute}}
+                          {% endif %}
+                          </div>
+                        {% endif %}
+                      </td>
+                      <td title="{{pageView.created|ago}}">{{pageView.created|format_datetime('full', 'short', locale='en')}}</td>
+                    </tr>
+                  {% else %}
+                    <tr><td colspan="6" id="empty-cell" class="{{app.user.theme == 'dark' ? 'text-gray'}}">No anonymous visit found</td></tr>
+                  {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Pagination -->
+  {% include 'admin/_partials/pagination.html.twig' with { 'items' : pageViews } %}
+  <!-- Footer -->
+  {% include 'admin/_partials/footer.html.twig' %}
+</main>

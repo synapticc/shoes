@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+  {% block meta %}{% include 'store/partials/meta.html.twig' %}{% endblock %}
+
+  {% block title %}
+    {% if app.current_route  == 'user_profile_purchases' %}
+    Purchases
+    {% elseif app.current_route  == 'user_profile_purchase_list' %}
+    Purchase list
+    {% elseif app.current_route  == 'user_profile_invoices' %}
+    Invoices
+    {% elseif app.current_route  == 'review_index' %}
+    Reviews
+    {% elseif app.current_route  == 'review_new_list'%}
+    Post review
+    {% elseif  app.current_route  == 'review_new'%}
+    New review
+    {% elseif app.current_route  == 'review_edit'%}
+    Edit review
+    {% elseif app.current_route  == 'app_change_email_request'%}
+    Change email
+    {% elseif app.current_route  == 'app_change_email'%}
+    Enter new email
+    {% elseif app.current_route  == 'reset_password_request' %}
+    Request new password
+    {% elseif app.current_route  == 'reset_password_check_email' %}
+    Confirm email address
+    {% elseif app.current_route  == 'reset_password' %}
+    Reset password
+    {% else %}
+    Profile
+    {% endif %}
+    |
+    {% if app.user.firstName is null and app.user.lastName %}
+      {{ app.user.lastName}}
+    {% elseif app.user.firstName and app.user.lastName %}
+      {{app.user.firstName ~ ' ' ~ app.user.lastName}}
+    {% else %}
+      {{app.user.email}}
+    {% endif %}
+  {% endblock %}
+
+  {% block stylesheets %}{{ encore_entry_link_tags('store') }}{% endblock %}
+
+{% block body %}
+
+    {% include 'profile/header.html.twig' %}
+
+    {% if app.current_route  == 'user_profile_purchases' %}
+
+      {% include 'profile/partials/purchases/body.html.twig' %}
+
+    {% elseif app.current_route  == 'user_profile_purchase_list' %}
+
+      {% include 'profile/partials/purchases/list-body.html.twig' %}
+
+    {% elseif app.current_route  == 'user_profile_invoices' %}
+
+      {% include 'profile/partials/invoices-body.html.twig' %}
+
+    {% elseif app.current_route  == 'review_index' %}
+
+      {% include 'profile/partials/reviews/body.html.twig' %}
+
+    {% elseif app.current_route  == 'review_new_list'%}
+
+      {% include 'profile/partials/reviews/body-new.html.twig' %}
+
+    {% elseif app.current_route  == 'review_edit'
+       or app.current_route  == 'review_new'%}
+
+      {% include 'profile/partials/reviews/form.html.twig' %}
+
+    {% elseif app.current_route  == 'app_change_email_request'%}
+
+      {% include 'profile/partials/reset-email/request-body.html.twig' %}
+
+    {% elseif app.current_route  == 'app_change_email'%}
+
+      {% include 'profile/partials/reset-email/body.html.twig' %}
+
+    {% elseif app.current_route  == 'reset_password_request' %}
+
+      {% include 'profile/partials/reset-password/request-body.html.twig' %}
+
+    {% elseif app.current_route  == 'reset_password_check_email' %}
+
+      {% include 'profile/partials/reset-password/body-check.html.twig' %}
+
+    {% elseif app.current_route  == 'reset_password' %}
+
+      {% include 'profile/partials/reset-password/body.html.twig' %}
+
+    {% else %}
+
+      {% include 'profile/partials/profile-body.html.twig' %}
+
+    {% endif %}
+
+  {% block javascripts %}{{ encore_entry_script_tags('store') }}{% endblock %}
+{% endblock %}

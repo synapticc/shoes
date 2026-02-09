@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+  {% block meta %}{% include 'admin/_partials/meta.html.twig' %}{% endblock %}
+
+  {% block title %}Products | Admin{% endblock %}
+
+  {% block stylesheets %}{{ encore_entry_link_tags('admin') }}{% endblock %}
+
+{% block body %}
+  <!-- Top navigation -->
+  {% include 'admin/_partials/navbar.html.twig' %}
+  <div class="container-fluid bg-{{ app.user.theme == 'light' ? 'soft' : 'dark' }}">
+    <div class="row">
+      <div class="col-12">
+      <!-- Left sidebar  -->
+      {% include 'admin/_partials/left-sidebar.html.twig' %}
+      <!-- Main content  -->
+      {% include 'admin/1_product/partials/_products-table.html.twig' %}
+      </div>
+    </div>
+  </div>
+  {% block javascripts %}
+    {{ encore_entry_script_tags('admin') }}
+    <!-- Github buttons -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+  {% endblock %}
+{% endblock %}

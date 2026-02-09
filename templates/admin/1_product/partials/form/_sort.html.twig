@@ -1,0 +1,37 @@
+<form title="Sort {{sortParameter}} in {{(items.params.ordr is defined)?((items.params.ordr == 'DESC')?'ascending':'descending'):'descending' }} order" method="get">
+    {% for query in get|keys %}
+      {% if query != 'srt' and  query != 'ordr' %}
+        {% if query == 'brands' %}
+          {% for brand in get[query] %}
+            <input name="brands[]" value="{{brand}}" hidden=hidden>
+          {% endfor %}
+        {% else %}
+            <input name="{{query}}" value="{{get[query]}}" hidden=hidden>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    <input type="hidden" name="srt" value="{{sortParameter}}">
+
+    {% if items.items|length > 1 %}
+      {% if items.params.ordr is defined %}
+        {% if items.params.ordr == 'DESC' %}
+          <input type="hidden" name="ordr" value="ASC">
+          <button class="transparent-btn" type="submit">
+              {% include '__icons/u-z/_up-icon.html.twig' %}
+            </button>
+        {% else %}
+          {% if items.params.ordr == 'ASC' %}
+            <input type="hidden" name="ordr" value="DESC">
+            <button class="transparent-btn" type="submit">
+                {% include '__icons/a-d/_down-icon.html.twig' %}
+              </button>
+          {% endif %}
+        {% endif %}
+      {% else %}
+        <input type="hidden" name="ordr" value="DESC">
+        <button class="transparent-btn" type="submit">
+          {% include '__icons/a-d/_down-icon.html.twig' %}
+          </button>
+      {% endif %}
+    {% endif %}
+</form>

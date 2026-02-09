@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+  {% block title %}Log in{% endblock %}
+
+  {% block meta %}{% include 'admin/_partials/meta.html.twig' %}{% endblock %}
+
+  {% block stylesheets %}{{ encore_entry_link_tags('admin') }}{% endblock %}
+
+{% block body %}
+  {% for flash_error in app.flashes('verify_email_error') %}
+      <div class="row justify-content-center">
+        <div class="col-9 mt-4">
+          <div class="alert alert-danger text-white text-center" role="alert">{{ flash_error }}</div>
+        </div>
+      </div>
+  {% endfor %}
+
+  <div class="bg-soft">
+    {% include 'security/login/partials/form.html.twig' %}
+  </div>
+
+  {% block javascripts %}{{ encore_entry_script_tags('admin') }}{% endblock %}
+{% endblock %}

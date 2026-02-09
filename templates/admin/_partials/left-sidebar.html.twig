@@ -1,0 +1,328 @@
+<nav id="sidebarMenu" class="sidebar d-md-block bg-primary text-white collapse" data-simplebar data-turbo="true">
+  <div class="sidebar-inner px-4 pt-3">
+    <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
+      <div class="d-flex align-items-center">
+        <div class="user-avatar lg-avatar mr-4">
+        <img src="{{asset('build/images/admin/team/profile-picture-3.jpg')}}"
+             class="card-img-top rounded-circle border-white" alt="Bonnie Green">
+        </div>
+      <div class="d-block">
+      <h2 class="h6">Hi, Jane</h2>
+      <a href="../../pages/examples/sign-in.html" class="btn btn-secondary text-dark btn-xs"><span class="mr-2"><span class="fas fa-sign-out-alt"></span></span>Sign Out</a>
+      </div>
+      </div>
+      <div class="collapse-close d-md-none">
+        <a href="#sidebarMenu" class="fas fa-times" data-toggle="collapse"
+        data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="true"
+        aria-label="Toggle navigation"></a>
+      </div>
+    </div>
+    <ul class="nav flex-column" id="left-sidebar">
+      {# <li class="nav-item {{app.current_route == 'admin_overview' ? 'active'}}">
+        <a href="{{ path('admin_overview') }}" class="nav-link">
+        <span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span>
+        <span>Dashboard</span>
+        </a>
+      </li> #}
+      <li class="nav-item">
+        <!-- visible menu item -->
+        <span class="nav-link d-flex justify-content-between align-items-center {{(app.current_route not in ['admin_purchases']) ? 'collapsed'}}"
+              data-toggle="collapse" data-target="#transactions">
+          <span>
+            <!-- table icon -->
+            <span class="sidebar-icon">{% include '__icons/a-d/_cart-icon.html.twig' %}</span>
+            Transactions
+          </span>
+          <span class="link-arrow">
+            <span class="fas fa-chevron-right"></span>
+          </span>
+        </span>
+        <!-- hidden menu items -->
+        <div class="multi-level collapse {{(app.current_route in ['admin_purchases', 'admin_purchases']) ? 'show'}}" role="list" id="transactions" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item {{app.current_route == 'admin_purchases' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_purchases') }}">
+                <span>Purchases</span></a>
+            </li>
+
+            {% if app.current_route == 'admin_transactions_show' %}
+            <li class="nav-item {{app.current_route == 'admin_transactions_show' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_transactions_show', {'order': app.request.get('order') }) }}">
+                <span>Order details</span></a>
+            </li>
+            {% endif %}
+
+            <li class="nav-item {{app.current_route == 'admin_items' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_items') }}">
+                <span>Order items</span></a>
+            </li>
+            <li class="nav-item {{app.current_route == 'admin_invoices' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_invoices') }}">
+                <span>Invoices</span></a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item {{app.current_route == 'admin_settings' ? 'active'}}">
+        <a href="{{ path('admin_settings') }}" class="nav-link">
+        <span class="sidebar-icon"><span class="fas fa-cog"></span></span>
+        <span>Settings</span>
+        </a>
+      </li>
+      <li role="separator" class="dropdown-divider mt-4 mb-3 border-black"></li>
+      <!-- Products menu -->
+      <li class="nav-item">
+        <!-- visible menu item -->
+        <span class="nav-link d-flex justify-content-between align-items-center {{(app.current_route != 'admin_product_new' or app.current_route != 'admin_product_index') ? 'collapsed'}}"
+              data-toggle="collapse" data-target="#products">
+          <span>
+            <!-- table icon -->
+            <span class="sidebar-icon">{% include '__icons/q-t/_shoe-icon.html.twig' %}</span>
+            Products
+          </span>
+          <span class="link-arrow">
+            <span class="fas fa-chevron-right"></span>
+          </span>
+        </span>
+        <!-- hidden menu items -->
+        <div class="multi-level collapse {{(app.current_route in ['admin_product_new', 'admin_product_index']) ? 'show'}}" role="list" id="products" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item {{app.current_route == 'admin_product_new' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_product_new') }}">
+                <span>New product</span></a>
+            </li>
+
+            {% if app.current_route == 'admin_product_edit' %}
+            <li class="nav-item {{app.current_route == 'admin_product_edit' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_product_edit', {'id': product.id}) }}">
+                <span>Edit product</span></a>
+            </li>
+            {% endif %}
+
+            <li class="nav-item {{app.current_route == 'admin_product_index' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_product_index') }}">
+                <span>All products</span></a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <!-- Product details menu -->
+      <li class="nav-item">
+        <!-- visible menu item -->
+        <span class="nav-link  d-flex justify-content-between align-items-center {{(app.current_route not in ['admin_product_new', 'admin_product_index']) ? 'collapsed'}}" data-toggle="collapse" data-target="#details">
+          <span>
+            <!-- table icon -->
+            <span class="sidebar-icon"><span class="fas fa-sitemap"></span></span>
+            Product details
+          </span>
+            <span class="link-arrow"><span class="fas fa-chevron-right"></span></span>
+        </span>
+
+        <!-- hidden menu items -->
+        <div class="multi-level collapse {{(app.current_route == 'admin_product_data_new_entry' or app.current_route == 'admin_product_data_index') ? 'show'}}" role="list" id="details" aria-expanded="false">
+          <ul class="flex-column nav">
+
+            {% if app.current_route == 'admin_product_data_new' %}
+            <li class="nav-item {{app.current_route == 'admin_product_data_new' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_product_data_new', {'product': app.request.get('product'), 'supplier': app.request.get('supplier')}) }}">
+                <span>New detail</span></a>
+            </li>
+            {% endif %}
+
+            {% if app.current_route == 'admin_product_data_edit' %}
+            <li class="nav-item {{app.current_route == 'admin_product_data_edit' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_product_data_edit', {'id': app.request.get('id'), 'supplier': app.request.get('supplier') }) }}">
+                <span>Edit detail</span></a>
+            </li>
+            {% endif %}
+
+            <li class="nav-item {{app.current_route == 'admin_product_data_index' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_product_data_index') }}">
+                <span>All details</span></a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <!-- Suppliers menu -->
+      <li class="nav-item">
+
+        <!-- visible menu item -->
+        <span class="nav-link  collapsed  d-flex justify-content-between align-items-center"
+              data-toggle="collapse" data-target="#suppliers">
+            <span>
+                <!-- table icon -->
+                <span class="sidebar-icon"><span class="fas fa-truck"></span></span>
+                Suppliers
+            </span>
+            <span class="link-arrow"><span class="fas fa-chevron-right"></span></span>
+        </span>
+
+        <!-- hidden menu items -->
+        <div class="multi-level collapse " role="list" id="suppliers" aria-expanded="false">
+          <ul class="flex-column nav">
+
+            <li class="nav-item {{app.current_route == 'admin_supplier_new' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_supplier_new') }}">
+                <span>New supplier</span></a>
+            </li>
+
+            {% if app.current_route == 'admin_supplier_edit' %}
+            <li class="nav-item {{app.current_route == 'admin_supplier_edit' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_supplier_edit', {'id': app.request.get('id') }) }}">
+                <span>Edit supplier</span></a>
+            </li>
+            {% endif %}
+
+            <li class="nav-item {{app.current_route == 'admin_supplier_index' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_supplier_index') }}">
+                <span>All suppliers</span></a>
+            </li>
+          </ul>
+        </div>
+      </li>
+
+      <li role="separator" class="dropdown-divider mt-4 mb-3 border-black"></li>
+      <!-- Users menu -->
+      <li class="nav-item">
+
+        <!-- visible menu item -->
+        <span class="nav-link  collapsed  d-flex justify-content-between align-items-center"
+              data-toggle="collapse" data-target="#users">
+            <span>
+                <!-- table icon -->
+                <span class="sidebar-icon"><span class="fas fa-users"></span></span>
+                Users
+            </span>
+            <span class="link-arrow"><span class="fas fa-chevron-right"></span></span>
+        </span>
+
+        <!-- hidden menu items -->
+        <div class="multi-level collapse " role="list" id="users" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item {{app.current_route == 'admin_users_index' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_users_index') }}">
+                <span>Active users</span></a>
+            </li>
+            <li class="nav-item {{app.current_route == 'admin_users_index_deleted' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_users_index_deleted') }}">
+                <span>Deleted users</span></a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <!-- Reviews menu -->
+      <li class="nav-item">
+
+        <!-- visible menu item -->
+        <span class="nav-link  collapsed  d-flex justify-content-between align-items-center"
+              data-toggle="collapse" data-target="#reviews">
+            <span>
+                <!-- table icon -->
+                <span class="sidebar-icon"><span class="fas fa-star"></span></span>
+                Reviews
+            </span>
+            <span class="link-arrow"><span class="fas fa-chevron-right"></span></span>
+        </span>
+
+        <!-- hidden menu items -->
+        <div class="multi-level collapse " role="list" id="reviews" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item {{app.current_route == 'admin_review_index' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_review_index') }}">
+                <span>All Reviews</span></a>
+            </li>
+          </ul>
+        </div>
+      </li>
+
+      <li role="separator" class="dropdown-divider mt-4 mb-3 border-black"></li>
+      <!-- Logs menu -->
+      <li class="nav-item">
+        <!-- visible menu item -->
+        <span class="nav-link  collapsed  d-flex justify-content-between align-items-center"
+              data-toggle="collapse" data-target="#logs">
+            <span>
+                <!-- table icon -->
+                <span class="sidebar-icon"><span class="fas fa-poll"></span></span>
+                Logs
+            </span>
+            <span class="link-arrow"><span class="fas fa-chevron-right"></span></span>
+        </span>
+        <!-- hidden menu items -->
+        <div class="multi-level collapse " role="list" id="logs" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item {{app.current_route == 'admin_login_report_index' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_login_report_index') }}">
+                <span>Login report</span></a>
+            </li>
+            <li class="nav-item {{app.current_route == 'admin_user_visits_index' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_user_visits_index') }}">
+                <span>User visits</span></a>
+            </li>
+            <li class="nav-item {{app.current_route == 'admin_anonymous_visits_index' ? 'active'}}">
+              <a class="nav-link" href="{{ path('admin_anonymous_visits_index') }}">
+                <span>Anonymous visits</span></a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <!-- ER Diagram menu -->
+      <li class="nav-item">
+        <!-- visible menu item -->
+        <span class="nav-link  collapsed  d-flex justify-content-between align-items-center"
+              data-toggle="collapse" data-target="#diagram">
+            <span>
+                <!-- table icon -->
+                <span class="sidebar-icon">{% include '__icons/q-t/_table-icon.html.twig' %}</span>
+                ER Diagram
+            </span>
+            <span class="link-arrow"><span class="fas fa-chevron-right"></span></span>
+        </span>
+        <!-- hidden menu items -->
+        <div class="multi-level collapse" role="list" id="diagram" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item ">
+              <a class="nav-link" href="{{ path('admin_diagram') }}" target="_blank">
+                <span>HTML</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ asset('build/images/admin/er_diagram.jpg') }}" target="_blank">
+                <span>JPEG</span></a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li role="separator" class="dropdown-divider mt-4 mb-3 border-black"></li>
+      <li class="nav-item">
+        <a href="https://gitlab.com/SynapticC/ecommerce" class="nav-link d-flex align-items-center" target="_blank">
+        <span class="sidebar-icon">
+          <img src="{{asset('build/images/admin/gitlab.png') }}" height="20" width="20" alt="Gitlab Logo">
+        </span>
+        <span class="mt-1">Gitlab Repository</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="https://ecommerce-zoci.onrender.com/" class="nav-link d-flex align-items-center" target="_blank">
+        <span class="sidebar-icon">
+          <img src="{{asset('build/images/admin/render.ico') }}" height="20" width="20" alt="Gitlab Logo">
+        </span>
+        <span class="mt-1">Render Deployment</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="https://gitlab.com/SynapticC/ecommerce/-/blob/main/README.md" target="_blank" class="nav-link d-flex align-items-center">
+        <span class="sidebar-icon"><span class="fas fa-power-off"></span></span>
+        <span>Quick Start</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{{path('store') }}" target="_blank" class="nav-link d-flex align-items-center">
+        <span class="sidebar-icon">
+          <img src="{{asset('build/images/admin/favicon/favicon.ico') }}" height="20" width="20" alt="Store Logo">
+        </span>
+        <span>Store</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

@@ -1,0 +1,107 @@
+{# templates/store/partials/filters/filter-brand.html.twig #}
+{% set resetIcon = include('__icons/q-t/_square-reset.html.twig', {filter: 'brand'}, with_context=false) %}
+{% set plusIcon = include('__icons/m-p/_plus-square.html.twig', {filter: 'brand'}, with_context=false) %}
+{% set minusIcon = include('__icons/m-p/_minus-square.html.twig', {filter: 'brand'}, with_context=false) %}
+{% set hasActiveBrands = activeBrands|length > 0 %}
+{% set showToggler = hasActiveBrands ? minusIcon : plusIcon %}
+
+<aside class="ps-widget--sidebar ps-widget--category" parent-widget>
+    <div class="ps-widget__header">
+        <h3>
+            Brand
+            {% if hasActiveBrands %}{{ resetIcon|raw }}{% endif %}
+        </h3>
+        {% if hasActiveBrands %}
+            <p class="pt-10 pb-10">
+                Selected({{ activeBrands|length }}):
+                {% for brand in activeBrands %}
+                    <span class="selected-item">{{ brandPair[brand] }}</span>
+                    {%- if not loop.last %}, {% else %}.{% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="ps-widget__content">
+        <!-- Visible Brands -->
+        <section>
+            {% for brand in brandShow %}
+                {% set isChecked = brand.name in activeBrands %}
+                {% set hasCountValue = brand.name in brandCounts|keys %}
+                {% set countValue = hasCountValue ? brandCounts[brand.name] : 0 %}
+
+                <label for="brand-{{ brand.name }}" class="checkbox">
+                    <input
+                        filter=""
+                        type="checkbox"
+                        id="brand-{{ brand.name }}"
+                        name="brand[]"
+                        value="{{ brand.name }}"
+                        {% if isChecked %}checked{% endif %}>
+
+                    <span class="{% if hasCountValue %}text-bold{% endif %}">
+                        <a class="img-tooltip {% if hasCountValue %}text-bold{% endif %}"
+                           title="{{ brand.fullName }}">
+                            {{ brand.fullName }}
+                            <span>
+                                <img
+                                    src="{{ asset('build/images/store/color-patches/' ~ brand.name ~ '.webp') }}"
+                                    alt="{{ brand.name }}"
+                                    loading="lazy">
+                            </span>
+                        </a>
+                        {% if hasCountValue %}({{ countValue }}){% endif %}
+                    </span>
+                </label>
+            {% endfor %}
+        </section>
+
+        <!-- Hidden Brands (Show/Hide) -->
+        {% if brandHidden|length > 0 %}
+            <section
+                data-toggle-show="#sidebar-brand"
+                id="sidebar-brand"
+                class="{% if hasActiveBrands %}sidebar-reveal{% else %}sidebar-hide{% endif %}">
+
+                {% for brand in brandHidden %}
+                    {% set isChecked = brand.name in activeBrands %}
+                    {% set hasCountValue = brand.name in brandCounts|keys %}
+                    {% set countValue = hasCountValue ? brandCounts[brand.name] : 0 %}
+
+                    <label for="brand-{{ brand.name }}" class="checkbox">
+                        <input
+                            filter=""
+                            type="checkbox"
+                            id="brand-{{ brand.name }}"
+                            name="brand[]"
+                            value="{{ brand.name }}"
+                            {% if isChecked %}checked{% endif %}>
+
+                        <span class="{% if hasCountValue %}text-bold{% endif %}">
+                            <a class="img-tooltip {% if hasCountValue %}text-bold{% endif %}"
+                               title="{{ brand.fullName }}">
+                                {{ brand.fullName }}
+                                <span>
+                                    <img
+                                        src="{{ asset('build/images/store/color-patches/' ~ brand.name ~ '.webp') }}"
+                                        alt="{{ brand.name }}"
+                                        loading="lazy">
+                                </span>
+                            </a>
+                            {% if hasCountValue %}({{ countValue }}){% endif %}
+                        </span>
+                    </label>
+                {% endfor %}
+            </section>
+
+            <!-- Show/Hide Toggler -->
+            <span
+                class="sidebar-toggler"
+                data-toggler="#sidebar-brand"
+                id="data-toggler"
+                data-toggler-title="brand">
+                {{ showToggler|raw }}
+            </span>
+        {% endif %}
+    </div>
+</aside>

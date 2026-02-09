@@ -1,0 +1,253 @@
+<main class="content">
+  <!-- Topmost navbar -->
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Transactions</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        <a href="{{ path('admin_transactions_show', {'order': app.request.get('order')}) }}">Order</a>
+      </li>
+    </ol>
+  </nav>
+  <!-- Page overview & Search bar -->
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Display all items of an order',
+         'Access each product'] %}
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <!-- Main header -->
+      <h1 class="h4 pb-3">{{purchase.status == 'paid' ? 'Purchase' : 'Cart'}} items</h1>
+      <!-- Features -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/7_transactions/partials/_search-form.html.twig' %}
+  </div>
+
+
+<div class="row">
+  <div class="col-12 mb-4">
+    <div class="card border-light shadow-sm components-section">
+      <div class="card-body">
+        <div class="row mb-4">
+          <div class="col">
+            <h4>{{purchase.status == 'paid' ? 'Purchase' : 'Cart'}} details</h4>
+            <div class="table-responsive" id="product-table">
+              <table class="">
+                <tbody>
+                  <tr>
+                    <th>{{purchase.status == 'paid' ? 'Purchase' : 'Cart'}} ID</th>
+                    <td>
+                      <div class="row justify-content-between align-items-center">
+                        <div class="col">{{ purchase.id|pad(6) }}</div>
+                        {% if purchase.userId %}
+                        <div class="col text-right">
+                          <a href="{{ path('admin_users_show', {'id': purchase.userId}) }}">
+                            <button title="Visit {{purchase.email}}" type="button" class="btn btn-light">Customer</button>
+                          </a>
+                        </div>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Pic</th>
+                    <td>
+                      <img src="{% if purchase.pic %}{{asset(purchase.pic)}}{% else %}{% if purchase.title is same as 'Mr' %}{{asset('build/images/admin/man.png')}}{% else %}{% if purchase.title is same as 'Mrs' %}{{asset('build/images/admin/woman.png')}}{% else %}{{asset('build/images/admin/man.png')}}{% endif %}{% endif %}{% endif %}" class="user-avatar xl-avatar rounded-circle" alt="..." >
+
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Customer</th>
+                    <td>
+                    {% if purchase.firstName or purchase.lastName %}
+                      {{ purchase.title }} {{ purchase.firstName }} {{ purchase.lastName }}
+                    {% else %}
+                        Anonymous
+                    {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Email</th>
+                    <td>{{ purchase.email ? purchase.email : '---'}}</td>
+                  </tr>
+                  <tr>
+                    <th>{{purchase.status == 'paid' ? 'Purchased on' : 'Cart created on'}}</th>
+                    <td>{{ purchase.purchaseDate|format_datetime('full', 'short', locale='en') }}</td>
+                  </tr>
+
+                  <tr>
+                    <th>Status</th>
+                    <td title="{{purchase.status|capitalize}} status" class="font-weight-bold text-{{purchase.status == 'paid' ? 'success' : 'warning'}}">{{purchase.status|capitalize}}</td>
+                  </tr>
+
+                  <tr>
+                    <th>Total number of items</th>
+                    <td>{{ total.totalQty }} pcs</td>
+                  </tr>
+                  <tr>
+                    <th>Subtotal</th>
+                    <td>Rs {{ total.total|format_number({fraction_digit: 2}) }}</td>
+                  </tr>
+                  <tr>
+                    <th>Invoice Total</th>
+                    <td class="available-cell"> Rs {{ purchase.invoiceTotal ? purchase.invoiceTotal|format_number({fraction_digit: 2}) : '0.00' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Table section -->
+<div class="row mt-1">
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body bg-{{ app.user.theme == 'light' ? 'white' : 'gray-500'  }} border-light shadow-sm table-wrapper table-responsive">
+        <div class="table-responsive" id="show-items-table">
+          <table class="table text-center">
+            <!-- Table header -->
+            <thead class="thead-light text-center {{ app.user.theme == 'light' ? 'thead-light' : 'thead bg-gray-500' }}">
+              <tr>
+                <th>
+                  <span>Item Ref.</span>
+                </th>
+                <th>
+                  <span>Thumbnail</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'pc.color', 'label': 'thumbnail color'} %}</span>
+                </th>
+                <th>
+                  <span>Brand</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'pr.brand', 'label': 'brand'} %}</span>
+                </th>
+                <th class="product">
+                  <span>Product</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'pr.name', 'label': 'name'} %}</span>
+                </th>
+                <th class="price">
+                  <span>Unit price</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'p.sellingPrice', 'label': 'selling price'} %}</span>
+                </th>
+                <th class="qty">
+                  <span>Quantity</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'i.quantity', 'label': 'quantity'} %}</span>
+                </th>
+                <th class="total">
+                  <span>Sub total (Rs)</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'subtotal', 'label': 'subtotal'} %}</span>
+                </th>
+                <th>
+                  <span>Size</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'p.size', 'label': 'size'} %}</span>
+                </th>
+                <th>
+                  <span>Color</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'pc.color', 'label': 'color'} %}</span>
+                </th>
+                <th>
+                  <span>Fabric</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'JSON_TEXT(pc.fabrics)', 'label': 'fabrics'} %}</span>
+                </th>
+
+              </tr>
+            </thead>
+            <!-- Table body -->
+            <tbody>
+            {% for item in items %}
+              <!-- Row -->
+              <tr>
+                <!-- ID -->
+                <td>{{item.item_id|pad(6)}}</a>
+                </td>
+                <!-- Thumbnail -->
+                <td title="Search all {{item.name ~ ' ' ~ item.colors_full ~ ', ' ~ item.fabrics_full}}">
+                  <a href="{{ path('admin_items', {'pc': item.colorId, 'pc_url': item.imageSmall,  'pc_name': item.colors_full ~ ' (' ~ item.name  ~ ')'  }) }}">
+                    <div class="purchase-list-img">
+                      <img class="img-fluid img-border-hover"
+                          src="{{asset(item.imageSmall) }}"
+                          alt="image: {{item.name}}">
+                    </div>
+                  </a>
+                </td>
+                <!-- Brand -->
+                <td title="Search all {{item.brand_full}}">
+                  <a href="{{ path('admin_items', {'brand': item.brand}) }}">
+                    <div class="table-brand-img img-grayscale">
+                      <img
+                          src="{{asset('build/images/store/color-patches/' ~ item.brand ~ '.webp') }}"
+                          alt="image: {{item.brand_full}}">
+                    </div>
+                  </a>
+                </td>
+                <!-- Product name -->
+                <td title="Search all {{item.name}} {{item.type_full}}" class="text-left">
+                  <a class="border-hover"
+                  href="{{ path('admin_items', {'product': item.productId, 'product_name': item.name ~ ' ' ~ item.type_full ~ ' ('~ item.category_full ~ ')'}) }}">{{ item.name ~ ' ' ~ item.type_full ~ ' (' ~ item.category_full ~ ')' }}"</a>
+                  <a href="{{
+                    path('store_details',{
+                         'brand': item.brand_full|slug,
+                         'name': (item.name|title)|slug,
+                         'id': nzo_encrypt(item.productDataId)
+                          }) }}"
+                      target="_blank"
+                      class="">{% include '__icons/i-l/_link-wide.html.twig' with {'width': 13,  'height': 13, 'label': 'Visit ' ~ item.name ~ ' ' ~ item.type_full}  %}</a>
+                </td>
+                <!-- Selling price -->
+                <td class="text-center">{{item.sellingPrice|format_number({fraction_digit: 2})}}</td>
+                <!-- Quantity -->
+                <td class="text-center">{{item.quantity}}</td>
+                <!-- Sub total -->
+                <td class="text-center">{{(item.sellingPrice * item.quantity)|format_number({fraction_digit: 2})}}</td>
+                <!-- Size -->
+                <td title="Search all size {{item.size}}" class="text-center"><a {% if search %} data-search-terms="{{search}}" data-text="{{ item.size }}" data-exact="{{(app.request.get('_exact')) ? true : false}}" id="text-highlight" {% endif %} href="{{ path('admin_items', {'size': item.size}) }}">{{item.size}}</a></td>
+                <!-- Color -->
+              <td title="Search all {{item.colors_full}}" class="text-center"><a class="border-hover" {% if search %} data-search-terms="{{search}}" data-text="{{ item.colors_full }}" data-exact="{{(app.request.get('_exact')) ? true : false}}" id="text-highlight" {% endif %} href="{{ path('admin_items', {'colors': item.color, 'color_name': item.colors_full}) }}">{{item.colors_full}}</a></td>
+                <!-- Fabric -->
+              <td title="Search all {{item.fabrics_full}}" class="text-center"><a class="border-hover" {% if search %} data-search-terms="{{search}}" data-text="{{ item.fabrics_full }}" data-exact="{{(app.request.get('_exact')) ? true : false}}" id="text-highlight" {% endif %} href="{{ path('admin_items', {'fabrics': item.fabrics|join('-'), 'fabric_name': item.fabrics_full }) }}">{{item.fabrics_full}}</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Pagination (order items)-->
+<div class="d-flex justify-content-center align-items-start mt-2">
+  <div class="">{{ knp_pagination_render(items) }}</div>
+</div>
+
+{% if purchase.invoicePath %}
+<div class="row mt-5">
+  <div class="col-12">
+    <div class="card border-light shadow-sm components-section">
+      <div class="card-body">
+        <div class="row mb-4">
+          <div class="col">
+            <h4>Invoice</h4>
+            <div class="table-responsive p-3" data-id="#invoice-pdf" id="invoice-pdf" single-pdf-viewer data-address="{{asset(purchase.invoicePath) }}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Footer -->
+{% include 'admin/_partials/footer.html.twig' %}
+</main>

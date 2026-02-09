@@ -1,0 +1,9 @@
+{% if url %}
+<iframe
+      src="https://www.youtube.com/embed/{{url}}"
+      frameborder="0"
+      allowfullscreen="">
+</iframe>
+{% else %}
+    <div title="No video detected" class="empty-video" style="background-image: url({{asset('build/images/admin/video.png')}})">
+{% endif %}

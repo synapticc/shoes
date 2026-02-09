@@ -1,0 +1,9 @@
+{% if product is defined and reviews is defined  %}
+<!-- Delete form -->
+<form method="post" action="{{ path('admin_product_delete', {'id': product.id}) }}" onsubmit="return confirm(`Are you sure you want to delete this product?
+All reviews and product images will be deleted as well!`);">
+  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+  <!-- Delete button -->
+  <button title="Delete the full product and its{{reviews ? ' and reviews'}}." class="btn btn-danger">Delete product {{reviews ? ' and reviews'}}</button>
+</form>
+{% endif %}

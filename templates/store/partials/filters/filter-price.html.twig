@@ -1,0 +1,81 @@
+{# templates/store/partials/filters/filter-price.html.twig #}
+{% set resetIcon = include('__icons/q-t/_square-reset.html.twig', {filter: 'price'}, with_context=false) %}
+{% set minPrice = price.min|default(500) %}
+{% set maxPrice = price.max|default(25000) %}
+{% set orderPrice = price.order|default('nameAsc') %}
+{% set isDefaultPrice = minPrice == 500 and maxPrice == 25000 %}
+
+<aside class="ps-widget--sidebar ps-widget--filter" parent-widget>
+    <div class="ps-widget__header">
+        <h3>
+            Price range
+            {% if not isDefaultPrice %}{{ resetIcon|raw }}{% endif %}
+        </h3>
+    </div>
+
+    <div class="ps-widget__content" id="pricing-div">
+        <div class="p-4">
+            <!-- Price Display -->
+            <div class="price text-price">
+                From <span id="from">Rs{{ minPrice }}</span>
+                <span> to </span>
+                <span id="to">Rs{{ maxPrice }}</span>
+            </div>
+
+            <!-- Price Range Sliders -->
+            <div class="multi-range">
+                <!-- Min Slider -->
+                <input
+                    name="price[min]"
+                    class="styled-slider slider-progress"
+                    type="range"
+                    min="500"
+                    max="24000"
+                    value="{{ minPrice }}"
+                    title="Min price: Rs {{ minPrice }}"
+                    step="50"
+                    id="min-slider">
+
+                <!-- Max Slider -->
+                <input
+                    name="price[max]"
+                    class="styled-slider slider-progress"
+                    type="range"
+                    min="1000"
+                    max="25000"
+                    value="{{ maxPrice }}"
+                    title="Max price: Rs {{ maxPrice }}"
+                    step="50"
+                    id="max-slider">
+
+                <!-- Hidden Sort Order -->
+                <input
+                    name="price[order]"
+                    value="{{ orderPrice }}"
+                    id="filter-order"
+                    hidden>
+            </div>
+
+            <!-- Price Range Checkboxes -->
+            <section>
+                {% for rangeKey, rangeData in priceRange %}
+                    {% set isChecked = rangeData.value in get.price_range|default([]) %}
+
+                    <label for="price-range-{{ rangeKey }}" class="checkbox">
+                        <input
+                            filter=""
+                            type="checkbox"
+                            id="price-range-{{ rangeKey }}"
+                            name="price_range[]"
+                            value="{{ rangeData.value }}"
+                            {% if isChecked %}checked{% endif %}>
+
+                        <span title="Price range: {{ rangeData.label }}" class="{% if isChecked %}text-bold{% endif %}">
+                            {{ rangeData.label }}
+                        </span>
+                    </label>
+                {% endfor %}
+            </section>
+        </div>
+    </div>
+</aside>

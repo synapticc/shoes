@@ -1,0 +1,62 @@
+{# templates/store/partials/filters/filter-types.html.twig #}
+{% set resetIcon = include('__icons/q-t/_square-reset.html.twig', {filter: 'type'}, with_context=false) %}
+{% set plusIcon = include('__icons/m-p/_plus-square.html.twig', {filter: 'types'}, with_context=false) %}
+{% set minusIcon = include('__icons/m-p/_minus-square.html.twig', {filter: 'types'}, with_context=false) %}
+{% set hasActiveTypes = activeTypes|length > 0 %}
+{% set showToggler = hasActiveTypes ? minusIcon : plusIcon %}
+
+<aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+    <div class="ps-widget__header">
+        <h3 class="d-flex justify-content-between">
+            <span>
+                Type
+                {% if hasActiveTypes %}{{ resetIcon|raw }}{% endif %}
+            </span>
+            <span
+                class="sidebar-toggler"
+                data-toggler="#sidebar-type"
+                data-toggler-title="types"
+                id="data-toggler">
+                {{ showToggler|raw }}
+            </span>
+        </h3>
+        {% if hasActiveTypes %}
+            <p class="pt-10 pb-10">
+                Selected({{ activeTypes|length }}):
+                {% for type in activeTypes %}
+                    <span class="selected-item">{{ typePair[type] }}</span>
+                    {%- if not loop.last %}, {% else %}.{% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="ps-widget__content">
+        <section
+            data-toggle-show="#sidebar-type"
+            id="sidebar-type"
+            class="{% if hasActiveTypes %}sidebar-reveal{% else %}sidebar-hide{% endif %}">
+
+            {% for type in types %}
+                {% set isChecked = type.name in activeTypes %}
+                {% set hasCountValue = type.name in typeCounts|keys %}
+                {% set countValue = hasCountValue ? typeCounts[type.name] : 0 %}
+
+                <label for="type-{{ type.name }}" class="checkbox">
+                    <input
+                        filter=""
+                        type="checkbox"
+                        id="type-{{ type.name }}"
+                        name="type[]"
+                        value="{{ type.name }}"
+                        {% if isChecked %}checked{% endif %}>
+
+                    <span class="{% if hasCountValue %}text-bold{% endif %}">
+                        {{ type.fullName }}
+                        {% if hasCountValue %}({{ countValue }}){% endif %}
+                    </span>
+                </label>
+            {% endfor %}
+        </section>
+    </div>
+</aside>

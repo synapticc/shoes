@@ -1,0 +1,35 @@
+
+{% if items is not empty and items.getTotalItemCount > pages.0 %}
+  <div class="col-10 col-sm-3 col-md-3 col-lg-3">
+    <form method="get" id="items_page_form">
+      <!-- items -->
+      <select id="items_page" name="items_page"
+              class="items-num-select {{app.user.theme == 'dark' ? 'bg-gray'}}">
+        {% for item in pages %}
+          {% if item < items.getTotalItemCount  %}
+            <option value="{{item}}" {% if items_page == item %}selected{% endif %}>{{item}}</option>
+          {% endif %}
+
+        {% endfor %}
+        <option value="{{items.getTotalItemCount}}" {% if items_page == items.getTotalItemCount %}selected{% endif %}>All</option>
+      </select>
+
+      <span class="{{ app.user.theme == 'dark' ? 'text-gray-500' }}"> of {{items.getTotalItemCount}} {{item}}s listed</span>
+      <input name="page" value="{{items.currentPageNumber}}" hidden="hidden">
+
+      {% for key, query in get %}
+        {% if key != 'sort' and  key != 'order'
+              and key != 'items_page' and key != 'page' %}
+            <input name="{{key}}" value="{{query}}" hidden=hidden>
+        {% endif %}
+      {% endfor %}
+
+    </form>
+  </div>
+  {% else %}
+  <div class="col-10 col-sm-3 col-md-3 col-lg-3">
+    <span class="{{ app.user.theme == 'dark' ? 'text-gray-500' }}">{{items.getTotalItemCount == 0 ? 'No' : items.getTotalItemCount}} {{item}}{{items.getTotalItemCount > 1 ? 's'}} listed</span>
+  </div>
+{% endif %}
+
+{% include 'admin/_partials/filter-top.html.twig' %}

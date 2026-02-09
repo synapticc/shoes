@@ -1,0 +1,21 @@
+{# templates/store/partials/products/product-actions.html.twig #}
+<div class="ps-product-action">
+    <div class="ps-product__filter">
+        <!-- Sort By Dropdown -->
+        <select class="ps-select selectpicker" name="price[order]" id="sort-by">
+            {% if searchQuery is not empty %}
+                <option value="relevance" {% if sortOrder == 'relevance' %}selected{% endif %}>
+                    Relevance (search)
+                </option>
+            {% endif %}
+
+            {% for sort in sorting %}
+                <option
+                    value="{{ sort.name }}"
+                    {% if sort.name == sortOrder %}selected{% endif %}>
+                    {{ sort.fullName }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>

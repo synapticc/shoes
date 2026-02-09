@@ -1,0 +1,197 @@
+{# templates/store/partials/products/product-grid.html.twig #}
+{% set hasSearchQuery = searchQuery is not empty %}
+{% set baseImagePath = 'build/images/store/color-patches/' %}
+{% set defaultImage = 'build/images/store/shoe/medium_thumb.webp' %}
+
+<div class="ps-product__columns">
+    {% if products|length > 0 %}
+        {% for product in products %}
+            {% set productImage = product.imageMedium ?? defaultImage %}
+            {% set productBrandSlug = product.brand_full|slug %}
+            {% set productNameSlug = (product.name|title)|slug %}
+            {% set productId = nzo_encrypt(product.id) %}
+            {% set productUrl = hasSearchQuery
+                ? path('store_details', {
+                    'brand': productBrandSlug,
+                    'name': productNameSlug,
+                    'id': productId,
+                    'q': searchQuery
+                })
+                : path('store_details', {
+                    'brand': productBrandSlug,
+                    'name': productNameSlug,
+                    'id': productId
+                })
+            %}
+
+            <div class="ps-product__column">
+                <div class="ps-shoe mb-30">
+                    <!-- Thumbnail Section -->
+                    <div class="ps-shoe__thumbnail">
+                        <a class="ps-shoe__favorite" href="#" title="Add to favorites">
+                            <i class="ps-icon-heart"></i>
+                        </a>
+                        <img
+                            src="{{ asset(productImage) }}"
+                            alt="{{ product.name }} (front cover)"
+                            loading="lazy">
+                        <a
+                            title="{{ product.colors_full }} ({{ product.fabrics_full ?? 'N/A' }})"
+                            class="ps-shoe__overlay"
+                            target="_blank"
+                            href="{{ productUrl }}">
+                        </a>
+                    </div>
+
+                    <!-- Content Section -->
+                    <div class="ps-shoe__content">
+                        <!-- Variants -->
+                        <div class="ps-shoe__variants">
+                            <!-- Product Images -->
+                            <div class="ps-shoe__variant normal">
+                                <img
+                                    src="{{ asset(productImage) }}"
+                                    alt="{{ product.name }} (front cover)"
+                                    loading="lazy">
+
+                                {% if product.imageMedium2 %}
+                                    <img
+                                        src="{{ asset(product.imageMedium2) }}"
+                                        alt="{{ product.name }} (side cover)"
+                                        loading="lazy">
+                                {% endif %}
+
+                                {% if product.imageMedium3 %}
+                                    <img
+                                        src="{{ asset(product.imageMedium3) }}"
+                                        alt="{{ product.name }} (back cover)"
+                                        loading="lazy">
+                                {% endif %}
+
+                                {% if product.imageMedium4 %}
+                                    <img
+                                        src="{{ asset(product.imageMedium4) }}"
+                                        alt="{{ product.name }} (detail)"
+                                        loading="lazy">
+                                {% endif %}
+
+                                {% if product.imageMedium5 %}
+                                    <img
+                                        src="{{ asset(product.imageMedium5) }}"
+                                        alt="{{ product.name }} (detail 2)"
+                                        loading="lazy">
+                                {% endif %}
+                            </div>
+
+                            <!-- Color Patches -->
+                            <div class="color-patch">
+                                {% for color in product.colors %}
+                                    {% set colorId = nzo_encrypt(color.id) %}
+                                    {% set colorUrl = hasSearchQuery
+                                        ? path('store_details', {
+                                            'brand': productBrandSlug,
+                                            'name': productNameSlug,
+                                            'id': colorId,
+                                            'q': searchQuery
+                                        })
+                                        : path('store_details', {
+                                            'brand': productBrandSlug,
+                                            'name': productNameSlug,
+                                            'id': colorId
+                                        })
+                                    %}
+                                    {% set isSelectedColor = product.colorId == color.colorId %}
+                                    {% set colorSetClass = color.colors_set.1 is defined ? 'multiple-patch' : 'single-patch' %}
+                                    {% set colorPatchImages = [] %}
+
+                                    {% for colorName in color.colors_set %}
+                                        {% set colorPatchImages = colorPatchImages|merge([
+                                            'url(' ~ asset(baseImagePath ~ colorName ~ '.webp') ~ ')'
+                                        ]) %}
+                                    {% endfor %}
+
+                                    <a href="{{ colorUrl }}" target="_blank" title="{{ color.colors_full }} ({{ color.fabrics_full }})">
+                                        <span
+                                            class="{{ colorSetClass }}{% if isSelectedColor %} selected-patch{% endif %}"
+                                            style="background-image: {{ colorPatchImages|join(', ') }};">
+                                        </span>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Product Details -->
+                        <div class="ps-shoe__detail">
+                            <!-- Product Name -->
+                            <a
+                                title="Visit {{ product.name }}"
+                                class="ps-shoe__name"
+                                href="{{ productUrl }}"
+                                target="_blank"
+                                {% if hasSearchQuery %}
+                                    data-search-terms="{{ searchQuery }}"
+                                    data-text="{{ product.name }}"
+                                    id="text-highlight"
+                                {% endif %}>
+                                {{ product.name }}
+                            </a>
+
+                            <!-- Product Categories -->
+                            <p class="ps-shoe__categories">
+                                <!-- Brand Link -->
+                                <a
+                                    title="List all {{ product.brand_full }}"
+                                    href="{{ path('store', { 'brand[]': product.brand }) }}"
+                                    target="_self">
+                                    <img
+                                        src="{{ asset(baseImagePath ~ product.brand ~ '.webp') }}"
+                                        alt="Brand: {{ product.brand_full }}"
+                                        loading="lazy">
+                                </a>
+
+                                <!-- Type Link -->
+                                <a
+                                    title="List all {{ product.type_full }}"
+                                    href="{{ path('store', { 'type[]': product.type }) }}"
+                                    target="_self">
+                                    {{ product.type_full }}
+                                </a>,
+
+                                <!-- Fabric Link -->
+                                {% set firstFabric = product.fabrics_full_set|first %}
+                                <a
+                                    title="List all {{ firstFabric }}"
+                                    href="{{ path('store', { 'fabrics[]': product.fabrics[0] }) }}"
+                                    target="_self">
+                                    {{ firstFabric }}
+                                </a>
+                            </p>
+
+                            <!-- Price -->
+                            <span class="ps-shoe__price">
+                                Rs {{ product.sellingPrice|format_number({fraction_digit: 0}) }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <!-- No Products Found -->
+        <div class="ps-product__column col-12">
+            <div class="alert alert-info text-center" role="alert">
+                <p class="mb-0">
+                    {% if hasSearchQuery %}
+                        No products found matching "<strong>{{ searchQuery }}</strong>".
+                        <br>
+                        <small>Try adjusting your search terms or filters.</small>
+                    {% else %}
+                        No products found with the current filters.
+                        <br>
+                        <small>Try resetting your filters to see all products.</small>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    {% endif %}
+</div>

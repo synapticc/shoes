@@ -1,0 +1,66 @@
+<!-- Main starts -->
+<main class="ps-main">
+  <div class="profile-container">
+    <div class="row">
+      <!-- Sidebar menu -->
+      <div class="col-md-3">
+        {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+      </div>
+      <!-- Middle section form -->
+      <div class="col-md-7 ml-30 mr-20  border-right">
+        <!-- Main heading -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-right">Reset your email</h4>
+        </div>
+        <!-- Sub heading -->
+        <h5 class="pb-20 pb-30">Enter your current password before proceeding (security measure).</h5>
+        <!-- Form starts -->
+        {{ form_start(requestForm) }}
+          <!-- Password -->
+          <div class="row">
+            <div class="col-md-10">
+              <!-- First password -->
+              {{ form_label(requestForm.plainPassword.first, null, {
+                  'label': 'Current password',
+                  'label_attr': {'class': ''}
+              }) }}
+
+              <!-- Open eye icon -->
+              {% include '__icons/m-p/_open_eye.html.twig' %}
+
+              {{ form_widget(requestForm.plainPassword.first, {'attr':{
+                  'class': 'form-style mb-30',
+                  'placeholder': 'Enter your current password',
+                  'autocomplete': 'on',
+                  'autofocus':'on' }}) }}
+
+              <!-- Second password -->
+              {{ form_label(requestForm.plainPassword.second, null, {
+                  'label': 'Re-enter your password',
+                  'label_attr': {'class': ''}}) }}
+
+              {{ form_widget(requestForm.plainPassword.second, {'attr': {
+                  'class': 'form-style',
+                   'placeholder': 'Repeat your current password'}}) }}
+
+              {{ form_errors(requestForm.plainPassword) }}
+
+              <!-- CSRF token -->
+              <input type="hidden" name="token" value="{{ csrf_token('reset-email') }}"/>
+            </div>
+          </div>
+
+          <!-- Confirm button -->
+          <div class="row">
+            <div class="col-2 mt-50 text-right">
+              <button class="btn btn-warning">Confirm</button>
+            </div>
+          </div>
+       {{ form_end(requestForm) }}
+       <!-- Form ends -->
+      </div>
+    </div>
+  </div>
+  {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>
+<!-- Main ends -->

@@ -1,0 +1,18 @@
+
+
+
+<section class="ml-10 review-indicator" id="review-helpful-{{id}}">
+  <section class="hover-tooltip">
+    <button type="button"
+      title="Review is helpful"
+      class="btn-transparent"
+      hx-get="/review-helpful/{{id}}"
+      hx-trigger="click"
+      hx-target="#review-helpful-{{id}}"
+      hx-swap="innerHTML">
+      {% include '__icons/a-d/_check-certificate.html.twig' with {'width': 28, 'height': 28, 'class': checkHelpful ? 'cursor-pointer fill-success' : 'cursor-pointer fill-success-hover' , 'label': '' } only %}
+    </button>
+    <span class="totality-check" id="review-helpful-{{id}}">{{helpful ? helpful : ''}}</span>
+    <div class="top"><p>{{helpful ? helpful ~ ' found this review helpful.' : 'Be the first to find this review helpful.'}}</p><i></i></div>
+  </section>
+</section>

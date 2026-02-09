@@ -1,0 +1,153 @@
+{# templates/store/partials/filters/filter-color.html.twig #}
+{% set resetIcon = include('__icons/q-t/_square-reset.html.twig', {filter: 'color'}, with_context=false) %}
+{% set plusIcon = include('__icons/m-p/_plus-square.html.twig', {filter: 'color'}, with_context=false) %}
+{% set minusIcon = include('__icons/m-p/_minus-square.html.twig', {filter: 'color'}, with_context=false) %}
+{% set hasActiveColors = activeColors|length > 0 %}
+{% set hasExcluded = colorExclude|length > 0 %}
+{% set showToggler = (hasActiveColors or hasExcluded) ? minusIcon : plusIcon %}
+
+<aside class="ps-widget--sidebar" parent-widget>
+    <div class="ps-widget__header">
+        <h3>
+            Color
+            {% if hasActiveColors or hasExcluded %}{{ resetIcon|raw }}{% endif %}
+        </h3>
+        {% if hasActiveColors %}
+            <p class="pt-10 pb-10">
+                Selected({{ activeColors|length }}):
+                {% for color in activeColors %}
+                    <span class="selected-item">{{ colorPair[color] }}</span>
+                    {%- if not loop.last %}, {% else %}.{% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="ps-widget__content">
+        <!-- Visible Colors (First 20) -->
+        <section>
+            <ul class="ps-list--color pl-10 m-0" id="list-color">
+                {% for color in colors|slice(0, 20) %}
+                    {% set colorName = color.name %}
+                    {% set isExcluded = colorName|is_excluded_color(colorExclude) %}
+                    {% set isChecked = colorName in activeColors %}
+                    {% set hasCountValue = colorName in colorCounts|keys %}
+                    {% set countValue = hasCountValue ? colorCounts[colorName] : 0 %}
+
+                    <section class="hover-tooltip {% if isExcluded %}hover-disabled{% endif %}">
+                        {% if isExcluded %}
+                            <span class="strike"></span>
+                        {% endif %}
+
+                        <li id="color-{{ colorName }}">
+                            <input
+                                filter=""
+                                type="checkbox"
+                                name="color[]"
+                                value="{{ colorName }}"
+                                hidden
+                                {% if isExcluded %}disabled{% endif %}
+                                {% if isChecked %}checked{% endif %}>
+                            <span class="color-count">
+                                {% if hasCountValue %}({{ countValue }}){% endif %}
+                            </span>
+                        </li>
+
+                        <div class="top {% if isExcluded %}top-disabled{% endif %}">
+                            <p>
+                                {{ color.fullName }}
+                                {% if hasCountValue %}({{ countValue }}){% endif %}
+                            </p>
+                            <i></i>
+                        </div>
+                    </section>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Hidden Colors (Remaining) -->
+        {% if colors|length > 20 %}
+            <section
+                data-toggle-show="#sidebar-color"
+                id="sidebar-color"
+                class="{% if hasActiveColors or hasExcluded %}sidebar-reveal{% else %}sidebar-hide{% endif %}">
+
+                <ul class="ps-list--color pl-10" id="list-color-hidden">
+                    {% for color in colors|slice(20) %}
+                        {% set colorName = color.name %}
+                        {% set isExcluded = colorName|is_excluded_color(colorExclude) %}
+                        {% set isChecked = colorName in activeColors %}
+                        {% set hasCountValue = colorName in colorCounts|keys %}
+                        {% set countValue = hasCountValue ? colorCounts[colorName] : 0 %}
+
+                        <section class="hover-tooltip {% if isExcluded %}hover-disabled{% endif %}">
+                            {% if isExcluded %}
+                                <span class="strike"></span>
+                            {% endif %}
+
+                            <li id="color-{{ colorName }}">
+                                <input
+                                    filter=""
+                                    type="checkbox"
+                                    name="color[]"
+                                    value="{{ colorName }}"
+                                    hidden
+                                    {% if isExcluded %}disabled{% endif %}
+                                    {% if isChecked %}checked{% endif %}>
+                                <span class="color-count">
+                                    {% if hasCountValue %}({{ countValue }}){% endif %}
+                                </span>
+                            </li>
+
+                            <div class="top {% if isExcluded %}top-disabled{% endif %}">
+                                <p>
+                                    {{ color.fullName }}
+                                    {% if hasCountValue %}({{ countValue }}){% endif %}
+                                </p>
+                                <i></i>
+                            </div>
+                        </section>
+                    {% endfor %}
+                </ul>
+
+                <!-- Exclude Colors Select -->
+                <div class="mb-10">
+                    <label for="filter_form_color_exclude">Exclude colors:</label>
+                    <select
+                        id="filter_form_color_exclude"
+                        name="color_exclude[]"
+                        aria-label="Color"
+                        aria-describedby="Color"
+                        multiple="multiple">
+                        {% for color in colors %}
+                            {% set shouldShow = true %}
+
+                            {# Don't show colors that are already selected #}
+                            {% if hasActiveColors and color.name in activeColors %}
+                                {% set shouldShow = false %}
+                            {% endif %}
+
+                            {% if shouldShow %}
+                                {% set isSelected = color.name in colorExclude %}
+                                <option
+                                    value="{{ color.name }}"
+                                    {% if isSelected %}selected{% endif %}>
+                                    {{ color.fullName }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </section>
+
+            <!-- Show/Hide Toggler -->
+            <span
+                class="sidebar-toggler"
+                data-toggler="#sidebar-color"
+                id="data-toggler"
+                data-toggler-title="color">
+                {{ showToggler|raw }}
+            </span>
+        {% endif %}
+    </div>
+</aside>

@@ -1,0 +1,46 @@
+
+<div class="ps-cart" id="cart-listing" data-cart={{cart ? cart is not empty ? cart.updated}} >
+{# Display the cart content for the first cart #}
+  <a class="ps-cart__toggle" href="{{ path('cart') }}" target="_blank"><span><i>
+  {{ cart.totalItems is defined ? cart.totalItems : 0 }}</i></span><i class="ps-icon-shopping-cart"></i></a>
+  <div class="ps-cart__listing" >
+    <div class="ps-cart__content">
+    {% if cart %}
+      {% if cart.items is defined %}
+        {% for product in cart.items|slice(0, 2) %}
+        <div class="ps-cart-item"></a>
+          <div class="ps-cart-item__thumbnail">
+            <a
+              href="{{ path('store_details', {
+                            'brand': product.brand_full|slug,
+                            'name': (product.name|title)|slug,
+                            'id': nzo_encrypt(product.productDataId)
+                            }) }}"></a>
+            <img
+                src="{% if product.imageSmall %}{{asset(product.imageSmall) }}{% else %} {{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}"
+                alt="{{product.name}}  - (cart preview)">
+
+          </div>
+          <div class="ps-cart-item__content">
+            <a class="ps-cart-item__title"  href="{{ path('store_details', {
+                          'brand': product.brand_full|slug,
+                          'name': (product.name|title)|slug,
+                          'id': nzo_encrypt(product.productDataId)
+                          }) }}">{{product.name}} (Size {{product.size}})</a>
+            <p><span>Quantity: <i>{{product.quantity}}</i></span>
+               <br>
+              <span>Total:<i>Rs {{(product.sellingPrice * product.quantity)|format_number({fraction_digit: 2})}}</i></span></p>
+          </div>
+        </div>
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+    </div>
+    <div class="ps-cart__total">
+      <p>Number of items:<span>{{ cart.totalItems is defined ? cart.totalItems }}</span></p>
+      <p>Total:<span>Rs {{ cart.total is defined ? cart.total|format_number({fraction_digit: 2}) : 0 }}</span></p>
+    </div>
+
+    <div class="ps-cart__footer"><a class="ps-btn"  href="{{ path('cart') }}" target="_blank">Check out<i class="ps-icon-arrow-left"></i></a></div>
+  </div>
+</div>

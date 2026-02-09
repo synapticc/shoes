@@ -1,0 +1,245 @@
+{% include 'store/partials/cart/cart-exist.html.twig' %}
+<div class="container mt-4">
+  <div class="row justify-items-between">
+    <!-- Main heading -->
+    <div class="col-6">
+      <h2>Your Cart</h2>
+    </div>
+    {% if cart %}
+    {% if cart|length == 1 %}
+    <!-- New cart button -->
+    <div class="col-6 text-right">
+      {# <form></form> #}
+      <form class="" method="post">
+        <button type="submit" class="btn-transparent">
+          <span>{% include '/__icons/m-p/_plus-circle.html.twig' %}New cart</span>
+          <input type="hidden" name="newCart" value="1">
+        </button>
+      </form>
+    </div>
+    {% endif %}
+    {% endif %}
+  </div>
+</div>
+<main class="ps-main">
+  <div class="ps-content pt-80 pb-80">
+    <div class="ps-container">
+      <div class="ps-cart-listing" id="cart-table" data-turbo="false">
+        {% set cartLength = cart|length %}
+        {% for key, cart in cart %}
+          {% set form = cartFormObject[loop.index0].createView %}
+          {% if cart.items is defined %}
+            {{ form_start(form, {'attr': {'id': 'cart-form'}}) }}
+              <div class="row justify-content-between">
+                <div class="col-6 text-left">
+                  <h3 class="pl-10">Cart {{loop.index}}</h3>
+                </div>
+                {# Display active cart status only for more than one cart #}
+                <!-- Active cart status -->
+                {% if cartLength > 1 %}
+                  <div class="col-6 text-right checkbox-container">
+                    <!-- Active status icon -->
+                    <span class="active-cart">Active cart: </span>
+                    {{ form_widget(form.activeStatus,
+                      {'attr': {
+                               'class': ''}})}}
+                    {{ form_label(form.activeStatus, null,
+                    {
+                      'label': ' ',
+                      'label_attr': {'class': ''}}) }}
+                    <p>( Device: {{deviceInfo[key].device_type|capitalize}} {{ deviceInfo[key]['os_family']|capitalize}} )</p>
+                  </div>
+                {% elseif cartLength == 1 %}
+                  <div class="col-6 text-right">
+                    <!-- Active status icon -->
+                    {{ form_widget(form.activeStatus,
+                      {'attr': {
+                               'class': 'hidden'}})}}
+                    {{ form_label(form.activeStatus, null,
+                    {
+                      'label': ' ',
+                      'label_attr': {'class': ''}}) }}
+                    <p>( Device: {{deviceInfo[key]['device_type']|capitalize}} {{ deviceInfo[key]['os_family']|capitalize}} )</p>
+                  </div>
+                {% endif %}
+              </div>
+              <!-- Items table -->
+              <table class="table ps-cart__table" data-items="{{cart.items|length}}">
+                <thead>
+                   <tr>
+                     <th>Products &nbsp;&nbsp;({{cart.items|length}} items)</th>
+                     <th class="text-center">Price (Rs)</th>
+                     <th class="text-center">Quantity</th>
+                     <th class="text-center">Total</th>
+                     <th></th>
+                   </tr>
+                </thead>
+                <tbody>
+                  {% if cart.items|length > 0 %}
+                    {% for product in cart.items %}
+                      <!-- Cart row -->
+                      <tr id="cart-row">
+                        <td>
+                          <!-- Product link -->
+                          <a class="ps-product__preview"
+                             href="{{ path('store_details', {
+                                           'brand': product.brand_full|slug,
+                                           'name': (product.name|title)|slug,
+                                           'id': nzo_encrypt(product.productId)
+                                           }) }}"
+                             target="_blank">
+                          <!-- Product thumbnail -->
+                          <img
+                              src="{% if product.imageSmall %}{{asset(product.imageSmall) }}{% else %}{{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}"
+                              alt="{{product.name}} - (cart preview)">
+                          <!-- Product name -->
+                          {{product.category}}'s {{product.brand}} {{product.name}} {{product.type}}</a>
+                          <div class="row justify-items-start pt-10">
+                            <!-- Product color -->
+                            <span class="col-3 cart-info">Color: {{product.colors_full}}</span>
+                              <!-- Product size -->
+                            <span class="col-2 cart-info">Size: {{product.size}}</span>
+                            <!-- Available quantity -->
+                            <span class="col-3 cart-info">Available: {{product.qtyInStock}} pcs</span>
+                          </div>
+                        </td>
+                        <!-- Cart selling price -->
+                        <td class="text-center">Rs <span id="item-price" data-item-price="{{product.sellingPrice}}">{{product.sellingPrice|format_number({fraction_digit: 0})}}</span></td>
+                        <!-- Cart qty -->
+                        <td class="text-center">
+                          <div class="form-group--number">
+                            <!-- Decrease button -->
+                            <button class="minus" id="decreaseQty" type="button"><span>-</span></button>
+
+                            <!-- Quantity input -->
+                           {{ form_widget(form.items[loop.index0].quantity,
+                              { 'attr':
+                                { 'class': 'form-control form-control-sm',
+                                  'min':1,
+                                  'max':product.qtyInStock,
+                                  'cart-qty':'',
+                                  'data-original-qty':product.quantity }})}}
+
+                            <!-- Increase button -->
+                            <button class="plus" id="increaseQty" type="button"><span>+</span></button>
+                          </div>
+                        </td>
+                        <!-- Items sum -->
+                        <td class="text-center" id="items-sum" data-item-sum="{{product.quantity   *  product.sellingPrice }}">Rs {{(product.quantity   *  product.sellingPrice)|format_number({fraction_digit: 2}) }}</td>
+                        <!-- Remove item button -->
+                        <td>{{ form_widget(form.items[loop.index0].remove, {'attr': {'class': 'ps-remove'}}) }}</td>
+                      </tr>
+                    {% endfor %}
+                  {% else %}
+                    <!-- Empty cart message -->
+                    <tr>
+                      <p>Your cart is empty. Go to the <a href="{{ path('store') }}">product list</a>. </p>
+                    </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+              <!-- Delete & clear row -->
+              <div class="row justify-content-end">
+                <!-- Delete order -->
+                <div class="col-2 text-center">
+                  {{ form_widget(form.delete, {'attr': {'class': 'ps-btn-delete'}}) }}
+                </div>
+                <!-- Clear order -->
+                <div class="col-2 text-center">
+                  {{ form_widget(form.clear, {'attr': {'class': 'ps-btn-clear'}}) }}
+                </div>
+              </div>
+              <!-- Cart message row -->
+              <div class="row">
+                <h4 class="bg-warning cart-msg cart-msg-hide" id="cart-message">You have mades changes to <span id="items-changed">items</span> Save your changes before checking out.
+                  <!-- Save button -->
+                  {{ form_widget(form.save, {'attr': {'class': 'ml-40 hide'}}) }}
+
+                  <!-- Cancel button -->
+                  <button type="button" id="cancel_cart_changes" class="ml-20 ps-btn-cancel">Cancel</button>
+                </h4>
+              </div>
+            {{ form_end(form, {render_rest: false}) }}
+
+            <div class="ps-cart__actions mb-50">
+              <div class="ps-cart__promotion">
+                <div class="form-group">
+                  <div class="ps-form--icon"><i class="fa fa-angle-right"></i>
+                    <input class="form-control" type="text" placeholder="Promo Code">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <!-- Continue button (inactive) -->
+                  <button class="ps-btn ps-btn--gray" type="button">Continue Shopping</button>
+                </div>
+              </div>
+              <div class="ps-cart__total">
+                <!-- Total amount -->
+                <h3>Total Price: <span id="totalAmt">Rs {{cart ? cart.total|format_number({fraction_digit: 2}) : 0 }}</span></h3>
+                {% if cart %}
+                <!-- Checkout link -->
+                <a
+                  id="checkout-btn"
+                  class="ps-btn"
+                  name="checkout_order_ {{loop.index0}}"
+                  href="{{ path('store_billing', {'billing': nzo_encrypt(cart.id)}) }}"
+                  target="_blank">Checkout<i class="ps-icon-next"></i></a>
+                {% endif %}
+              </div>
+            </div>
+          {% elseif cart.items is not defined %}
+            <!-- Cart form starts -->
+            {{ form_start(form, {'attr': {'id': 'cart-form'}}) }}
+              <div class="row justify-content-between">
+                <div class="col-6 text-left">
+                  <h3 class="pl-10">Cart {{loop.index}} (empty)</h3>
+                </div>
+                <div class="col-6 text-right checkbox-container">
+                  <!-- Active status icon -->
+                  <span class="active-cart">Active cart: </span>
+                  {{ form_widget(form.activeStatus,
+                    {'attr': {'class': ''}})}}
+
+                  {{ form_label(form.activeStatus, null,
+                  { 'label': ' ',
+                    'label_attr': {'class': ''}}) }}
+
+                  <!-- Device info -->
+                  <p>( Device: {{deviceInfo[key].device_type|capitalize}} {{ deviceInfo[key]['os_family']|capitalize}} )</p>
+                </div>
+              </div>
+
+              <!-- Empty table -->
+              <table class="table ps-cart__table">
+                 <thead>
+                   <tr>
+                     <th>Products &nbsp;&nbsp;(0 items)</th>
+                     <th class="text-center">Price</th>
+                     <th class="text-center">Quantity</th>
+                     <th class="text-center">Total</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   <td> no product added yet </td>
+                   <td class="text-center"> - </td>
+                   <td class="text-center"> - </td>
+                   <td class="text-center"> - </td>
+                 </tbody>
+              </table>
+
+              <!-- Delete button -->
+              <div class="row justify-content-end">
+                <div class="col-2 text-center">
+                  {{ form_widget(form.delete, {'attr': {'class': 'ps-btn-delete'}}) }}
+                </div>
+              </div>
+            {{ form_widget(form._token,)}}
+            {{ form_end(form, {render_rest: false}) }}
+            <!-- Cart form ends -->
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>

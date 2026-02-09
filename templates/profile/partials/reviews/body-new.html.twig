@@ -1,0 +1,68 @@
+<!-- main starts -->
+<main class="ps-main">
+  <div class="profile-container rounded bg-white mt-5 mb-5">
+    <div class="row">
+      <!-- Sidebar menu -->
+      <div class="col-md-3">
+        {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+      </div>
+      <!-- Middle section form -->
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center mb-30 mt-30">
+          <h3 class="text-left">New Reviews</h3>
+        </div>
+        <div class="ps-cart-listing" id="new-reviews-table">
+          <table class="table ps-cart__table" >
+            <thead>
+              <tr>
+                <th>#</th>
+                <th class="product-cell">Product</th>
+                <th class="thumbnail-cell text-center">Thumbnail</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+             {% for review in reviews %}
+             <tr>
+              <td>{% if reviews.currentPageNumber > 1 %}{{loop.index0 + (reviews.getItemNumberPerPage * (reviews.currentPageNumber - 1) )}}{% else %}{{loop.index}}{% endif %}</td>
+              <td class="product-cell">
+                <a class="ps-product__preview"
+                   href="{{ path(
+                            'store_details',
+                            { 'brand': review.brand_full|slug,
+                              'name': (review.name|title)|slug,
+                              'id': nzo_encrypt(review.productDataId)
+                            }) }}"
+                   target="_blank">{{review.brand_full}} {{review.name}} {{review.type_full}}</a></td>
+              <td class="thumbnail-cell">
+                <div class="d-flex justify-content-center">
+                {% for thumbnail in review.thumbnails %}
+                  <div class="card text-center mx-1 review-thumbnail">
+                    <img src="{{asset(thumbnail.imageMedium)}}" class="card-img-top" alt="">
+                    <div class="card-body text-center">
+                      <p class="card-text "><span class="text-bold">{{thumbnail.colors_full}}</span><br> ({{thumbnail.fabrics_full}})</p>
+                      <p class="card-text">{{thumbnail.qty}}pcs : Rs {{thumbnail.total|number_format(2, '.', ',')}} </p>
+                    </div>
+                  </div>
+                {% endfor %}
+                </div>
+               </td>
+               <td>
+                 <a href="{{ path('review_new', {'product': review.productId}) }}" title="Post a new review">
+                   <button type="button" class="btn btn-info">new</button></a>
+                </td>
+              </tr>
+             {% endfor %}
+            </tbody>
+           </table>
+           <!-- pagination (results) -->
+           <div class="d-flex justify-content-end paginate-row">
+               {{ knp_pagination_render(reviews) }}
+           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>
+<!-- main ends -->

@@ -1,0 +1,80 @@
+
+<div class="col-6 d-flex align-items-center">
+  <div class="">
+    {{ form_start(searchForm,
+      {'attr': {
+        'class': 'd-flex justify-content-start',
+        'data-turbo':"false"}}) }}
+      <!-- Search input -->
+      <div class="col-6">
+        <div class="input-group">
+          <span class="input-group-text" id="topbar-addon"><span class="fas fa-search"></span></span>
+          {{ form_widget(searchForm.q, {'attr':
+            {'class': 'form-control',
+             'placeholder': search,
+             'name': 'search_q',
+             'aria-label': 'Search',
+             'aria-describedby': 'search'}}) }}
+        </div>
+      </div>
+
+      <!-- Range:  Start date -->
+      <div class="col-4 start-date">
+        <div class="input-group">
+          <span class="input-group-text">
+             <span class="far fa-calendar-alt"></span>
+          </span>
+          {# Set default date to 1 year ago #}
+          <aeon-datepicker
+             id="aeon-datepicker"
+             data-target="search_start_date"
+             locale="en-fr"
+             default-date="{{get.search_start_date is defined and get.search_start_date is not empty ? get.search_start_date|date("Y-m-d") : "now"|date_modify("-14 year")|date("Y-m-d")}}"
+             default-time="{{get.search_start_date is defined and get.search_start_date is not empty ? get.search_start_date|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false)}}">
+
+            <input id="date-start"
+                   name="date-start"
+                   type="date"
+                   value="{{get.search_start_date is defined and get.search_start_date is not empty ? get.search_start_date|date("Y-m-d") : "now"|date_modify("-14 year")|date("Y-m-d")}}">
+
+            <input id="time-start"
+                   name="time-start"
+                   type="time"
+                   value="{{get.search_start_date is defined and get.search_start_date is not empty ? get.search_start_date|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false)}}">
+          </aeon-datepicker>
+          {{ form_widget(searchForm.search_start_date,{'attr':{ 'hidden': ''}}) }}
+        </div>
+      </div>
+      <!-- Range:  End date -->
+      <div class="col-4 end-date">
+        <div class="input-group">
+          <span class="input-group-text">
+             <span class="far fa-calendar-alt"></span>
+          </span>
+          <aeon-datepicker
+             id="aeon-datepicker"
+             data-target="search_end_date"
+             locale="en-fr"
+             default-date="{{get.search_end_date is defined and get.search_end_date is not empty ? get.search_end_date|date("Y-m-d") : "now"|date("Y-m-d")}}"
+             default-time="{{get.search_end_date is defined and get.search_end_date is not empty ? get.search_end_date|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false)}}">
+
+            <input id="date-start"
+                   name="date-start"
+                   type="date"
+                   value="{{get.search_end_date is defined and get.search_end_date is not empty ? get.search_end_date|date("Y-m-d") : "now"|date("Y-m-d")}}">
+
+            <input id="time-start"
+                   name="time-start"
+                   type="time"
+                   value="{{get.search_end_date is defined and get.search_end_date is not empty ? get.search_end_date|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false)}}">
+          </aeon-datepicker>
+          {{ form_widget(searchForm.search_end_date,{'attr':{ 'hidden': ''}}) }}
+        </div>
+      </div>
+      <!-- Search button -->
+      <div class="col">
+        <button title="Search" type="submit" class="btn btn-{{ app.user.theme == 'light' ? 'white' : 'gray' }} ml-2 px-2">Search</button>
+      </div>
+    {{ form_end(searchForm, {render_rest: false}) }}
+  </div>
+</div>

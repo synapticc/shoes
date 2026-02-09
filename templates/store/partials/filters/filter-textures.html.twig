@@ -1,0 +1,62 @@
+{# templates/store/partials/filters/filter-textures.html.twig #}
+{% set resetIcon = include('__icons/q-t/_square-reset.html.twig', {filter: 'textures'}, with_context=false) %}
+{% set plusIcon = include('__icons/m-p/_plus-square.html.twig', {filter: 'textures'}, with_context=false) %}
+{% set minusIcon = include('__icons/m-p/_minus-square.html.twig', {filter: 'textures'}, with_context=false) %}
+{% set hasActiveTextures = activeTextures|length > 0 %}
+{% set showToggler = hasActiveTextures ? minusIcon : plusIcon %}
+
+<aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+    <div class="ps-widget__header">
+        <h3 class="d-flex justify-content-between">
+            <span>
+                Textures
+                {% if hasActiveTextures %}{{ resetIcon|raw }}{% endif %}
+            </span>
+            <span
+                class="sidebar-toggler"
+                data-toggler="#sidebar-textures"
+                id="data-toggler"
+                data-toggler-title="textures">
+                {{ showToggler|raw }}
+            </span>
+        </h3>
+        {% if hasActiveTextures %}
+            <p class="pt-10 pb-10">
+                Selected({{ activeTextures|length }}):
+                {% for texture in activeTextures %}
+                    <span class="selected-item">{{ texturePair[texture] }}</span>
+                    {%- if not loop.last %}, {% else %}.{% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="ps-widget__content">
+        <section
+            data-toggle-show="#sidebar-textures"
+            id="sidebar-textures"
+            class="{% if hasActiveTextures %}sidebar-reveal{% else %}sidebar-hide{% endif %}">
+
+            {% for texture in textures %}
+                {% set isChecked = texture.name in activeTextures %}
+                {% set hasCountValue = texture.name in textureCounts|keys %}
+                {% set countValue = hasCountValue ? textureCounts[texture.name] : 0 %}
+
+                <label for="texture-{{ texture.name }}" class="checkbox">
+                    <input
+                        filter=""
+                        type="checkbox"
+                        id="texture-{{ texture.name }}"
+                        name="textures[]"
+                        value="{{ texture.name }}"
+                        {% if isChecked %}checked{% endif %}>
+
+                    <span class="{% if hasCountValue %}text-bold{% endif %}">
+                        {{ texture.fullName }}
+                        {% if hasCountValue %}({{ countValue }}){% endif %}
+                    </span>
+                </label>
+            {% endfor %}
+        </section>
+    </div>
+</aside>

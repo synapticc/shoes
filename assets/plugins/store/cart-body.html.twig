@@ -1,0 +1,287 @@
+{% include 'store/partials/cart/cart-exist.html.twig' %}
+
+<main class="ps-main">
+  <span id="item-alert" hidden></span>
+  <span id="item-undo-alert" hidden></span>
+  <div class="ps-content pt-80 pb-80">
+    <div class="ps-container">
+        <div class="row justify-items-between mb-5">
+          <div class="col-6">
+            <h2>Your Cart</h2>
+          </div>
+          {% if cart %}{% if cart|length == 1 %}
+          <div class="col-6 text-right">
+              <button type="submit" class="btn-transparent"
+                hx-get="/new-cart"
+                hx-trigger="click"
+                hx-target="#cart-table"
+                hx-swap="afterbegin">
+                <span>
+                {% include '/__icons/m-p/_plus-circle.html.twig' with {'color': 'new-cart', 'label': 'Add a new cart', 'width': 30, 'height': 30} only %}
+                New cart</span>
+              </button>
+          </div>
+          {% endif %}{% endif %}
+        </div>
+
+      <div class="ps-cart-listing" id="cart-table" data-turbo="false">
+      {% for key, cart in cart %}
+      {% if cart.items is defined %}
+        <div class="row justify-content-between">
+          <!-- Items table -->
+          <table class="table ps-cart__table" data-items="{{cart.items|length}}"
+                 data-paginate id="table-{{cart.id}}" data-total="total-{{cart.id}}">
+            <thead>
+               <tr>
+                 <th id="items-count">Products &nbsp;&nbsp;({{cart.items|length}} items)</th>
+                 <th class="text-center">Price (Rs)</th>
+                 <th class="text-center">Quantity</th>
+                 <th class="text-center">Total (Rs)</th>
+                 <th></th>
+               </tr>
+            </thead>
+            <tbody id="tbody-{{cart.id}}" data-cart-listing>
+            {% if cart.items|length > 0 %}
+            {% for key, product in cart.items %}
+              <tr id="cart-row-{{product.itemId}}" data-cart-row="{{product.itemId}}">
+                <!-- Cart name -->
+                <td>
+                  <a class="ps-product__preview"
+                     href="{{ path(
+                              'store_details',
+                              { 'brand': product.brand_full|slug,
+                                'name': (product.name|title)|slug,
+                                'id': nzo_encrypt(product.productDataId)
+                              }) }}"
+                     target="_blank">
+                  <img src="{% if product.imageSmall %}{{asset(product.imageSmall) }}{% else %}{{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}"
+                      alt="{{product.name}}  - (cart preview)">{{product.name}} {{product.type_full}} ({{product.category_full}} {{product.brand_full}})</a>
+                  <p>Color: {{product.colors_full}}</p>
+                  <p>Size: {{product.size}}</p>
+                  <p>Available: {{product.qtyInStock}} pcs</p>
+                </td>
+                <!-- Cart selling price -->
+                <td class="text-center"><span id="item-price" data-item-price="{{product.sellingPrice}}">{{product.sellingPrice|format_currency('MUR', {fraction_digit: 0})}}</span></td>
+                <!-- Cart qty  -->
+                <td class="text-center">
+                  <div class="form-group--number">
+                    <!-- Decrease button -->
+                    <button
+                      class="minus {{product.quantity == 1  ? 'disabled-cart-btn'}}"
+                      id="decreaseQty"
+                      type="button"
+                      data-url="/cart-item/{{product.itemId}}"
+                      data-cart-row="cart-row-{{product.itemId}}"
+                      data-target="cart_item_quantity_{{product.itemId}}"
+                      data-table="table-{{cart.id}}">
+                      -
+                    </button>
+
+                    {# <input class="form-control" type="text" value="2"> #}
+                    {# <input class="page-link" name="qty[0]" type="number" value="1" min="1" max="10" id="qty">#}
+
+                    <!-- Quantity input -->
+                    <input type="number"
+                      id="cart_item_quantity_{{product.itemId}}"
+                      name="quantity" class="form-control form-control-sm"
+                      min="1" max="{{product.qtyInStock}}"
+                      data-cart-qty="" data-original-qty="{{product.quantity}}" value="{{product.quantity}}"
+                      data-cart-row="cart-row-{{product.itemId}}"
+                      data-url="/cart-item/{{product.itemId}}"
+                      data-table="table-{{cart.id}}"
+                      {# hx-get="/cart-item/{{product.itemId}}"
+                      hx-trigger="input changed delay:400ms"
+                      hx-target="#item-alert"
+                      hx-swap="innerHTML" #}>
+
+                    <!-- Increase button -->
+                    <button
+                      class="plus {{product.quantity == product.qtyInStock  ? 'disabled-cart-btn'}}"
+                      id="increaseQty"
+                      type="button"
+                      data-url="/cart-item/{{product.itemId}}"
+                      data-cart-row="cart-row-{{product.itemId}}"
+                      data-target="cart_item_quantity_{{product.itemId}}"
+                      data-table="table-{{cart.id}}">
+                      +</button>
+                  </div>
+                </td>
+                <!-- Items sum -->
+                <td class="text-center" id="items-sum" data-item-sum="{{product.quantity *  product.sellingPrice }}">{{(product.quantity *  product.sellingPrice)|format_currency('MUR', {fraction_digit: 2})}}</td>
+                <!-- Remove item button -->
+                <td>
+                  <button
+                      type="button" id="cart_item_remove"
+                      class="ps-remove"
+                      {# hx-get="/remove-item/{{product.itemId}}/{{cart.id}}/{{product.productDataId}}/{{product.quantity}}"
+                      hx-trigger="click"
+                      hx-target="#item-undo-{{cart.id}}"
+                      hx-swap="afterbegin" #}
+                      data-url="/remove-item/{{product.itemId}}/{{cart.id}}/{{product.productDataId}}"
+                      data-undo="item-undo-{{cart.id}}"
+                      data-quantity="cart_item_quantity_{{product.itemId}}"
+                      data-table="table-{{cart.id}}"
+                      ></button>
+                </td>
+              </tr>
+            {% endfor %}
+            <div id="item-undo-{{cart.id}}" data-id="item-undo"></div>
+            {% else %}
+              <tr>
+                <p>Your cart is empty. Go to the <a href="{{ path('store') }}">product list</a>.</p>
+              </tr>
+            {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <div class="ps-cart__actions mb-50">
+          <div class="ps-cart__promotion">
+            <div class="form-group">
+              <div class="ps-form--icon"><i class="fa fa-angle-right"></i>
+                <input class="form-control" type="text" placeholder="Promo Code">
+              </div>
+            </div>
+            <div class="form-group">
+              <button class="ps-btn ps-btn--gray">Continue Shopping</button>
+            </div>
+          </div>
+          <div class="ps-cart__total">
+            <h3>Total Price: <span id="total-{{cart.id}}">Rs {% if cart %}
+                {{ cart.total|format_number({fraction_digit: 2}) }}
+              {% else %}
+                  0
+              {% endif %}
+                </span>
+              </h3>
+
+            {% if cart %}
+                <a
+                    id="checkout-btn"
+                    class="ps-btn"
+                    name="checkout_order_ {{loop.index0}}"
+                    href="{{ path('store_billing', {'id': nzo_encrypt(cart.id)}) }}"
+                    target="_blank">Process to checkout<i class="ps-icon-next"></i></a>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="ps-subscribe">
+    <div class="ps-container">
+      <div class="row">
+            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
+              <h3><i class="fa fa-envelope"></i>Sign up to Newsletter</h3>
+            </div>
+            <div class="col-lg-5 col-md-7 col-sm-12 col-xs-12 ">
+              <form class="ps-subscribe__form" action="do_action" method="post">
+                <input class="form-control" type="text" placeholder="">
+                <button>Sign up now</button>
+              </form>
+            </div>
+            <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12 ">
+              <p>...and receive  <span>$20</span>  coupon for first shopping.</p>
+            </div>
+      </div>
+    </div>
+  </div>
+  <div class="ps-footer bg--cover" data-background="{{asset('build/images/store/background/parallax.jpg')}}">
+    <div class="ps-footer__content">
+      <div class="ps-container">
+        <div class="row">
+              <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+                <aside class="ps-widget--footer ps-widget--info">
+                  <header><a class="ps-logo" href="index.html"><img src="{{asset('build/images/store/logo-white.png')}}" alt=""></a>
+                    <h3 class="ps-widget__title">Address Office 1</h3>
+                  </header>
+                  <footer>
+                    <p><strong>460 West 34th Street, 15th floor, New York</strong></p>
+                    <p>Email: <a href='mailto:support@store.com'>support@store.com</a></p>
+                    <p>Phone: +323 32434 5334</p>
+                    <p>Fax: ++323 32434 5333</p>
+                  </footer>
+                </aside>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+                <aside class="ps-widget--footer ps-widget--info second">
+                  <header>
+                    <h3 class="ps-widget__title">Address Office 2</h3>
+                  </header>
+                  <footer>
+                    <p><strong>PO Box 16122 Collins  Victoria 3000 Australia</strong></p>
+                    <p>Email: <a href='mailto:support@store.com'>support@store.com</a></p>
+                    <p>Phone: +323 32434 5334</p>
+                    <p>Fax: ++323 32434 5333</p>
+                  </footer>
+                </aside>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+                <aside class="ps-widget--footer ps-widget--link">
+                  <header>
+                    <h3 class="ps-widget__title">Find Our store</h3>
+                  </header>
+                  <footer>
+                    <ul class="ps-list--link">
+                      <li><a href="#">Coupon Code</a></li>
+                      <li><a href="#">SignUp For Email</a></li>
+                      <li><a href="#">Site Feedback</a></li>
+                      <li><a href="#">Careers</a></li>
+                    </ul>
+                  </footer>
+                </aside>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+                <aside class="ps-widget--footer ps-widget--link">
+                  <header>
+                    <h3 class="ps-widget__title">Get Help</h3>
+                  </header>
+                  <footer>
+                    <ul class="ps-list--line">
+                      <li><a href="#">Order Status</a></li>
+                      <li><a href="#">Shipping and Delivery</a></li>
+                      <li><a href="#">Returns</a></li>
+                      <li><a href="#">Payment Options</a></li>
+                      <li><a href="#">Contact Us</a></li>
+                    </ul>
+                  </footer>
+                </aside>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+                <aside class="ps-widget--footer ps-widget--link">
+                  <header>
+                    <h3 class="ps-widget__title">Products</h3>
+                  </header>
+                  <footer>
+                    <ul class="ps-list--line">
+                      <li><a href="#">Shoes</a></li>
+                      <li><a href="#">Clothing</a></li>
+                      <li><a href="#">Accessries</a></li>
+                      <li><a href="#">Football Boots</a></li>
+                    </ul>
+                  </footer>
+                </aside>
+              </div>
+        </div>
+      </div>
+    </div>
+    <div class="ps-footer__copyright">
+      <div class="ps-container">
+        <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+                <p>&copy; <a href="#">SKYTHEMES</a>, Inc. All rights Resevered. Design by <a href="#"> Alena Studio</a></p>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+                <ul class="ps-social">
+                  <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                  <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                  <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                  <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                </ul>
+              </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,325 @@
+
+
+<main class="content">
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Users</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        <a href="{{ path('admin_users_index') }}">Active users</a>
+      </li>
+    </ol>
+  </nav>
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Display a complete list of users',
+         'Access specific user report'] %}
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <h1 class="h4 pb-3">Users</h1>
+      <!-- Features -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/5_user/partials/_search-form.html.twig' %}
+  </div>
+  <!-- No. of items per page> -->
+  {% include 'admin/_partials/select-items.html.twig'
+     with { 'items' : users, 'item' : 'user', 'route_index': 'admin_users_index',
+            'route': '' } %}
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-light shadow-sm mb-3">
+        <div class="card-body">
+          <div class="table-responsive" id="users-table">
+            <table class="table table-centered table-nowrap mb-0 rounded">
+              <thead class="thead-light text-center">
+                <tr>
+                  <!-- ID -->
+                  <th class="border-0">
+                    <span>ID</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'id', 'label': 'ID'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Pic</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'email', 'label': 'email'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Username</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'email', 'label': 'username'} %}</span>
+                  </th>
+                  <th class="border-0">Actions</th>
+                  <th class="border-0">
+                    <span>Roles</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'roles', 'label': 'roles'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Active</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'userDeactivate.deactivate', 'label': 'active users'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Title</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'title', 'label': 'title'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>FirstName</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'firstName', 'label': 'first name'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>LastName</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'lastName', 'label': 'last name'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>MiddleName</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'middleName', 'label': 'middle name'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Verified</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'verified', 'label': 'verified'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Mobile</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'userPhone.mobile', 'label': 'mobile'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Landline</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'userPhone.landline', 'label': 'landline'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Fax</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'userPhone.fax', 'label': 'fax'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Street</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'userAddress.street', 'label': 'street'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Street 2</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'userAddress.street2', 'label': 'street2'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>City</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'userAddress.city', 'label': 'city'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>ZIP</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'userAddress.zip', 'label': 'zip'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Country</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'userAddress.country', 'label': 'country'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Email 1 (alternative)</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'userEmail.email', 'label': 'email 1 (alternative)'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Email 2 (alternative)</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'userEmail.email2', 'label': 'email 2 (alternative)'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Created</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'created', 'label': 'created'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Updated</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : users, 'sort_param': 'updated', 'label': 'updated'} %}</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for user in users %}
+              <tr>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.id}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                  {% endif %}>{{ user.id }}</td>
+                  <td class="text-center">
+                    <img src="{% if user.userImage %}{% if user.userImage.image %}{{asset(user.userImage.image)}}{% else %}{{asset('build/images/admin/team/profile-picture-3.jpg')}}{% endif %}{% else %}{{asset('build/images/admin/team/profile-picture-3.jpg')}}{% endif %}" class="table-avatar border-radius-5 m-auto" alt="..." >
+                  </td>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.email}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                  {% endif %}>{{ user.email }}
+
+                  </td>
+                  <td class="table-actions border-0 text-center">
+                    <a href="{{ path('admin_users_show', {'id': user.id}) }}">
+                      <button type="button" class="btn btn-light">show</button>
+                    </a>
+                    {# <a href="{{ path('admin_users_edit', {'id': user.id}) }}">
+                        <button type="button" class="btn btn-warning">edit</button>
+                    </a> #}
+
+                    <!-- Button Modal -->
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-form-{{loop.index}}">edit</button>
+                    {% include 'admin/5_user/partials/_modal.html.twig' with {'index': loop.index, 'user': user} %}
+                  </td>
+                  <td class="border-0" id="cell-roles-{{user.id}}">
+                  {% for role in user.roles %}
+                    {% if role is same as('ROLE_USER') %}USER{% elseif role is same as('ROLE_ADMIN') %}ADMIN{% elseif role is same as('ROLE_MODERATOR') %}MODERATOR{% endif %}{% if loop.last %}{% else %}, {% endif %}{% endfor %}</td>
+                  <td class="border-0" id="cell-status-{{user.id}}">
+                  {% if user.userDeactivate and user.userDeactivate.deactivate %}
+                    {% include '__icons/a-d/_cancel-icon.html.twig' with {'label': 'Deactivated', 'dataset': '', 'width': 28, 'height': 28} only %}
+                  {% else %}
+                    {% include '__icons/a-d/_check-icon.html.twig' %}
+                  {% endif %}
+                  </td>
+                  <td class="border-0">{{ user.title }}</td>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.firstName}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                  {% endif %}>{{ user.firstName }}</td>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.lastName}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                  {% endif %}>{{ user.lastName }}</td>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.middleName}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                  {% endif %}>{{ user.middleName }}</td>
+                  <td class="border-0">{{ user.isVerified ? 'Yes' : 'No' }}</td>
+                  <td>
+                    {% if user.userPhone.mobile is defined and user.userPhone.mobile %}
+                    <div class="phone-display"
+                         data-copy="{{user.userPhone.mobile|phone_number_format('NATIONAL')}}"
+                         data-copy-status="active"
+                         title="Click to copy phone number.">
+                      <span class="phone-country">{% if user.userPhone.mobile.countryCode in countryCodes|keys %}{{countryCodes[user.userPhone.mobile.countryCode]['code']}}{% endif %}</span>
+                      <span class="phone-country-code">+{{ user.userPhone.mobile.countryCode }}
+                      </span>
+                      <span class="phone-number"
+                      {% if search %}
+                      data-search-terms="{{search}}"
+                      data-text="{{user.userPhone.mobile|phone_number_format('NATIONAL')}}"
+                      data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                      id="text-highlight"
+                      {% endif %}
+                      >{{user.userPhone.mobile|phone_number_format('NATIONAL')}}</span>
+                    </div>
+                    {% else %}
+                        ----
+                    {% endif %}
+
+                  </td>
+                  <td>
+                    {% if user.userPhone.mobile is defined and user.userPhone.landline %}
+                    <div class="phone-display"
+                         data-copy="{{ user.userPhone.landline|phone_number_format('NATIONAL')}}"
+                         data-copy-status="active"
+                         title="Click to copy phone number.">
+                      <span class="phone-country">{% if user.userPhone.landline.countryCode in countryCodes|keys %}{{countryCodes[user.userPhone.landline.countryCode]['code']}}{% endif %}</span>
+                      <span class="phone-country-code">+{{ user.userPhone.landline.countryCode }}
+                      </span>
+                      <span class="phone-number"
+                      {% if search %}
+                      data-search-terms="{{search}}"
+                      data-text="{{user.userPhone.landline|phone_number_format('NATIONAL')}}"
+                      data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                      id="text-highlight"
+                      {% endif %}>{{user.userPhone.landline|phone_number_format('NATIONAL')}}</span>
+                    </div>
+                    {% else %}
+                        ----
+                    {% endif %}
+                  </td>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.userPhone.fax}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                  {% endif %}>{% if user.userPhone %}{{ user.userPhone.fax }}{% endif %}</td>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.userAddress.street}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                  {% endif %}>{% if user.userAddress %}{{ user.userAddress.street }}{% endif %}</td>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.userAddress.street2}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                  {% endif %}>{% if user.userAddress %}{{ user.userAddress.street2 }}{% endif %}</td>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.userAddress.city}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                  {% endif %}>{% if user.userAddress %}{{ user.userAddress.city }}{% endif %}</td>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.userAddress.zip}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                  {% endif %}>{% if user.userAddress %}{{ user.userAddress.zip }}{% endif %}</td>
+                <td class="border-0">{% if user.userAddress %}{{ user.userAddress.country ? user.userAddress.country|country }}{% endif %}</td>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.userEmail ? user.userEmail.email ?? user.userEmail.email}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                {% endif %}>{{ user.userEmail ? user.userEmail.email ?? user.userEmail.email }}</td>
+                  <td class="border-0" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{user.userEmail ? user.userEmail.email2 ?? user.userEmail.email2}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                {% endif %}>{{ user.userEmail ? user.userEmail.email2 ?? user.userEmail.email2 }}</td>
+                  <td class="border-0">{{ user.created ? user.created|ago : '' }}</td>
+                  <td class="border-0">{{ user.updated ? user.updated|ago : '' }}</td>
+              </tr>
+              {% else %}
+                <tr><td colspan="10" id="empty-cell" class="{{app.user.theme == 'dark' ? 'text-gray'}}">No user found</td></tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-end align-items-top">
+      <div class="">{{ knp_pagination_render(users) }}</div>
+      {% if users.getTotalItemCount > users.getItemNumberPerPage %}
+      {# Pass query parameters alongside with page number entered #}
+      <div class="go-to-page">
+        <form method="GET">
+          {% for key, query in get %}
+            {% if key != 'page' %}
+              {% if query is iterable %}
+                {% for ky, q in query %}
+                  <input name="{{key}}[{{ky}}]" value="{{q}}" hidden=hidden>
+                {% endfor %}
+              {% else %}
+                <input name="{{key}}" value="{{query}}" hidden=hidden>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          <input title="Enter page number (max: page {{maxPage}})" type="number" name="page" class="page-input" min=1 max="{{maxPage}}">
+          <button type="submit" class="">Go</button>
+        </form>
+      </div>
+      {% endif %}
+  </div>
+  {% include 'admin/_partials/footer.html.twig' %}
+</main>

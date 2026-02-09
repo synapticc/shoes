@@ -1,0 +1,71 @@
+
+<div class="profile-container rounded bg-white mt-5 mb-5">
+  <div class="row">
+  <!-- Sidebar menu -->
+  <div class="col-md-3">
+    {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+  </div>
+  <!-- Middle section form -->
+  <div class="col-md-8 ml-30 border-right">
+    <div class="d-flex justify-content-between align-items-center mb-30 mt-30">
+       <h3 class="text-left"><a href="{{ path('user_profile_purchases') }}">Purchases</a> > Invoice Ref.{{ purchase.id }}</h3>
+    </div>
+    <div class="ps-cart-listing">
+      <table class="table ps-cart__table" id="cart-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th class="text-center">Product</th>
+            <th class="text-center">Thumbnail</th>
+            <th class="text-center">Color</th>
+            <th class="text-center">Fabric</th>
+            <th class="text-center">Unit price</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-center">Sub total (Rs)</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% if purchase.items is defined %}
+        {% for item in purchase.items %}
+          <tr>
+            <td>{{loop.index}}</td>
+            <td>
+              <a target="_blank"
+                   href="{{
+                    path('store_details', {
+                             'brand': item.brand_full|slug,
+                             'name': item.name|slug,
+                             'id': nzo_encrypt(item.productDataId)
+                             }) }}">{{item.category_full ~ ' ' ~ item.brand_full ~ ' ' ~ item.name ~ ' ' ~ item.type_full}}</a>
+            </td>
+            <td class="">
+              <div class="purchase-list-img">
+                <img class="img-fluid"
+                    src="{{asset(item.imageSmall) }}"
+                    alt="image: {{item.name}}">
+              </div>
+            </td>
+            <td class="text-center">{{item.colors_full}}</td>
+            <td class="text-center">{{item.fabrics_full}}</td>
+            <td class="text-center">{{item.sellingPrice|format_number({fraction_digit: 2})}}</td>
+            <td class="text-center">{{item.quantity}}</td>
+            <td class="text-center">{{(item.sellingPrice * item.quantity)|format_number({fraction_digit: 2})}}</td>
+          </tr>
+        {% endfor %}
+        {% endif %}
+          <tr>
+            <th colspan="7" class="text-right text-bold"><h4>Total (Rs)</h4></th>
+            <th class="text-center"><h4>{{purchase.invoiceTotal|format_number({fraction_digit: 2})}}</h4></th>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Pagination -->
+      <div class="d-flex justify-content-center">
+         <div class="col-4">
+           {{ knp_pagination_render(purchase) }}
+         </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>

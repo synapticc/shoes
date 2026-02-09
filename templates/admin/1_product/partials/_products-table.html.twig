@@ -1,0 +1,323 @@
+<main class="content">
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Products</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        <a href="{{ path('admin_product_index') }}">All Products</a>
+      </li>
+    </ol>
+  </nav>
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Display a complete list of products',
+         'Edit specific product',
+         'Access its detailed report',
+         'Create new detail of the product'] %}
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <!-- Main heading -->
+      <h1 class="h4 pb-3 {{ app.user.theme == 'dark' ? 'text-white' }}">Products</h1>
+      <!-- Features -->
+      <ul>
+        {% for feature in features %}
+        <!-- Feature {{loop.index}} -->
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/1_product/partials/form/_search-form.html.twig' %}
+  </div>
+  <!-- No. of items per page> -->
+  {% include 'admin/_partials/select-items.html.twig'
+     with { 'items' : products, 'item' : 'product', 'route_index': 'admin_product_index', 'route': 'admin_product_new' } %}
+
+  <!-- Table row starts -->
+  <div class="row mt-1">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card {{ app.user.theme == 'dark' ? 'bg-gray-300' }} border-light shadow-sm components-section">
+        <div class="card-body">
+          <div class="table-responsive" id="products-table">
+            <!-- Table starts -->
+            <table class="table table-centered table-nowrap mb-0 rounded">
+              <!-- Table header starts -->
+              <thead class="thead {{ app.user.theme == 'light' ? 'thead-light' : 'bg-gray-500' }}">
+                <tr class="text-center table-header">
+                  <!-- ID -->
+                  <th class="table-id">
+                    <span>ID</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pr.id', 'label': 'ID'} %}</span>
+                  </th>
+                  <!-- Name -->
+                  <th class="table-cell table-name">
+                    <span>Name</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pr.name', 'label': 'name'} %}</span>
+                  </th>
+                  <!-- Thumbnail -->
+                  <th class="table-thumbnail">
+                    <span>Thumbnail</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pc.color', 'label': 'color'} %}</span>
+                  </th>
+                  <!-- Brand -->
+                  <th class="table-cell table-brand">
+                    <span>Brand</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pr.brand', 'label': 'brand'} %}
+                    </span>
+                  </th>
+                  <!-- Actions -->
+                  <th class="table-actions"><span>Actions</span></th>
+                  <!-- Description -->
+                  <th class="table-description">
+                    <span>Description</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'LENGTH(pr.description)', 'label': 'description'} %}
+                  </th>
+                  <!-- Features -->
+                  <th class="table-features px-3">
+                    <span>Features</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'LENGTH(pr.features)', 'label': 'features'} %}
+                  </th>
+                  <!-- Category -->
+                  <th class="table-cell table-category">
+                    <span>Category</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pr.category', 'label': 'category'}  %}</span>
+                  </th>
+                  <!-- Occasion -->
+                  <th class="table-cell table-occasion">
+                    <span>Occasion{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pr.occasion', 'label': 'occasion'}  %}</span>
+                  </th>
+                  <!-- Type -->
+                  <th class="table-type">
+                    <span>Type</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pr.type', 'label': 'type'}  %}</span>
+                  </th>
+                  <!-- Pack -->
+                  <th class="table-pack">
+                    <span>Pack</span>
+                    {% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pr.qtyPack', 'label': 'quantity per pack'}  %}
+                  </th>
+                  <!-- Video -->
+                  <th class="table-video"><span>Video</span></th>
+                  <!-- Display -->
+                  <th class="table-display">
+                    <span>Display</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pr.displayed', 'label': 'display'} %}
+                  </th>
+                  <!-- Date of display -->
+                  <th class="table-display">
+                    <span>Date of display</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pr.displayDate', 'label': 'date of display'}  %}</span>
+                  </th>
+                  <!-- Created -->
+                  <th class="table-date table-created">
+                    <span>Created</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pr.created', 'label': 'created'}  %}</span>
+                  </th>
+                  <!-- Updated -->
+                  <th class="table-date table-updated">
+                    <span>Updated</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : products, 'sort_param': 'pr.updated', 'label': 'updated'}  %}</span>
+                  </th>
+                </tr>
+              </thead>
+              <!-- Table header ends -->
+              <!-- Table body starts -->
+              <tbody class="pswp-gallery pswp-gallery--single-column" id="admin-gallery">
+                {% for product in products %}
+                <!-- Table row starts -->
+                <tr id="{{product.id}}">
+                  <!-- ID -->
+                  <td class="text-center">{{product.id}}</td>
+                  <!-- Name -->
+                  <td class="p-5" {% if search %}
+                  data-search-terms="{{search}}"
+                  data-text="{{product.name}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight"
+                  {% endif %}>{{ product.name }}</td>
+                  <!-- Images -->
+                  <td class="thumbnail-cell">
+                    <div class="d-flex justify-content-center">
+                        {% if product.colors is defined %}
+                        {% for color in product.colors %}
+                        <div class="card text-center mx-1 my-3">
+                          <!-- Large image set -->
+                          <a class="gallery-item" href="{% if color.image %}{{asset(color.image) }}{% endif %}"
+                            data-pswp-src="{% if color.image %}{{asset(color.image) }}{% endif %}"
+                            data-pswp-width="{{color.imageWidth is defined ? color.imageWidth}}"
+                            data-pswp-height="{{color.imageHeight is defined ? color.imageHeight}}"
+                            class="img-fluid"
+                            target="_blank">
+                            <img title="Click to see other sizes."
+                                class="img-fluid radius-8"
+                                src="{{asset(color.imageMedium ? color.imageMedium : 'build/images/store/shoe/sidebar/1.jpg') }}"
+                                alt="Image: {{ product.brand_full ~ ' ' ~ product.name ~ ' (' ~ color.colors_full ~ ' ' ~ color.fabrics_full ~ ') '}}">
+                          </a>
+                          <!-- Medium image set -->
+                          <a class="gallery-item"
+                             href="{% if color.imageMedium %}{{asset(color.imageMedium) }}{% endif %}"
+                             data-pswp-src="{% if color.imageMedium %}{{asset(color.imageMedium) }}{% endif %}"
+                             data-pswp-width="{{color.imageMediumWidth is defined ? color.imageMediumWidth}}"
+                             data-pswp-height="{{color.imageMediumHeight is defined ? color.imageMediumHeight}}"
+                             class="img-fluid"
+                             target="_blank">
+                          </a>
+                          <!-- Small  image set -->
+                          <a class="gallery-item"
+                             href="{% if color.imageSmall %}{{asset(color.imageSmall) }}{% endif %}"
+                             data-pswp-src="{% if color.imageSmall %}{{asset(color.imageSmall) }}{% endif %}"
+                             data-pswp-width="{{color.imageSmallWidth is defined ? color.imageSmallWidth}}"
+                             data-pswp-height="{{color.imageSmallHeight is defined ? color.imageSmallHeight}}"
+                             class="img-fluid"
+                             target="_blank">
+                          </a>
+                          <div class="card-body">
+                            <p class="card-title text-center"
+                              data-copy="{{ color.colorId }}"
+                              data-copy-status="active"
+                              title="Click to copy color code: {{ color.colorId }}"
+                              {% if search %}
+                              data-search-terms="{{search}}"
+                              data-text="{{color.colors_full ? color.colors_full}}"
+                              data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                              id="text-highlight"
+                            {% endif %}>{{color.colors_full ? color.colors_full}}
+                            </p>
+                            <!-- Link -->
+                            <a href="{{ path('admin_product_data_color',{'pc': color.colorId}) }}" target="_blank">
+                              <button type="button" class="btn btn-light">list</button></a>
+                          </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                  </td>
+                  <!-- Brand -->
+                  <td title="Search all {{product.brand_full}}" class="text-center">
+                    <!-- Link -->
+                    <a href="{{ path('admin_product_index', {'brand': product.brand}) }}">
+                      <div class="table-brand-img my-3">
+                        <!-- Brand icon -->
+                        <img class="brightness-hover"
+                            src="{{asset('build/images/store/color-patches/' ~ product.brand ~ '.webp') }}"
+                            alt="image: {{product.brand_full}}">
+                      </div>
+                    </a>
+                  </td>
+                  <!-- Actions -->
+                  <td data-turbo=false class="table-actions text-center">
+                    <!-- Show button -->
+                    <a href="{{ path('admin_product_show', {'id': product.id}) }}">
+                      <button type="button" class="btn btn-lighten">show</button>
+                    </a>
+                    <!-- Edit button -->
+                    <a href="{{ path('admin_product_edit', {'id': product.id}) }}">
+                        <button type="button" class="btn btn-warning">edit</button>
+                    </a>
+                    <!-- Show button -->
+                    <a href="{{ path('admin_product_data_new', {'product': product.id, }) }}">
+                      <button type="button" class="btn btn-info">new</button>
+                    </a>
+                    <!-- List button -->
+                    <a href="{{ path('admin_product_data_index', {'product': product.id, 'product_name': product.category_full ~ ' ' ~ product.name ~ ' ' ~ product.type_full }) }}">
+                      <button title="List all [{{product.brand_full}} {{product.name}} {{product.type_full}}] items" type="button" class="btn btn-gray">list</button>
+                    </a>
+                   </td>
+                  <!-- Description -->
+                  <td class="table-description p-2 pr-3 mr-3 text-justify" {% if search %}
+                  data-search-terms="{{search}}" data-text="{{product.description}}"
+                  data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                  id="text-highlight" {% endif %}>{{ product.description }}</td>
+                  <!-- Features -->
+                  <td class="table-features">
+                    <ul>
+                    {% if product.features %}
+                      {% for feature in product.features %}
+                        <!-- Feature {{loop.index}} -->
+                        <li {% if search %}
+                      data-search-terms="{{search}}" data-text="{{feature}}" data-exact="{{(app.request.get('_exact')) ? true : false}}" id="text-highlight" {% endif %}>{{feature|capitalize}}.</li>
+                      {% endfor %}
+                    {% else %}
+                      <li>No feature added</li>
+                    {% endif %}
+                    </ul>
+                  </td>
+                  <!-- Category -->
+                  <td title="Search all {{product.category_full}}" class="table-cell text-center">
+                    <!-- Link -->
+                    <a class="border-hover" href="{{ path('admin_product_index', {'category': product.category, 'category_full': product.category_full}) }}">{{ product.category_full }}</a></td>
+                  <!-- Occasion -->
+                  <td title="Search all occasions" class="table-cell text-center">
+                  {% for occasion, occasion_full in product.occasion_full %}
+                    <!-- Link -->
+                    <a  class="border-hover" href="{{ path('admin_product_index', {'occasion': occasion, 'occasion_full': occasion_full}) }}">{{ occasion_full }}</a>
+                  {% if loop.last %}{% else %}| {% endif %}
+                  {% endfor %}
+                  </td>
+                  <!-- Type -->
+                  <td title="Search all {{product.type_full}}" class="table-type text-center"><!-- Link --><a class="border-hover" href="{{ path('admin_product_index', {'type': product.type, 'type_full': product.type_full}) }}">{{ product.type_full }}</a></td>
+                  <!-- Pack -->
+                  <td class="table-pack text-center">{{ (product.qtyPack) ? product.qtyPack : '---' }}</td>
+                  <!-- Video -->
+                  <td class="table-video text-center">
+                    {% if product.videoUrl %}
+                      {% set URL = product.videoUrl|split('v=') %}
+                      <!-- Embedded video iframe -->
+                      <iframe
+                        src="https://www.youtube.com/embed/{% if URL %}{{URL[1]}}{% endif %}"
+                        width="250"
+                        height="150"
+                        frameborder="0"
+                        allowfullscreen="">
+                      </iframe>
+                    {% else %} ---- {% endif %}
+                  </td>
+                  <!-- Display -->
+                  <td class="text-center">
+                    <form id="form-display" method="post"
+                          action="{{ path('admin_product_display', {'id': product.id}) }}">
+                          {% for key, query in get %}
+                            {% if query|type is same as 'array' %}
+                              {% for value in query %}
+                                <input name="{{key}}[]" value="{{value}}" hidden=hidden>
+                              {% endfor %}
+                            {% elseif query|type is same as 'string'  %}
+                              <input name="{{key}}" value="{{query}}" hidden=hidden>
+                            {% endif %}
+                          {% endfor %}
+                        <input
+                          type="checkbox"
+                          class="p-3 form-check-input"
+                          id="product_displayed" name="product[displayed]"
+                          {{ product.displayed ? 'checked' }}>
+                    </form>
+                  </td>
+                  <!-- Date of display -->
+                  <td class="table-display text-center"><span class="text-primary">{{ product.displayDate ? product.displayDate|ago : '' }}</span></td>
+                  <!-- Created -->
+                  <td class="table-date"><span class="text-secondary">{{ product.created|format_datetime('full', 'short', locale='en') }}</span></td>
+                  <!-- Updated -->
+                  <td class="table-date text-center"><span class="text-secondary">{{ product.updated ? product.updated|ago : 'not yet updated' }}</span></td>
+                </tr>
+                <!-- Table row ends -->
+                {% else %}
+                  <!-- Table row -->
+                  <tr><td colspan="16" id="empty-cell" class="{{app.user.theme == 'dark' ? 'text-gray'}}">No product found</td></tr>
+                {% endfor %}
+              </tbody>
+              <!-- Table body ends -->
+            </table>
+            <!-- Table ends -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Table row ends -->
+  <!-- Pagination -->
+  {% include 'admin/_partials/pagination.html.twig' with { 'items' : products } %}
+  {% include 'admin/_partials/footer.html.twig' %}
+</main>

@@ -1,0 +1,14 @@
+{# templates/store/partials/products/product-results.html.twig #}
+{% set totalItems = productData.getTotalItemCount|default(0) %}
+{% set itemLabel = totalItems == 1 ? 'product' : 'products' %}
+
+<div class="ps-product-results">
+    <p>
+        Result:
+        {% if totalItems > 0 %}
+            {{ totalItems }} {{ itemLabel }}
+        {% else %}
+            No products found.
+        {% endif %}
+    </p>
+</div>

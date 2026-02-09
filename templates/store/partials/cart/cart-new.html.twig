@@ -1,0 +1,59 @@
+<section id="cart-table-{{cart_id}}">
+  <div class="d-flex justify-content-end">
+    <p class="active-cart">Active Cart: </p>
+    <div class="checkbox-container yellow">
+      <input type="checkbox" checked id="toggle-cart-{{cart_id}}" data-cart-status data-cart={{cart_id}}>
+      <label for="toggle-cart-{{cart_id}}"></label>
+    </div>
+    <button title="Clear cart" type="button" data-cart={{cart_id}}
+        class="clear-cart-btn" data-cart-items="tbody-{{cart_id}}" id="clear-cart">Clear</button>
+    <button title="Delete cart" type="button" data-cart={{cart_id}}
+        class="delete-cart-btn" data-cart-table="cart-table-{{cart_id}}" id="delete-cart">Delete</button>
+  </div>
+  <div class="row justify-content-between">
+    <!-- Items table -->
+    <table class="table ps-cart__table"
+      data-items="0"
+      data-paginate id="table-{{cart_id}}"
+      data-total="total-{{cart_id}}">
+      <thead>
+         <tr>
+           <th id="items-count-{{cart_id}}">Products (0 items)</th>
+           <th class="text-center">Price (Rs)</th>
+           <th class="text-center">Quantity</th>
+           <th class="text-center">Total</th>
+           <th></th>
+         </tr>
+      </thead>
+      <tbody id="tbody-{{cart_id}}" data-cart-listing data-active-cart=active data-items-count="items-count-{{cart_id}}">
+
+      <div id="item-undo-{{cart_id}}" data-id="item-undo" class="row justify-content-start align-items-center align-self-start"></div>
+        <tr>
+          <td colSpan="5">
+            <p>Your cart is empty. Go to the <a href="{{ path('store') }}">product list</a>.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ps-cart__actions mb-50 d-flex justify-items-end">
+    <div class="ps-cart__total cart-body-total">
+      <h3>Total Price: <span id="total-{{cart_id}}">Rs 0.00</span>
+        </h3>
+      {% if not app.user.isVerified  %}
+        <h4 class="bg-warning email-check">Confirm your email before checking out.</h4>
+      <div class="row justify-content-end">
+        <div class="col-6">
+          <a id="checkout-btn"
+              class="mt-4 {{app.user.isVerified ? 'ps-btn' : 'ps-btn-disabled'}}"
+              name="checkout_order_{{loop.index0}}"
+              {% if app.user.isVerified  %}
+                  href="{{ path('store_billing', {'paidOrder': nzo_encrypt(cart_id)}) }}"
+              {% endif %}
+              target="_blank">Checkout<i class="ps-icon-next"></i></a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>

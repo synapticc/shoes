@@ -1,0 +1,220 @@
+
+
+
+/* Profile Styling */
+.profile-sidebar-wrapper
+	& > h3
+		text-align: center
+		color: rgb(223, 223, 223)
+		background-color: #5d5d5d
+		padding: 13px 10px 11px 10px
+		border-radius: 5px 5px 0px 0px
+
+.profile-sidebar
+	color: #3c3c3c
+	background-color: #f1f1f1
+	height: 100%
+	z-index: 1
+	overflow-x: hidden
+
+	& > a.menu-item,
+	& > form.menu-item
+		width: 100%
+		display: block
+		padding: 16px 40px 20px
+		text-align: left
+		white-space: normal
+		float: none
+		outline: 0
+		border-bottom: 1px solid #d5cfcf
+		cursor: pointer
+		transition: all 0.2s ease
+
+		&:hover,
+		&.active
+			color: #ffffff
+			background-color: #adadad
+			border-bottom: 1px solid #bbb9b9
+			& svg
+				fill: #ffffff
+
+		& > span
+			padding-right: 5px
+
+		&.app_delete_account
+			border-bottom: none
+			border-left: none
+			text-align: center
+			&:hover
+				color: #000
+				background-color: rgba(224, 224, 224, 0.38)
+
+.avatar-email
+	font-size: 12px
+	color: #3d3d3d
+
+
+/* SVG Icons */
+svg.fill-color
+	fill: #858585
+
+svg.fill-color-filter
+	fill: #858585
+	cursor: pointer
+
+#icon-settings,
+#icon-heart,
+#icon-key
+	width: 24px
+	height: 24px
+
+
+/* User form */
+.form-style,
+.form-focus
+	padding: 13px 15px 13px 15px
+	width: 100%
+	font-weight: 500
+	border-radius: 4px
+	font-size: 14px
+	line-height: 22px
+	letter-spacing: 0.5px
+	color: #9d9d9d
+	background-color: #eaeaea
+	-webkit-transition: all 200ms linear
+	transition: all 200ms linear
+	box-shadow: 0 4px 8px 0 rgba(21,21,21,.05)
+
+	&::placeholder
+		color: rgba(112, 109, 109, 0.5)
+
+.form-style
+	outline: none
+	border: none
+	&:focus,
+	&:active
+		border: none
+		outline: none
+		box-shadow: 0 4px 8px 0 rgba(21,21,21,.08)
+
+.form-focus
+	border: 2px #ffc107 solid
+	&:focus,
+	&:active
+		border: #ffc107 solid 2px
+		box-shadow: 0 4px 8px 0 rgba(21,21,21,.08)
+
+
+.avatar-upload
+	position: relative
+	max-width: 205px
+	margin: 50px auto
+	.avatar-edit
+		position: absolute
+		right: 12px
+		z-index: 1
+		top: 10px
+		input
+			display: none
+			& + label
+				display: inline-block
+				width: 45px
+				height: 45px
+				margin-bottom: 0
+				border-radius: 100%
+				background: #ffffff
+				border: 1px solid transparent
+				box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12)
+				cursor: pointer
+				font-weight: normal
+				transition: all 0.2s ease-in-out
+				&:hover
+					background: #f1f1f1
+					border-color: #d6d6d6
+				&:after
+					content: "\f040"
+					font-family: "FontAwesome"
+					color: #757575
+					position: absolute
+					top: 10px
+					left: 0
+					right: 0
+					text-align: center
+					margin: auto
+					font-size: 1.2em
+	.avatar-preview
+		width: 192px
+		height: 192px
+		position: relative
+		border-radius: 100%
+		border: 6px solid #f8f8f8
+		box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1)
+		& > div
+			width: 100%
+			height: 100%
+			border-radius: 100%
+			background-size: cover
+			background-repeat: no-repeat
+			background-position: center
+
+
+.profile-btn-save
+	background-color: #017cc2
+	position: relative
+	display: inline-block
+	padding: 15px 30px
+	font-weight: 300
+	font-size: 18px
+	text-transform: uppercase
+	letter-spacing: .1em
+	color: #fff
+	line-height: 25px
+	border: none
+	border-radius: 8px
+	&:hover
+		background-color: #066fab
+		&:before
+			background-color: rgba(37, 37, 37, 0.16)
+
+
+.profile-billing
+	font-size: 1.1em
+	padding: 21px
+	margin-bottom: 60px
+
+	& > span
+		padding: 4px 6px
+		font-weight: 700
+		border-radius: 3px
+		border: solid 1.5px #5b5656
+
+
+
+.review-upload
+	margin-top: 10px
+	img
+		width: 100%
+	button
+		position: relative
+		top: 4%
+		left: 94%
+		background-color: #fff
+		padding: 0px
+		border-radius: 5px
+		border: none
+
+.drop-active
+	border: 0.2em dashed rgba(5,144,199,.84)
+
+
+#new-reviews-table
+	table
+		th.product-cell,
+		td.product-cell
+			width: 50%
+		th.thumbnail-cell,
+		td.thumbnail-cell
+			width: 40%
+	table,
+	div.paginate-row
+		width: 875px

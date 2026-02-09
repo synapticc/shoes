@@ -1,0 +1,511 @@
+# config/routes.yaml
+
+#################
+##### Store #####
+#################
+
+
+review_helpful:
+   path: /helpful/{review}/{helpful?}
+   controller: App\Controller\Store\StoreReviewController::helpful
+   methods: GET|POST
+
+review_unhelpful:
+   path: /unhelpful/{review}/{helpful?}
+   controller: App\Controller\Store\StoreReviewController::unhelpful
+   methods: GET|POST
+
+admin_product_data_new:
+   path: /new-detail/{product}/{supplier?}
+   controller: App\Controller\Admin\AdminProductDataController::new
+   methods: GET|POST
+
+remove_cart_item:
+   path: /remove-item/{item}/{qty}
+   controller: App\Controller\Cart\CartController::remove
+   methods: GET|POST
+   requirements:
+        item: '\d+'
+        qty: '\d+'
+
+retrieve_cart_item:
+   path: /retrieve-item/{cart}/{product}/{qty}
+   controller: App\Controller\Cart\CartController::retrieve
+   methods: GET|POST
+   requirements:
+        item: '\d+'
+        qty: '\d+'
+
+# Store listing
+store:
+   path: /
+   controller: App\Controller\Store\StoreController::index
+   methods: GET
+
+store_details:
+   path: /{brand}/{name}/{id}
+   controller: App\Controller\Store\StoreDetailController::show
+   methods: GET|POST
+   requirements:
+      # brand: '^(?!helpful$).+'
+      brand: '^(?!helpful$)(?!unhelpful$)(?!new-detail$).+'
+      # (?!helpful$): If {brand} is exactly 'helpful', it skips.
+      # (?!unhelpful$): If {brand} is exactly 'unhelpful', it skips.
+
+store_reviews:
+   path: /reviews
+   controller: App\Controller\Store\StoreReviewController::index
+   methods: GET
+
+
+
+##### User Profile #####
+# Settings
+user_profile:
+   path: /profile
+   controller: App\Controller\User\Profile\UserProfileController::edit
+   methods: GET|POST
+
+user_profile_purchases:
+   path: /profile/purchases
+   controller: App\Controller\User\Profile\PurchaseController::purchases
+
+user_profile_purchase_list:
+   path: /purchases/{order}
+   controller: App\Controller\User\Profile\PurchaseController::purchaseList
+
+user_profile_invoices:
+   path: /profile/invoices
+   controller: App\Controller\Cart\InvoiceController::invoicePdfView
+
+# Profile Review
+review_index:
+   path: /profile/reviews
+   controller: App\Controller\User\Review\UserReviewController::index
+
+review_new_list:
+   path: /profile/new-review
+   controller: App\Controller\User\Review\UserReviewController::list
+
+review_new:
+   path: /new-review/{product}
+   controller: App\Controller\User\Review\UserReviewController::new
+   methods: GET|POST
+
+review_edit:
+   path: /edit-review/{review}
+   controller: App\Controller\User\Review\UserReviewController::edit
+   methods: GET|POST
+
+review_delete:
+   path: /delete-review/{review}
+   controller: App\Controller\User\Review\UserReviewController::delete
+   methods: GET|POST
+
+# Profile Reset password
+reset_password_request:
+   path: /reset-password
+   controller: App\Controller\User\Reset\ResetPasswordController::request
+
+reset_password_check_email:
+   path: /reset-password/check-email
+   controller: App\Controller\User\Reset\ResetPasswordController::checkEmail
+
+reset_password:
+   path: /reset-pass/{token?}
+   controller: App\Controller\User\Reset\ResetPasswordController::reset
+
+
+# Login Forget password
+forgot_reset_password_request:
+   path: /forgot-password
+   controller: App\Controller\User\Reset\ForgetPasswordController::request
+
+forgot_password_check_email:
+   path: /forgot-password/check-email
+   controller: App\Controller\User\Reset\ForgetPasswordController::checkEmail
+
+forgot_reset_password:
+   path: /forgot-pass/{token?}
+   controller: App\Controller\User\Reset\ForgetPasswordController::reset
+
+
+# Profile Reset email
+app_change_email_request:
+   path: /reset-email/confirm
+   controller: App\Controller\User\Reset\ResetEmailController::request
+
+app_change_email:
+   path: /reset-email/{token}
+   controller: App\Controller\User\Reset\ResetEmailController::reset
+
+app_verify_new_changed_email:
+   path: /verify/reset-email
+   controller: App\Controller\User\Reset\ResetEmailController::verifyNewEmail
+
+app_verify_new_email:
+   path: /verify/new-email
+   controller: App\Controller\User\Reset\ResetEmailController::verifyNewEmail
+
+
+# Profile Delete account
+app_delete_account:
+   path: /delete-account
+   controller: App\Controller\User\Delete\DeleteAccountController::delete
+
+app_undo_delete_account:
+  path: /undo-delete
+  controller: App\Controller\User\Delete\DeleteAccountController::undoDeleteAccount
+
+
+##### Cart #####
+cart:
+   path: /cart
+   controller: App\Controller\Cart\CartController::index
+
+store_billing:
+   path: /checkout/{paidOrder}
+   controller: App\Controller\Cart\CartController::billing
+   methods: GET|POST
+
+add_to_cart:
+   path: /add-to-cart/{id}
+   controller: App\Controller\Cart\CartController::add
+   methods: GET|POST
+
+new_cart:
+   path: /new-cart
+   controller: App\Controller\Cart\CartController::newCart
+   methods: GET|POST
+
+deactivate_cart:
+   path: /deactivate-cart
+   controller: App\Controller\Cart\CartController::deactivate
+   methods: GET|POST
+
+update_cart_item:
+   path: /cart-item/{item}
+   controller: App\Controller\Cart\CartController::item
+   methods: GET|POST
+
+update_cart:
+   path: /update-cart
+   controller: App\Controller\Cart\CartController::update
+   methods: GET|POST
+
+clear_cart:
+   path: /clear-cart/{cart}
+   controller: App\Controller\Cart\CartController::clear
+   methods: GET|POST
+
+delete_cart:
+   path: /delete-cart/{cart}
+   controller: App\Controller\Cart\CartController::delete
+   methods: GET|POST
+
+latest_cart:
+   path: /latest-cart
+   controller: App\Controller\Cart\CartController::latest
+   methods: GET|POST
+
+update_list:
+   path: /update-list
+   controller: App\Controller\Cart\CartController::list
+   methods: GET|POST
+
+update_total:
+   path: /update-total/{cart}
+   controller: App\Controller\Cart\CartController::total
+   methods: GET|POST
+
+invoice_confirm:
+   path: /invoice-confirm/{invoice}
+   controller: App\Controller\Cart\InvoiceController::invoicePdfConfirm
+   methods: GET
+
+invoice_download:
+   path: /invoice-download/{invoice}
+   controller: App\Controller\Cart\InvoiceController::invoicePdfDownload
+   methods: GET
+
+
+##### AJAX #####
+search:
+   path: /search
+   controller: App\Controller\Store\StoreController::search
+   methods: GET
+
+reviews:
+   path: /reviews/{product}/{page}
+   controller: App\Controller\Store\StoreDetailController::userReviews
+   methods: GET|POST
+
+thumbnail:
+   path: /thumbnail/{pc}
+   controller: App\Controller\Store\StoreController::thumbnail
+   methods: GET|POST
+
+colors:
+   path: /colors/{pc?}
+   controller: App\Controller\Admin\Product\AdminProductController::colors
+   methods: GET
+
+color_exclude:
+   path: /color-exclude
+   controller: App\Controller\Admin\Product\AdminProductController::colorExclude
+   methods: GET
+
+products:
+   path: /products
+   controller: App\Controller\Admin\Product\AdminProductController::products
+   methods: GET
+
+video:
+   path: /video
+   controller: App\Controller\Admin\Product\AdminProductController::video
+   methods: GET
+
+
+
+
+#################
+##### Admin #####
+#################
+admin:
+   path: /admin
+   controller: App\Controller\Admin\AdminOverviewController::index
+   methods: GET
+
+# Admin Overview
+admin_overview:
+   path: /admin/overview
+   controller: App\Controller\Admin\AdminOverviewController::index
+
+admin_purchases:
+   path: /admin/purchases
+   controller: App\Controller\Admin\AdminTransactionsController::purchases
+
+admin_transactions_show:
+   path: /admin-transactions/{order}
+   controller:  App\Controller\Admin\AdminTransactionsController::show
+   methods: GET
+
+admin_items:
+   path: /admin/items
+   controller: App\Controller\Admin\AdminTransactionsController::items
+
+admin_invoices:
+   path: /admin/invoices
+   controller: App\Controller\Admin\AdminTransactionsController::invoices
+
+admin_settings:
+   path: /admin/settings
+   controller: App\Controller\Admin\AdminSettingsController::edit
+
+
+# admin.product resources
+admin_product_index:
+   path: /admin/products
+   controller:  App\Controller\Admin\Product\AdminProductController::index
+   methods: GET|POST
+
+admin_product_new:
+   path: /new-product
+   controller:  App\Controller\Admin\Product\AdminProductController::new
+   methods: GET|POST
+
+admin_product_show:
+   path: /product/{id}
+   controller:  App\Controller\Admin\Product\AdminProductController::show
+   methods: GET
+
+admin_product_edit:
+   path: /edit-product/{id}
+   controller:  App\Controller\Admin\Product\AdminProductController::edit
+   methods: GET|POST
+
+admin_product_display:
+   path: /display-product/{id}
+   controller:  App\Controller\Admin\Product\AdminProductController::display
+   methods: POST
+
+admin_product_delete:
+   path: /delete-product/{id}
+   controller:  App\Controller\Admin\Product\AdminProductController::delete
+   methods: POST
+
+
+# product.data resources
+admin_product_data_index:
+   path: /admin/details
+   controller: App\Controller\Admin\AdminProductDataController::index
+
+
+admin_product_data_color:
+   path: /detail-color/{pc}
+   controller: App\Controller\Admin\AdminProductDataController::colors
+   methods: GET
+
+
+
+admin_product_data_edit:
+   path: /edit-detail/{id}/{supplier?}
+   controller: App\Controller\Admin\AdminProductDataController::edit
+   methods: GET|POST
+
+
+admin_product_data_delete:
+   path: /delete-detail/{id}
+   controller: App\Controller\Admin\AdminProductDataController::delete
+   methods: POST
+
+
+# admin.users resources
+admin_users_index:
+   path: /admin/users
+   controller: App\Controller\Admin\AdminUserController::index
+   methods: GET
+
+admin_users_index_deleted:
+   path: /admin/deleted-users
+   controller: App\Controller\Admin\AdminUserController::deleted
+   methods: GET
+
+admin_users_show:
+   path: /user/{id}
+   controller: App\Controller\Admin\AdminUserController::show
+   methods: GET
+
+admin_users_edit:
+   path: /edit-user/{user}
+   controller: App\Controller\Admin\AdminUserController::edit
+   methods: GET|POST
+
+admin_users_delete:
+   path: /delete-user/{id}
+   controller: App\Controller\Admin\AdminUserController::delete
+   methods: POST
+
+# admin.supplier resources
+admin_supplier_index:
+   path: /admin/suppliers
+   controller:  App\Controller\Admin\AdminSupplierController::index
+   methods: GET|POST
+
+admin_supplier_new:
+   path: /admin/new-supplier
+   controller:  App\Controller\Admin\AdminSupplierController::new
+   methods: GET|POST
+
+admin_supplier_edit:
+   path: /edit-supplier/{id}
+   controller:  App\Controller\Admin\AdminSupplierController::edit
+   methods: GET|POST
+
+admin_supplier_delete:
+   path: /delete-supplier/{id}
+   controller:  App\Controller\Admin\AdminSupplierController::delete
+   methods: POST
+
+
+# admin.reviews resources
+admin_review_index:
+   path: /admin/reviews
+   controller:  App\Controller\Admin\AdminReviewController::index
+   methods: GET|POST
+
+admin_review_show:
+   path: /admin/review/{id}/show
+   controller:  App\Controller\Admin\AdminReviewController::show
+   methods: GET|POST
+
+admin_review_edit:
+   path: /admin/review/{id}/edit
+   controller:  App\Controller\Admin\AdminReviewController::edit
+   methods: GET|POST
+
+admin_review_delete:
+   path: /admin/review/{review}/delete
+   controller:  App\Controller\Admin\AdminReviewController::delete
+   methods: POST
+
+# admin.report login
+admin_login_report_index:
+   path: /admin/in
+   controller: App\Controller\Admin\Log\LogController::loginReport
+   methods: GET
+
+# admin.report page visits
+admin_user_visits_index:
+   path: /admin/visits
+   controller: App\Controller\Admin\Log\PageViewController::users
+   methods: GET
+
+# admin.report page visits
+admin_anonymous_visits_index:
+   path: /admin/anonymous
+   controller: App\Controller\Admin\Log\PageViewController::anonymous
+   methods: GET
+
+
+
+########## Login/Sign up ###########
+app_login:
+   path: /login
+   controller: App\Controller\User\LoginController::login
+
+app_logout:
+   path: /logout
+   controller: App\Controller\User\LoginController::logout
+
+app_register:
+   path: /sign-up
+   controller: App\Controller\User\Register\RegistrationController::register
+
+app_verify_email:
+   path: /verify-email
+   controller: App\Controller\User\Register\RegistrationController::verifyUserEmail
+
+## No controller is required for the ER Diagram
+admin_diagram:
+    path: /admin/diagram
+    controller:    Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    defaults:
+        template:  'admin/10_diagram/index.html.twig'
+
+admin_sample:
+    path: /sample
+    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    defaults:
+        template: 'sample/web.html.twig'
+
+
+## No controller is required for Deactivated message
+user_deactivated:
+    path: /deactivated
+    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    defaults:
+        template: 'store/partials/user-deactivated.html.twig'
+
+docs_index:
+   path: /docs
+   controller: App\Controller\Admin\RedirectController::docs
+
+
+
+ajax_post:
+    path: /ajax-post
+    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    defaults:
+        template: 'sample/ajax-post.html.twig'
+
+ajax_form:
+   path: /login-form
+   controller: App\Controller\AjaxController::login
+   methods: POST
+
+
+mailer:
+   path: /mailer
+   controller:  App\Controller\MailerController::sendEmail
+   methods: GET|POST

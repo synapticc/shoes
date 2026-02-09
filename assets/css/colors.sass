@@ -1,0 +1,73 @@
+/* typography */
+.text-bold
+  font-weight: bold
+
+.text-underline
+  text-decoration: underline
+
+.btn-transparent
+  background-color: transparent
+  border: none
+
+.text-yellow
+  color: rgb(255, 183, 40)
+
+.fill-main
+  fill: rgba(5, 169, 234, 0.84)
+
+.fill-red
+  fill: #950827
+  opacity: 1
+
+.fill-grey
+  fill: rgb(216 214 214)
+  opacity: 1
+  transition: all 0.07s ease-in
+  &:hover
+    fill: #858585
+
+.fill-dark-grey
+  fill: #858585
+  opacity: 1
+
+.fill-yellow
+  fill: rgb(255, 183, 40)
+  opacity: 1
+
+.fill-white
+  fill: #fff
+
+.fill-success
+  fill: url(#success-gradient) #57C785
+
+.fill-danger
+  fill: url(#danger-gradient) #57C785
+
+.fill-warning
+  fill: url(#warning-gradient) #57C785
+
+.fill-info
+  fill: url(#info-gradient) #57C785
+
+.fill-success-hover
+  transition: all 0.07s ease-in
+  fill: url(#grey-gradient) #d6d6d6
+  &:hover
+    fill: url(#success-gradient) #d6d6d6
+
+.fill-danger-hover
+  transition: all 0.07s ease-in
+  fill: url(#grey-gradient) #d6d6d6
+  &:hover
+    fill: url(#danger-gradient) #d00707
+
+.fill-disabled
+  transition: all 0.07s ease-in
+  fill: url(#grey-gradient) #d6d6d6
+
+.cursor-pointer
+  cursor: pointer
+
+@for $i from 1 through 10
+  .radius-#{$i}
+    border-radius: #{$i}px

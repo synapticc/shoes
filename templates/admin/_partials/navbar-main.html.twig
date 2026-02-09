@@ -1,0 +1,324 @@
+
+<nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-md-none">
+<a class="navbar-brand mr-lg-5" href="{{ path('admin') }}">
+<img class="navbar-brand-dark" src="{{asset('build/images/admin/brand/light.svg')}}" alt="Volt logo" /> <img class="navbar-brand-light" src="{{asset('build/images/admin/brand/dark.svg')}}" alt="Volt logo" />
+</a>
+<div class="d-flex align-items-center">
+<button class="navbar-toggler d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
+</div>
+</nav>
+
+<nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark pl-0 pr-2 pb-0">
+  <div class="container-fluid px-0">
+    <div class="d-flex justify-content-between w-100" id="navbarSupportedContent">
+      <div class="d-flex">
+        <!-- Search form -->
+        <!-- <form class="navbar-search form-inline" id="navbar-search-main">
+          <div class="input-group input-group-merge search-bar">
+              <span class="input-group-text" id="topbar-addon"><span class="fas fa-search"></span></span>
+              <input type="text" class="form-control" id="topbarInputIconLeft" placeholder="Search" aria-label="Search" aria-describedby="topbar-addon">
+          </div>
+        </form> -->
+      </div>
+
+      <!-- Navbar links -->
+      <ul class="navbar-nav align-items-center">
+        <li class="nav-item dropdown">
+          <a class="nav-link text-dark mr-lg-3 icon-notifications" data-unread-notifications="true" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="icon icon-sm">
+              <span class="fas fa-bell bell-shake"></span>
+              <span class="icon-badge rounded-circle unread-notifications"></span>
+            </span>
+          </a>
+          <div class="dropdown-menu dashboard-dropdown dropdown-menu-lg dropdown-menu-center mt-2 py-0">
+            <div class="list-group list-group-flush">
+              <a href="#" class="text-center text-primary font-weight-bold border-bottom border-light py-3">Notifications</a>
+              <a href="" class="list-group-item list-group-item-action border-bottom border-light">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                      <!-- Avatar -->
+                      <img alt="Image placeholder" src="{{asset('build/images/admin/team/profile-picture-1.jpg')}}" class="user-avatar lg-avatar rounded-circle">
+                    </div>
+                    <div class="col pl-0 ml--2">
+                      <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h4 class="h6 mb-0 text-small">Jose Leos</h4>
+                          </div>
+                          <div class="text-right">
+                            <small class="text-danger">a few moments ago</small>
+                          </div>
+                      </div>
+                      <p class="font-small mt-1 mb-0">Added you to an event "Project stand-up" tomorrow at 12:30 AM.</p>
+                    </div>
+                </div>
+              </a>
+              <a href="#" class="list-group-item list-group-item-action border-bottom border-light">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                      <!-- Avatar -->
+                      <img alt="Image placeholder" src="{{asset('build/images/admin/team/profile-picture-2.jpg')}}" class="user-avatar lg-avatar rounded-circle">
+                    </div>
+                    <div class="col pl-0 ml--2">
+                      <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h4 class="h6 mb-0 text-small">Neil Sims</h4>
+                          </div>
+                          <div class="text-right">
+                            <small class="text-danger">2 hrs ago</small>
+                          </div>
+                      </div>
+                      <p class="font-small mt-1 mb-0">You've been assigned a task for "Awesome new project".</p>
+                    </div>
+                </div>
+              </a>
+              <a href="#" class="list-group-item list-group-item-action border-bottom border-light">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                      <!-- Avatar -->
+                      <img alt="Image placeholder" src="{{asset('build/images/admin/team/profile-picture-3.jpg')}}" class="user-avatar lg-avatar rounded-circle">
+                    </div>
+                    <div class="col pl-0 ml--2">
+                      <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h4 class="h6 mb-0 text-small">Roberta Casas</h4>
+                          </div>
+                          <div class="text-right">
+                            <small>5 hrs ago</small>
+                          </div>
+                      </div>
+                      <p class="font-small mt-1 mb-0">Tagged you in a document called "First quarter financial plans",</p>
+                    </div>
+                </div>
+              </a>
+              <a href="#" class="list-group-item list-group-item-action border-bottom border-light">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                      <!-- Avatar -->
+                      <img alt="Image placeholder" src="{{asset('build/images/admin/team/profile-picture-4.jpg')}}" class="user-avatar lg-avatar rounded-circle">
+                    </div>
+                    <div class="col pl-0 ml--2">
+                      <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h4 class="h6 mb-0 text-small">Joseph Garth</h4>
+                          </div>
+                          <div class="text-right">
+                            <small>1 d ago</small>
+                          </div>
+                      </div>
+                      <p class="font-small mt-1 mb-0">New message: "Hey, what's up? All set for the presentation?"</p>
+                    </div>
+                </div>
+              </a>
+              <a href="#" class="list-group-item list-group-item-action border-bottom border-light">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                      <!-- Avatar -->
+                      <img alt="Image placeholder" src="{{asset('build/images/admin/team/profile-picture-5.jpg')}}" class="user-avatar lg-avatar rounded-circle">
+                    </div>
+                    <div class="col pl-0 ml--2">
+                      <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h4 class="h6 mb-0 text-small">Bonnie Green</h4>
+                          </div>
+                          <div class="text-right">
+                            <small>2 hrs ago</small>
+                          </div>
+                      </div>
+                      <p class="font-small mt-1 mb-0">New message: "We need to improve the UI/UX for the landing page."</p>
+                    </div>
+                </div>
+              </a>
+              <a href="#" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link pt-1 px-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="media d-flex align-items-center">
+              <img class="user-avatar md-avatar rounded-circle" alt="Image placeholder" src="{% if app.user %}
+                {% if app.user.userImage %}
+                  {% if app.user.userImage.image %}
+                    {{asset(app.user.userImage.image)}}
+                  {% else %}
+                      {{asset('build/images/admin/team/profile-picture-3.jpg')}}
+                  {% endif %}
+                {% else %}
+                    {{asset('build/images/admin/team/profile-picture-3.jpg')}}
+                {% endif %}
+            {% else %}
+                {{asset('build/images/admin/team/profile-picture-3.jpg')}}
+            {% endif %}">
+              <div class="media-body ml-2 text-dark align-items-center d-none d-lg-block">
+                <span class="mb-0 font-small font-weight-bold">{% if app.user.firstName and app.user.lastName %}
+                    {{app.user.firstName}} {{app.user.lastName }}
+                {% elseif app.user.firstName %}
+                    {{app.user.firstName}}
+                {% elseif app.user.lastName %}
+                    {{app.user.lastName}}
+                {% else %}
+                    {{app.user.email}}
+                {% endif %}</span>
+              </div>
+            </div>
+          </a>
+          <div class="dropdown-menu dashboard-dropdown dropdown-menu-right mt-2">
+            <a class="dropdown-item font-weight-bold" href="#"><span class="far fa-user-circle"></span>My Profile</a>
+            <a class="dropdown-item font-weight-bold" href="#"><span class="fas fa-cog"></span>Settings</a>
+            <a class="dropdown-item font-weight-bold" href="#"><span class="fas fa-envelope-open-text"></span>Messages</a>
+            <a class="dropdown-item font-weight-bold" href="#"><span class="fas fa-user-shield"></span>Support</a>
+            <div role="separator" class="dropdown-divider"></div>
+            <a class="dropdown-item font-weight-bold" href="{{ path('app_logout') }}" data-turbo="false"><span class="fas fa-sign-out-alt text-danger"></span>Logout</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="py-1">
+  <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+        <li class="breadcrumb-item"><a href="#"><span class="fas fa-home"></span></a></li>
+        <li class="breadcrumb-item"><a href="#">{{item|capitalize}}</a></li>
+        <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page"><a href="{{ path(route_index) }}"><span>All {{item}}s</span></a></li>
+      </ol>
+  </nav>
+
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+        <h1 class="h4 pb-3">{{item|capitalize}}s</h1>
+        <ul>
+          {% for feature in features %}
+          <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+          {% endfor %}
+        </ul>
+    </div>
+    <!-- Search form -->
+    <div class="col-6 d-flex align-items-center">
+      <div class="row justify-content-start">
+        {{ form_start(searchForm,
+          {'attr': {
+            'class': 'd-flex justify-content-start',
+            'data-turbo':"false"}}) }}
+          <div class="col-6">
+            <div class="input-group">
+              <span class="input-group-text" id="topbar-addon"><span class="fas fa-search"></span></span>
+              <!-- search input -->
+              {{ form_widget(searchForm.q, {'attr':
+                {'class': 'form-control',
+                 'placeholder': search,
+                 'aria-label': 'Search',
+                 'aria-describedby': 'search'}}) }}
+            </div>
+            <div class="form-check">
+              {{ form_label(
+                  searchForm._exact, null,
+                  {'label': 'exact phrase',
+                    'class': 'form-check-label'}) }}
+
+              {{ form_widget(searchForm._exact, {'attr':
+                {'class': 'form-check-input',
+                 'aria-label': 'Check exact search',
+                 'aria-describedby': 'checkbox'}}) }}
+            </div>
+          </div>
+          {% if brand %}
+          <div class="col-3">
+            {% if brand == 'multiple' %}
+              <!-- brands select -->
+              {{ form_widget(searchForm.search_brands, {'attr':
+                {'class': '',
+                 'placeholder': 'Choose brands',
+                 'aria-label': 'Brand',
+                 'aria-describedby': 'Brand'}}) }}
+            {% else %}
+              {% if brand == 'single' %}
+              <!-- brand select -->
+              {{ form_widget(searchForm.search_brands, {'attr':
+                {'class': '',
+                 'placeholder': 'Choose brand',
+                 'aria-label': 'Brand',
+                 'aria-describedby': 'Brand'}}) }}
+              {% endif %}
+            {% endif %}
+          </div>
+          <div class="col-3">
+            <!-- supplier select -->
+            {{ form_widget(searchForm.search_suppliers, {'attr':
+              {'class': 'form-control',
+               'placeholder': 'Choose supplier',
+               'aria-label': 'Supplier',
+               'aria-describedby': 'Supplier'}}) }}
+          </div>
+          {% endif %}
+          <!-- Retrieve current query parameters to passed again -->
+          {% set get = app.request.query %}
+          {% for key, query in get %}
+            {% if key != 'q' and key != 'brand' and key != 'search_brands' and query != '_exact' and query != 'page' %}
+              {% if query is iterable %}
+                {% for ky, q in query %}
+                  <input name="{{key}}[{{ky}}]" value="{{q}}" hidden=hidden>
+                {% endfor %}
+              {% else %}
+                <input name="{{key}}" value="{{query}}" hidden=hidden>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          <div class="col">
+            <!-- search button -->
+            <button title="Search for a product by name or by brand" type="submit" class="btn btn-{{ app.user.theme == 'light' ? 'white' : 'gray' }} ml-2 px-2">Search</button>
+          </div>
+        {{ form_end(searchForm, {render_rest: false}) }}
+      </div>
+    </div>
+  </div>
+
+  <!-- <select> No. of items per page> -->
+  <div class="row justify-content-{{(items is not empty  ?  items.getTotalItemCount > pages.0) ? 'between' : 'end'}} mt-4">
+  {% if items is not empty %}
+  {% if items.getTotalItemCount > pages.0 %}
+    <div class="col-10 col-sm-6 col-md-5 col-lg-5">
+
+      <form method="get" id="items_page_form">
+        <!-- items -->
+        <select id="items_page" name="items_page"
+                class="items-num-select {{app.user.theme == 'dark' ? 'bg-gray'}}">
+          {% for item in pages %}
+            {% if item < items.getTotalItemCount  %}
+              <option value="{{item}}" {% if items_page == item %}selected{% endif %}>{{item}}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+        <span class="{{ app.user.theme == 'dark' ? 'text-gray-500' }}"> of {{items.getTotalItemCount}} {{item}}s listed</span>
+
+        <input name="page" value="{{items.currentPageNumber}}" hidden="hidden">
+        {% for key, query in get %}
+          {% if key != 'items_page' and key != 'page' %}
+            {% if query is iterable %}
+              {% for ky, q in query %}
+                <input name="{{key}}[{{ky}}]" value="{{q}}" hidden=hidden>
+              {% endfor %}
+            {% else %}
+              <input name="{{key}}" value="{{query}}" hidden=hidden>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </form>
+    </div>
+  {% endif %}
+  {% endif %}
+    <div class="col-10 col-sm-2 col-md-2 col-lg-2  text-right">
+    <a href="{{ path('store') }}" target="_blank">
+      <button type="button" class="btn btn-success"><img src="{{asset('build/images/admin/favicon/favicon.ico') }}" height="20" width="20" class="mr-2" alt="Store Logo">Store</button>
+    </a>
+    {% if route is not empty %}
+    <a href="{{ path(route) }}">
+      <button type="button" class="btn btn-info">New {{item}}</button>
+    </a>
+    {% endif %}
+    </div>
+  </div>
+</div>

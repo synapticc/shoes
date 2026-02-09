@@ -1,0 +1,14 @@
+
+<div class="row justify-content-between align-items-end mt-4">
+  {% include 'admin/_partials/select-items-body.html.twig' %}
+  <div class="col-10 col-sm-2 col-md-2 col-lg-2 text-right">
+    <a href="{{ path('store') }}" target="_blank">
+      <button type="button" class="btn btn-success"><img src="{{asset('build/images/admin/favicon/favicon.ico') }}" height="20" width="20" class="mr-2" alt="Store Logo">Store</button>
+    </a>
+    {% if route is not empty %}
+    <a href="{{ path(route) }}">
+      <button type="button" class="btn btn-info">New {{item}}</button>
+    </a>
+    {% endif %}
+  </div>
+</div>

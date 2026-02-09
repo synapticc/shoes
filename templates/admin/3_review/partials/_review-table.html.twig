@@ -1,0 +1,381 @@
+<main class="content">
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Reviews</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        <a href="{{ path('admin_review_index') }}">All reviews</a>
+      </li>
+    </ol>
+  </nav>
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Display all reviews',
+         'Edit each review',
+         'Access each review',] %}
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <h1 class="h4 pb-3">Reviews</h1>
+      <!-- Features -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/3_review/partials/_search-form.html.twig' %}
+  </div>
+  <!-- No. of items per page> -->
+  {% include 'admin/_partials/select-items.html.twig'
+     with { 'items' : reviews, 'item' : 'review', 'route_index': 'admin_review_index', 'route': '' } %}
+  <!-- Table -->
+  <div class="row mt-1">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card {{ app.user.theme == 'dark' ? 'bg-gray-300' }} border-light shadow-sm components-section">
+        <div class="card-body">
+          <div class="table-responsive" id="reviews-table">
+            <table class="table table-centered table-nowrap mb-0 rounded">
+              <thead class="thead-light {{ app.user.theme == 'light' ? 'thead-light' : 'thead bg-gray-500' }}">
+                <tr class="text-center table-header">
+                  <!-- ID -->
+                  <th class="table-id">
+                    <span>ID</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'r.id', 'label': 'ID'} %}</span>
+                  </th>
+                  <!-- Pic -->
+                  <th>
+                    <span>Pic</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'u.firstName', 'label': 'user'} %}</span>
+                  </th>
+                  <!-- Headline -->
+                  <th class="headline-header">
+                    <span>Headline</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'c.headline', 'label': 'headline'} %}</span>
+                  </th>
+                  <!-- Comment -->
+                  <th class="table-cell table-name">
+                    <span>Comment</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'length(c.comment)', 'label': 'comment (length)'} %}</span>
+                  </th>
+                  <!-- Actions -->
+                  <th>Actions</th>
+                  <!-- Thumbnail -->
+                  <th class="thumbnail-header">
+                    <span>Purchase item</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'pc.color', 'label': 'color'} %}</span>
+                  </th>
+                  <!-- User -->
+                  <th>
+                    <span>User</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'u.email', 'label': 'user'} %}</span>
+                  </th>
+                  <th class="uploaded-header">
+                    <span>User uploaded</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'pic_created', 'label': 'uploaded image'} %}
+                    </span>
+                  </th>
+                  <!-- Brand -->
+                  <th class="">
+                    <span>Brand</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'pr.brand', 'label': 'brand'} %}
+                    </span>
+                  </th>
+                  <!-- Product -->
+                  <th>
+                    <span>Product</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'pr.name', 'label': 'product'} %}</span>
+                  </th>
+                  <!-- Rating -->
+                  <th class="rating-header">
+                    <span>Rating</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'r.rating', 'label': 'rating'} %}</span>
+                  </th>
+                  <!-- Like -->
+                  <th>
+                    <span>Like</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'l.like', 'label': 'like'} %}</span>
+                  </th>
+                  <!-- Delivery -->
+                  <th>
+                    <span>Delivery </span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'rc.delivery', 'label': 'delivery'} %}</span>
+                  </th>
+                  <!-- Recommend -->
+                  <th>
+                    <span>Recommend</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'h.recommend', 'label': 'recommend'} %}</span>
+                  </th>
+                  <!-- Fit -->
+                  <th class="fit-header">
+                    <span>Fit</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'r.fit', 'label': 'fit'} %}</span>
+                  </th>
+                  <!-- Width -->
+                  <th class="width-header">
+                    <span>Width</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'r.width', 'label': 'width'} %}</span>
+                  </th>
+                  <!-- Comfort -->
+                  <th class="comfort-header">
+                    <span>Comfort</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'r.comfort', 'label': 'comfort'} %}</span>
+                  </th>
+                  <!-- Status -->
+                  <th class="">
+                    <span>Status</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'r.active', 'label': 'status'} %}</span>
+                  </th>
+                  <!-- Created -->
+                  <th class="table-date table-created">
+                    <span>Created</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'rw.created', 'label': 'created'}  %}</span>
+                  </th>
+                  <!-- Updated -->
+                  <th class="table-date table-updated">
+                    <span>Updated</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : reviews, 'sort_param': 'rw.updated', 'label': 'updated'}  %}</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for review in reviews %}
+
+                <tr id="{{review.id}}">
+                  <!-- ID -->
+                  <td class="text-center">{{review.id}}</td>
+                  <!-- Pic -->
+                  <td title="Search all {{review.firstName}} {{review.lastName}}" class="text-center">
+                    <a href="{{ path('admin_review_index', {'customer': review.userId, 'customer_url': review.pic, 'customer_email': review.email}) }}">
+                      <img src="{% if review %}{% if review.pic %}{{asset(review.pic)}}{% else %}{% if review.title is same as 'Mr' %}{{asset('build/images/admin/man.png')}}{% else %}{% if review.title is same as 'Mrs' %}{{asset('build/images/admin/woman.png')}}{% else %}{{asset('build/images/admin/man.png')}}{% endif %}{% endif %}{% endif %}{% else %}{% if review.title is same as 'Mr' %}{{asset('build/images/admin/man.png')}}{% else %}{% if review.title is same as 'Mrs' %}{{asset('build/images/admin/woman.png')}}{% else %}{{asset('build/images/admin/man.png')}}{% endif %}{% endif %}{% endif %}"
+                          class="user-avatar lg-avatar rounded-circle mx-auto"
+                          alt="..." >
+                    </a>
+                  </td>
+                  <!-- Headline -->
+                  <td class="font-weight-bold" {% if search %}data-search-terms="{{search}}"
+                      data-text="{{review.headline}}"
+                      id="text-highlight" {% endif %}>{{review.headline ? review.headline : '---' }}</td>
+                  <!-- Comment -->
+                  <td class="p-2" {% if search %}data-search-terms="{{search}}"
+                      data-text="{{review.comment}}"
+                      id="text-highlight" {% endif %}>{{ review.comment|nl2br }}</td>
+                  <td>
+                    <!-- Edit button -->
+                    <a href="{{ path('admin_review_edit', {'id': review.id}) }}"><button type="button" class="btn btn-warning">edit</button></a>
+                    <!-- Cart button -->
+                    <a href="{{ path('admin_items', {'product': review.productId,  'product_name': review.brand_full ~ ' ' ~ review.name }) }}"><button title="List all order items of [{{review.brand_full}} {{review.name}} {{review.type_full}}]" type="button" class="btn btn-light"><i class="fas fa-shopping-cart mr-1"></i>Cart</button></a>
+                  </td>
+                  <!-- Product thumbnails -->
+                  <td>
+                    <div class="row">
+                      {% if review.thumbnails  %}
+                      {% for pc in review.thumbnails %}
+                        {% if pc.imageMedium %}
+                          <div class="col-3 text-center">
+                            <a title="Visit Item {{pc.colors_full ~ ' ('  ~ pc.size ~ ')'}}" href="{{ path('admin_items', {'item': pc.itemId }) }}">
+                              <img src="{{asset(pc.imageMedium)}}"
+                                class="img-fluid img-border-hover"
+                                alt="{{review.name}}">
+                            </a>
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                      {% endif %}
+                    </div>
+                  </td>
+                  <!-- Email -->
+                  <td title="Search all {{review.email}}" {% if search %}data-search-terms="{{search}}"
+                      data-text="{{review.email}}" id="text-highlight" {% endif %}>
+                      <a href="{{ path('admin_review_index', {'user': review.userId}) }}">
+                      {{review.email}}</a></td>
+                  <!-- User uploaded -->
+                  <td class="text-center">
+                    {% if review.review_img %}
+                      <div class="row justify-content-center">
+                        <div class="col-10 text-center">
+                          <img src="{{asset(review.review_img)}}"
+                            class="img-fluid rounded mx-auto"
+                            alt="{{review.brand|name}} {{review.name}} uploaded by {{review.firstName}} {{review.lastName}} ({{review.pic_created|format_datetime('short', 'short', locale='en')}})"
+                            title="Image uploaded by {{review.email}}">
+                        </div>
+                      </div>
+                    {% else %}
+                      ----
+                    {% endif %}
+                  </td>
+                  <!-- Brand -->
+                  <td title="Search all {{review.brand|name}}" class="text-center">
+                    <a href="{{ path('admin_review_index', {'brand': review.brand}) }}">
+                      <div class="table-brand-img my-1">
+                        <img
+                            src="{{asset('build/images/store/color-patches/' ~ review.brand ~ '.webp') }}"
+                            alt="image: {{review.brand|name}}">
+                      </div>
+                    </a>
+                  </td>
+                  <!-- Product -->
+                  <td title="Search all {{review.name}}">
+                    <a href="{{ path('admin_review_index', {'product': review.productId}) }}">
+                      {{review.category|name ~ ' '
+                        ~ review.name ~ ' ' ~ review.type|name }}</a></td>
+                  <!-- Rating -->
+                  <td title="Rating : {{review.rating}}/5" class="text-center">
+                    <a title="Search all rating {{review.rating}}/5"  href="{{ path('admin_review_index', {'rating': review.rating}) }}">
+                    {% if review.rating %}
+                      {% for i in 1..review.rating %}
+                        {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-yellow', 'label': 'Search all rating ' ~ review.rating ~ '/5' } only %}
+                      {% endfor %}
+                      {% if review.rating is not same as(5) %}
+                      {% for i in 1..(5 - review.rating) %}
+                        {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-grey', 'label': 'Search all rating ' ~ review.rating ~ '/5'} only %}
+                      {% endfor %}
+                      {% endif %}
+                    {% else %}
+                      ---
+                    {% endif %}
+                    </a>
+                  </td>
+                  <!-- Like -->
+                  <td title="Search all {{review.like is same as true ? 'liked' : review.like is same as false ? 'disliked' : review.like is same as null ? "'Not yet liked'" }} products" class="text-center">
+                    <a href="{{ path('admin_review_index', {'like': review.like is same as null ? 'null' : review.like }) }}">
+                    {% if review.like is same as true %}
+                      {% include '__icons/i-l/_love.html.twig' with { 'class': 'fill-main',  'label': "Search all 'Liked' product", 'id':'like-icon' ,'width': 20, 'height': 20} only %}
+                    {% elseif review.like is same as false %}
+                      {% include '__icons/i-l/_love_not.html.twig' with { 'class': 'fill-yellow',  'label': "Search all 'Disliked' product", 'id':'dislike-icon' ,'width': 20, 'height': 20} only %}
+                    {% elseif review.like is same as null %}
+                      ----
+                    {% endif %}
+                    </a>
+                  </td>
+                  <!-- Delivery -->
+                  <td title="Search all {{review.delivery is same as true ? 'delivery' : review.delivery is same as false ? 'Not helpful' : review.delivery is same as null ? "'Not yet helpful'" }} products" class="text-center">
+                    <a href="{{ path('admin_review_index', {'delivery': review.delivery is same as null ? 'null' : review.delivery }) }}">
+                    {% if review.delivery is same as true %}
+                      {% include '__icons/q-t/_thumbs-up.html.twig' with {  'class': 'fill-main', 'label': "Search all 'Delivery description'", 'id':'helpful-icon' ,'width': 20, 'height': 20} only %}
+                    {% elseif review.delivery is same as false %}
+                      {% include '__icons/q-t/_thumbs-down.html.twig' with {
+                      'class': 'fill-yellow', 'label': "Search all 'Non-Delivery description'", 'id':'not-helpful-icon' ,'width': 20, 'height': 20} only %}
+                    {% elseif review.delivery is same as null %}
+                      ----
+                    {% endif %}
+                    </a>
+                  </td>
+                  <!-- Recommend -->
+                  <td title="Search all {{review.recommend is same as true ? 'recommend' : review.recommend is same as false ? 'Not recommend' : review.recommend is same as null ? "'Not yet recommend'" }} products" class="text-center">
+                    <a href="{{ path('admin_review_index', {'recommend': review.recommend is same as null ? 'null' : review.recommend }) }}">
+                    {% if review.recommend is same as true %}
+                      {% include '__icons/m-p/_others_solid.html.twig' with { 'class':'fill-main', 'label': 'Would recommend to others', 'id':'recommend-icon' ,'width': 20, 'height': 20} only %}
+                    {% elseif review.recommend is same as false %}
+                      {% include '__icons/m-p/_others_not_solid.html.twig' with {'class':'fill-yellow', 'label': 'Would not recommend to others', 'id':'not-recommend-icon' ,'width': 20, 'height': 20} only %}
+                    {% elseif review.recommend is same as null %}
+                      ----
+                    {% endif %}
+                    </a>
+                  </td>
+                  <!-- Fit -->
+                  <td>
+                    {% set translate = [100, 75, 50, 25, 0] %}
+                    <div class="row justify-content-center mb-4" id="slider-square">
+                     <div class="col-10">
+                       <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                         <div class="noUi-base">
+                           <div class="noUi-connects"></div>
+                           <div class="noUi-origin" style="transform: translate(-{{translate[review.fit - 1]}}%, 0px); z-index: 4;">
+                            <a title="Search all Fit : {{review.fit}}  " href="{{ path('admin_review_index', {'fit': review.fit is same as null ? 'null' : review.fit }) }}">
+                               <div class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                                 <div class="noUi-touch-area"></div>
+                               </div>
+                             </a>
+                           </div>
+                         </div>
+                         <div class="noUi-pips noUi-pips-horizontal">
+                         {% set x = 0 %}
+                         {% for i in 1..5 %}
+                           <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                           <div class="noUi-value noUi-value-horizontal noUi-value-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderFit[loop.index0]}}</div>
+                           {% set x = x + 25 %}
+                         {% endfor %}
+                         </div>
+                       </div>
+                     </div>
+                    </div>
+                  </td>
+                  <!-- Width -->
+                  <td>
+                    <div class="row justify-content-center mb-4" id="slider-square">
+                     <div class="col-10">
+                       <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                         <div class="noUi-base">
+                           <div class="noUi-connects"></div>
+                           <div class="noUi-origin" style="transform: translate(-{{translate[review.width - 1]}}%, 0px); z-index: 4;">
+                            <a title="Search all Width : {{review.width}}  " href="{{ path('admin_review_index', {'width': review.width is same as null ? 'null' : review.width }) }}">
+                              <div class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                                <div class="noUi-touch-area"></div>
+                              </div>
+                            </a>
+                           </div>
+                         </div>
+                         <div class="noUi-pips noUi-pips-horizontal">
+                         {% set x = 0 %}
+                         {% for i in 1..5 %}
+                           <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                           <div class="noUi-value noUi-value-horizontal noUi-value-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderWidth[loop.index0]}}</div>
+                           {% set x = x + 25 %}
+                         {% endfor %}
+                         </div>
+                       </div>
+                     </div>
+                    </div>
+                  </td>
+                  <!-- Comfort -->
+                  <td>
+                    <div class="row justify-content-center mb-4" id="slider-square">
+                     <div class="col-10">
+                       <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                         <div class="noUi-base">
+                           <div class="noUi-connects"></div>
+                           <div class="noUi-origin" style="transform: translate(-{{translate[review.comfort - 1]}}%, 0px); z-index: 4;">
+                            <a title="Search all Comfort : {{review.comfort}}  " href="{{ path('admin_review_index', {'comfort': review.comfort is same as null ? 'null' : review.comfort }) }}">
+                             <div class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                               <div class="noUi-touch-area"></div>
+                             </div>
+                            </a>
+                           </div>
+                         </div>
+                         <div class="noUi-pips noUi-pips-horizontal">
+                           {% set x = 0 %}
+                           {% for i in 1..5 %}
+                             <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                             <div class="noUi-value noUi-value-horizontal noUi-value-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderComfort[loop.index0]}}</div>
+                             {% set x = x + 25 %}
+                           {% endfor %}
+                         </div>
+                       </div>
+                     </div>
+                    </div>
+                  </td>
+                  <td>{% if review.active == true %}<span class="text-success">Active</span>{% else %}<span class="text-warning">Inactive</span>{% endif %}</td>
+                  <!-- Created -->
+                  <td>{{ review.created ? review.created|format_datetime('short', 'short', locale='en') : '' }}</td>
+                  <!-- Updated -->
+                  <td class="text-center">{{ review.updated ? review.updated|ago : '----' }}</td>
+                </tr>
+              {% else %}
+                <tr><td colspan="10" id="empty-cell" class="{{app.user.theme == 'dark' ? 'text-gray'}}">No review found</td></tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Pagination -->
+  {% include 'admin/_partials/pagination.html.twig' with { 'items' : reviews } %}
+  <!-- Footer -->
+  {% include 'admin/_partials/footer.html.twig' %}
+</main>

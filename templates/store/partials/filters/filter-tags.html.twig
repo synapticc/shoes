@@ -1,0 +1,29 @@
+{# templates/store/partials/filters/filter-tags.html.twig #}
+{% set hasActiveTags = activeTags|length > 0 %}
+
+<aside class="ps-widget--sidebar" parent-widget>
+    <div class="ps-widget__header">
+        <h3>Tags</h3>
+    </div>
+
+    <div class="ps-widget__content">
+        <div class="mb-10">
+            <select
+                id="filter_form_tags"
+                name="tags[]"
+                aria-label="Tags"
+                aria-describedby="Tags"
+                multiple="multiple">
+
+                {% for tag in tags %}
+                    {% set isSelected = tag.name in activeTags %}
+                    <option
+                        value="{{ tag.name }}"
+                        {% if isSelected %}selected{% endif %}>
+                        {{ tag.fullName }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</aside>

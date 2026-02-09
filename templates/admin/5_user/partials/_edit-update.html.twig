@@ -1,0 +1,11 @@
+<section hidden>
+  <span id="updated-roles">{% for role in user.roles %}
+    {% if role is same as('ROLE_USER') %}USER{% elseif role is same as('ROLE_ADMIN') %}ADMIN{% elseif role is same as('ROLE_MODERATOR') %}MODERATOR{% endif %}{% if loop.last %}{% else %}, {% endif %}{% endfor %}</span>
+  <span id="updated-status">
+    {% if user.userDeactivate and user.userDeactivate.deactivate %}
+      {% include '__icons/a-d/_cancel-icon.html.twig' with {'label': 'Deactivated', 'dataset': '', 'width': 28, 'height': 28} only %}
+    {% else %}
+      {% include '__icons/a-d/_check-icon.html.twig' %}
+    {% endif %}
+  </span>
+</section>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Head starts -->
+  <head>
+    {% block meta %}{% endblock %}
+    <!-- Title -->
+    <title>{% block title %}{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+  </head>
+  <!-- Head ends -->
+
+  <!-- Body starts -->
+
+  <body id="body" data-route="{{app.current_route}}">
+    {% block body %}
+    {% block javascripts %}{% endblock %}
+    {% endblock %}
+    {{ dump() }}
+  </body>
+  <!-- Body ends -->
+</html>

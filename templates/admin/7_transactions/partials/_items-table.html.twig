@@ -1,0 +1,215 @@
+<main class="content">
+  <!-- Topmost navbar -->
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Transactions</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        <a href="{{ path('admin_items') }}">Items</a>
+      </li>
+    </ol>
+  </nav>
+  <!-- Page overview & Search bar -->
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Display all order items',
+         'Access each order item'] %}
+    <div class="col-2 mb-3 mb-lg-0">
+      <!-- Main header -->
+      <h1 class="h4 pb-3">Order items</h1>
+      <!-- Features -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/7_transactions/partials/_search-form.html.twig' %}
+  </div>
+
+  <!-- No. of items per page -->
+  {% include 'admin/_partials/select-order-items.html.twig'
+     with { 'items' : items, 'item' : 'order item', 'route': '','route_index': 'admin_items' } %}
+
+<!-- Table section -->
+<div class="row mt-1">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card {{ app.user.theme == 'dark' ? 'bg-gray-300' }} border-light shadow-sm components-section">
+      <div class="card-body">
+        <div class="table-responsive" id="items-table">
+          <table class="table table-nowrap mb-0 rounded text-center">
+            <thead class="{{ app.user.theme == 'light' ? 'thead-light' : 'thead bg-gray-500' }}">
+              <tr>
+                <th>
+                  <span>Order Ref.</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'o.order_id', 'label': 'order ID'} %}
+                </th>
+                <th>
+                  <span>Thumbnail</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'pc.color', 'label': 'thumbnail color'} %}</span>
+                </th>
+                <th>
+                  <span>Brand</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'pr.brand', 'label': 'brand'} %}</span>
+                </th>
+                <th class="product">
+                  <span>Product</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'pr.name', 'label': 'name'} %}</span>
+                </th>
+                <th>
+                  <span>Status</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'o.status', 'label': 'status'} %}</span>
+                </th>
+                <th>Pic</th>
+                <th>
+                  <span>Customer</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'u.email', 'label': 'email'} %}</span>
+                </th>
+                <th>Action</th>
+                <th>
+                  <span>Unit price</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'p.selling_price', 'label': 'selling price'} %}</span>
+                </th>
+                <th>
+                  <span>Quantity</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'i.quantity', 'label': 'quantity'} %}</span>
+                </th>
+                <th>
+                  <span>Sub total (Rs)</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'subtotal', 'label': 'subtotal'} %}</span>
+                </th>
+                <th>
+                  <span>Size</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'p.size', 'label': 'size'} %}</span>
+                </th>
+                <th>
+                  <span>Color</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'pc.color', 'label': 'color'} %}</span>
+                </th>
+                <th>
+                  <span>Fabric</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'JSON_TEXT(pc.fabrics)', 'label': 'fabrics'} %}</span>
+                </th>
+
+                <th>
+                  <span>Created</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : items, 'sort_param': 'o.created', 'label': 'date of creation'} %}</span>
+                </th>
+              </tr>
+            </thead>
+            <!-- Table body -->
+            <tbody>
+            {% for item in items %}
+              <!-- Row -->
+              <tr>
+                <!-- ID -->
+                <td title="Search all Order Reference:  {{item.order_id|pad(6)}}"><a href="{{ path('admin_items', {'id': item.order_id}) }}">{{item.order_id|pad(6)}}</a>
+                </td>
+                <!-- Thumbnail -->
+                <td title="Search all {{item.name ~ ' ' ~ item.colors_full ~ ', ' ~ item.fabrics_full}}">
+                  <a href="{{ path('admin_items', {'pc': item.colorId, 'pc_url': item.image, 'pc_name': item.colors_full ~ ' (' ~ item.name ~ ')' }) }}">
+                      <img class="img-fluid img-border-hover"
+                          src="{{asset(item.image) }}"
+                          alt="image: {{item.name}}">
+                  </a>
+                </td>
+                <!-- Brand -->
+                <td title="Search all {{item.brand_full}}">
+                  <a href="{{ path('admin_items', {'brand': item.brand}) }}">
+                    <div class="table-brand-img img-grayscale">
+                      <img
+                          src="{{asset('build/images/store/color-patches/' ~ item.brand ~ '.webp') }}"
+                          alt="image: {{item.brand_full}}">
+                    </div>
+                  </a>
+                </td>
+                <!-- Product name -->
+                <td title="Search all {{item.name}} {{item.type_full}}" class="text-left">
+                  <a class="border-hover" {% if search %} data-search-terms="{{search}}" data-text="{{ item.name ~ ' ' ~ item.type_full ~ ' ('~ item.category_full ~ ')' }}" data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                id="text-highlight" {% endif %}
+                  href="{{ path('admin_items', {'product': item.productId, 'product_name': item.name ~ ' ' ~ item.type_full ~ ' ('~ item.category_full ~ ')'}) }}">{{ item.name ~ ' ' ~ item.type_full ~ ' (' ~ item.category_full ~ ')' }}"</a>
+                  {% if item.userId %}
+                  <a href="{{
+                    path('admin_items',{
+                         'product': item.productId,
+                         'customer': item.userId,
+                         'purchased_item': item.name ~ ' ' ~ item.type_full ~ ' (purchased by ' ~ item.email ~ ')'
+                          }) }}"
+                      target="_self"
+                      class="">{% include '__icons/q-t/_shopping-bag-thin.html.twig' with {'width': 18,  'height': 18, 'label': 'List all ' ~ item.name ~ ' ' ~ item.type_full ~ ' purchased by ' ~ item.email, 'class':'fill-dark-grey'}  %}</a>
+                  {% endif %}
+
+                  <a href="{{
+                    path('store_details',{
+                         'brand': item.brand_full|slug,
+                         'name': (item.name|title)|slug,
+                         'id': nzo_encrypt(item.productDataId)
+                          }) }}"
+                      target="_blank"
+                      class="">{% include '__icons/i-l/_link-wide.html.twig' with {'width': 13,  'height': 13, 'label': 'Visit ' ~ item.name ~ ' ' ~ item.type_full}  %}</a>
+
+
+                </td>
+                <!-- Status -->
+                <td title="{{item.status|capitalize}} status" class="font-weight-bold text-{{item.status == 'paid' ? 'success' : 'warning'}}">{{item.status}}</td>
+                <!-- Pic -->
+                <td title="Search all {{item.firstName}} {{item.lastName}}" class="text-center">
+                  <a href="{{ path('admin_items', {'customer': item.userId, 'customer_url': item.pic, 'customer_email': item.email}) }}">
+                    <img
+                      src="{% if item.pic %}{{asset(item.pic)}}{% else %}{% if item.title is same as 'Mr' %}{{asset('build/images/admin/man.png')}}{% else %}{% if item.title is same as 'Mrs' %}{{asset('build/images/admin/woman.png')}}{% else %}{{asset('build/images/admin/man.png')}}
+                          {% endif %}
+                        {% endif %}
+                      {% endif %}"
+                      class="border-radius-5 m-auto img-grayscale"
+                      alt="..." ></a></td>
+                <!-- Customer -->
+                <td title="Search all {{item.email}}" class="text-{{item.email ? 'left' : 'center'}}">
+                  {% if item.email %}
+                    <a class="border-hover" {% if search %} data-search-terms="{{search}}" data-text="{{ item.email }}" data-exact="{{(app.request.get('_exact')) ? true : false}}" id="text-highlight" {% endif %} href="{{ path('admin_items', {'customer': item.userId, 'customer_url': item.pic, 'customer_email': item.email}) }}">{{item.email}}<a>
+                  {% else %}
+                    Anonymous
+                  {% endif %}
+
+
+                </td>
+                <!-- Action -->
+                <td><a title="Display order" href="{{ path('admin_transactions_show', {'order': item.order_id}) }}">
+                  <button type="button" class="btn btn-light">show</button>
+                </a></td>
+                <!-- Selling price -->
+                <td class="text-center">{{item.sellingPrice|format_number({fraction_digit: 2})}}</td>
+                <!-- Quantity -->
+                <td class="text-center">{{item.quantity}}</td>
+                <!-- Sub total -->
+                <td class="text-center">{{(item.sellingPrice * item.quantity)|format_number({fraction_digit: 2})}}</td>
+                <!-- Size -->
+                <td title="Search all size {{item.size}}" class="text-center"><a {% if search %} data-search-terms="{{search}}" data-text="{{ item.size }}" data-exact="{{(app.request.get('_exact')) ? true : false}}" id="text-highlight" {% endif %} href="{{ path('admin_items', {'size': item.size}) }}">{{item.size}}</a></td>
+                <!-- Color -->
+              <td title="Search all {{item.colors_full}}" class="text-center"><a class="border-hover" {% if search %} data-search-terms="{{search}}" data-text="{{ item.colors_full }}" data-exact="{{(app.request.get('_exact')) ? true : false}}" id="text-highlight" {% endif %} href="{{ path('admin_items', {'colors': item.color, 'color_name': item.colors_full}) }}">{{item.colors_full}}</a></td>
+                <!-- Fabric -->
+              <td title="Search all {{item.fabrics_full}}" class="text-center"><a class="border-hover" {% if search %} data-search-terms="{{search}}" data-text="{{ item.fabrics_full }}" data-exact="{{(app.request.get('_exact')) ? true : false}}" id="text-highlight" {% endif %} href="{{ path('admin_items', {'fabrics': item.fabrics|join('-'), 'fabric_name': item.fabrics_full }) }}">{{item.fabrics_full}}</a></td>
+
+                <!-- Created -->
+                <td class="text-center" title="{{ item.created|date("jS F Y \\a\\t g:ia") }}"><span class="font-weight-normal">{{ item.created|ago }}</span></td>
+              </tr>
+            {% else %}
+              <tr><td colspan="16" id="empty-cell" class="{{app.user.theme == 'dark' ? 'text-gray'}}">No item found</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Pagination -->
+{% include 'admin/_partials/pagination.html.twig' with { 'items' : items } %}
+<!-- Footer -->
+{% include 'admin/_partials/footer.html.twig' %}
+
+</main>

@@ -1,0 +1,160 @@
+{# templates/store/partials/filters/filter-size.html.twig #}
+{% set resetIcon = include('__icons/q-t/_square-reset.html.twig', {filter: 'size'}, with_context=false) %}
+{% set hasActiveSizes = activeSizes|length > 0 %}
+
+<aside class="ps-widget--sidebar" parent-widget>
+    <div class="ps-widget__header">
+        <h3>
+            Size
+            {% if hasActiveSizes %}{{ resetIcon|raw }}{% endif %}
+        </h3>
+        {% if hasActiveSizes %}
+            <p class="pt-10 pb-10">
+                Selected({{ activeSizes|length }}):
+                {% for size in activeSizes %}
+                    <span class="selected-item">{{ sizePair[size] }}</span>
+                    {%- if not loop.last %}, {% else %}.{% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="ps-widget__content">
+        <!-- Kids Sizes -->
+        <table class="table ps-table--size">
+            <tbody>
+                <p class="mb-20">Kids' sizes</p>
+                <tr>
+                    {% for size in kidSizes %}
+                        {% set isChecked = size.fullName in activeSizes %}
+                        <td title="Size: {{ size.name }}">
+                            {{ size.name }}
+                            <input
+                                filter=""
+                                type="checkbox"
+                                id="size-kid-{{ size.name|replace({'.': '-'}) }}"
+                                name="size[]"
+                                value="{{ size.fullName }}"
+                                hidden
+                                {% if isChecked %}checked{% endif %}>
+                        </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Adults Sizes -->
+        <table class="table ps-table--size">
+            <tbody>
+                <p class="mb-20">Adults' sizes</p>
+
+                <!-- 1st Adult Size Row (1-5) -->
+                <tr>
+                    {% for size in adultSizes %}
+                        {% if loop.index <= 5 %}
+                            {% set isChecked = size.fullName in activeSizes %}
+                            <td title="Size: {{ size.name }}">
+                                {{ size.name }}
+                                <input
+                                    filter=""
+                                    type="checkbox"
+                                    id="size-adult-{{ size.name|replace({'.': '-'}) }}"
+                                    name="size[]"
+                                    value="{{ size.fullName }}"
+                                    hidden
+                                    {% if isChecked %}checked{% endif %}>
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+
+                <!-- 2nd Adult Size Row (6-10) -->
+                <tr>
+                    {% for size in adultSizes %}
+                        {% if loop.index > 5 and loop.index <= 10 %}
+                            {% set isChecked = size.fullName in activeSizes %}
+                            <td title="Size: {{ size.name }}">
+                                {{ size.name }}
+                                <input
+                                    filter=""
+                                    type="checkbox"
+                                    id="size-adult-{{ size.name|replace({'.': '-'}) }}"
+                                    name="size[]"
+                                    value="{{ size.fullName }}"
+                                    hidden
+                                    {% if isChecked %}checked{% endif %}>
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+
+                <!-- 3rd Adult Size Row (11+) -->
+                <tr>
+                    {% for size in adultSizes %}
+                        {% if loop.index > 10 %}
+                            {% set isChecked = size.fullName in activeSizes %}
+                            <td title="Size: {{ size.name }}">
+                                {{ size.name }}
+                                <input
+                                    filter=""
+                                    type="checkbox"
+                                    id="size-adult-{{ size.name|replace({'.': '-'}) }}"
+                                    name="size[]"
+                                    value="{{ size.fullName }}"
+                                    hidden
+                                    {% if isChecked %}checked{% endif %}>
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Socks Sizes -->
+        <table class="table ps-table--size">
+            <tbody>
+                <p class="mb-20">Socks' sizes</p>
+
+                <!-- 1st Sock Size Row (1-3) -->
+                <tr>
+                    {% for size in sockSizes %}
+                        {% if loop.index <= 3 %}
+                            {% set isChecked = size.name in activeSizes %}
+                            <td title="Size: {{ size.fullName }}">
+                                {{ size.fullName }}
+                                <input
+                                    filter=""
+                                    type="checkbox"
+                                    id="size-sock-{{ size.name|replace({'.': '-'}) }}"
+                                    name="size[]"
+                                    value="{{ size.name }}"
+                                    hidden
+                                    {% if isChecked %}checked{% endif %}>
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+
+                <!-- 2nd Sock Size Row (4+) -->
+                <tr>
+                    {% for size in sockSizes %}
+                        {% if loop.index > 3 %}
+                            {% set isChecked = size.name in activeSizes %}
+                            <td title="Size: {{ size.fullName }}">
+                                {{ size.fullName }}
+                                <input
+                                    filter=""
+                                    type="checkbox"
+                                    id="size-sock-{{ size.name|replace({'.': '-'}) }}"
+                                    name="size[]"
+                                    value="{{ size.name }}"
+                                    hidden
+                                    {% if isChecked %}checked{% endif %}>
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</aside>

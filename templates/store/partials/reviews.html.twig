@@ -1,0 +1,1218 @@
+  <!-- Main starts -->
+  <main class="ps-main">
+      <div class="mb-50">
+        <!-- Carousel-banner -->
+        {% include 'store/partials/footer/banner-services.html.twig' %}
+      </div>
+      {% include 'store/partials/cart/cart-exist.html.twig' %}
+      <div class="ps-container">
+        <div class="row justify-content-center mb-50">
+          <div class="col-8 review-search">
+            {{ form_start(searchForm,
+                {'attr': {
+                  'class': 'search',
+                  'data-turbo':"false"}}) }}
+
+                    {{ form_widget(searchForm.q, {'attr':
+                      {'class': 'searchTerm',
+                       'placeholder': search ? search : 'Search headline, comment, user or product',
+                       'aria-label': 'Search',
+                       'aria-describedby': 'search',
+                       'title': 'Search headline, comment, user or product',}}) }}
+
+                <button type="submit" class="searchButton">
+                  <i class="fa fa-search"></i>
+               </button>
+            {{ form_end(searchForm, {render_rest: false}) }}
+          </div>
+        </div>
+      </div>
+      <div class="products-wrap pb-80">
+        <!-- Sidebar column -->
+        <form class="products-sidebar" name="filter" ps-sidebar method="get" id="filter">
+            <!-- filter: keywords -->
+            <aside class="ps-widget--sidebar" parent-widget>
+              <!-- reset all filters -->
+              {% if app.request.query.all %}
+                <div class="ps-widget__header mt-40">
+                  <h4><button title="Reset all filters" class="btn btn-warning" id="filter-reset-all" type="button">Reset all</button></h4>
+                </div>
+              {% endif %}
+              <div class="ps-widget__header">
+              <h3>Related keywords</h3>
+              </div>
+              <div class="ps-widget__content">
+                <!-- Color Tags -->
+                <div class="mb-10">
+                {% for word in relatedWords %}
+                  <a href="{{ path('store_reviews', {'q': word}) }}" >
+                    <button class="{% if get.q is defined %}{% if get.q == word  %}button-review-2-yellow{% else %}button-review-2-blue{% endif %}{% else %}button-review-2-blue{% endif %}" type="button">{{word}}</button>
+                  </a>
+                {% else %}
+                    <p class="text-grey">No keyword found.</p>
+                {% endfor %}
+                </div>
+              </div>
+            </aside>
+            <!-- filter: Rating -->
+            <aside class="ps-widget--sidebar ps-widget--category" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Rating{% if get.rating is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'rating'} only %}{% endif %}</span>
+                </h3>
+              </div>
+              <div class="ps-widget__content">
+                {% for rating in 1..5 %}
+                <label for="rating-{{rating}}" class="checkbox" id="checkbox">
+                    {% if get.rating is defined %}
+                      {% if rating in get.rating %}
+                          <input filter type="checkbox" id="rating-{{rating}}" name="rating[]" value="{{rating}}" checked>
+                      {% else %}
+                          <input filter type="checkbox" id="rating-{{rating}}" name="rating[]" value="{{rating}}">
+                      {% endif %}
+                    {% else %}
+                      <input filter type="checkbox" id="rating-{{rating}}" name="rating[]" value="{{rating}}">
+                    {% endif %}
+                  <span class="{% if rating in count.rating|keys %}text-bold{% endif %}">{% for i in 1..rating %}
+                  {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-yellow', 'label': 'Rating:' ~ rating ~ '/5' } only %}
+                  {% endfor %} {% if rating in count.rating|keys %}({{count.rating[rating]}}){% endif %}</span>
+                 </label>
+
+                {# <label for="rating-{{rating}}" class="checkbox" id="checkbox">
+                  <input filter type="checkbox" id="rating-{{rating}}" name="rating[]" value="{{rating}}">
+                  <span>{% for i in 1..rating %}
+                  {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-yellow', 'label': 'Rating:' ~ rating ~ '/5' } only %}
+                  {% endfor %}</span>
+                </label> #}
+                {% endfor %}
+              </div>
+            </aside>
+            <!-- filter: Thumbnail -->
+            {% if (get.color is not defined) and
+                  (get.fabrics is not defined) and
+                  (get.colorExclude is not defined) and
+                  (get.size is not defined) %}
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Products{% if get.thumbnail is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'thumbnail'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-thumbnail" id="data-toggler" data-toggler-title='thumbnail'>{% if get.thumbnail is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'thumbnail'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'thumbnail'} %}{% endif %}</span>
+                </h3>
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+                <section data-toggle-show="#sidebar-thumbnail" id="sidebar-thumbnail"
+                class="{% if get.thumbnail is defined %}sidebar-reveal
+                {% else %}sidebar-hide{% endif %}">
+                {% for thumbnail in thumbnails %}
+                    <label for="thumbnail-{{thumbnail.name}}" class="checkbox" id="checkbox">
+                      {% if get.thumbnail is defined %}
+                          {% if thumbnail.name in get.thumbnail %}
+                              <input filter type="radio" id="thumbnail-{{thumbnail.name}}" name="thumbnail" value="{{thumbnail.name}}" checked>
+                          {% else %}
+                              <input filter type="radio" id="thumbnail-{{thumbnail.name}}" name="thumbnail" value="{{thumbnail.name}}">
+                          {% endif %}
+                      {% else %}
+                        <input filter type="radio" id="thumbnail-{{thumbnail.name}}" name="thumbnail" value="{{thumbnail.name}}">
+                      {% endif %}
+                    <span>{{thumbnail.fullName}}</span>
+                     </label>
+                {% endfor %}
+                </section>
+              </div>
+            </aside>
+            {% endif %}
+            <!-- filter: Uploaded -->
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Uploaded{% if get.uploaded is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'uploaded'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-uploaded" id="data-toggler" data-toggler-title='uploaded'>{% if get.uploaded is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'uploaded'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'uploaded'} %}{% endif %}</span>
+                </h3>
+
+                {% if get.uploaded is defined %}<p class="pt-10 pb-10">Selected({{get.uploaded|length}}): {% for uploaded in get.uploaded %}
+              <span class="selected-item">{{uploadedPair[uploaded]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+                <section data-toggle-show="#sidebar-uploaded" id="sidebar-uploaded" class="{% if get %}{% if get.uploaded is defined %}sidebar-reveal {% else %}sidebar-hide{% endif %}{% endif %}">
+                    {% for uploaded in uploadedSet %}
+                      <label for="uploaded-{{uploaded.name}}" class="checkbox" id="checkbox">
+                          {% if get.uploaded is defined %}
+                            {% if uploaded.name in get.uploaded %}
+                                <input filter type="checkbox" id="uploaded-{{uploaded.name}}" name="uploaded[]" value="{{uploaded.name}}" checked>
+                            {% else %}
+                                <input filter type="checkbox" id="uploaded-{{uploaded.name}}" name="uploaded[]" value="{{uploaded.name}}">
+                            {% endif %}
+                          {% else %}
+                            <input filter type="checkbox" id="uploaded-{{uploaded.name}}" name="uploaded[]" value="{{uploaded.name}}">
+                          {% endif %}
+                        <span title="Uploaded by customers: {{uploaded.fullName}}" class="{% if uploaded.name in count.uploaded|keys %}text-bold{% endif %}">{{uploaded.fullName}} {% if uploaded.name in count.uploaded|keys %}({{count.uploaded[uploaded.name]}}){% endif %}</span>
+                       </label>
+                    {% endfor %}
+                  </section>
+              </div>
+            </aside>
+            <!-- filter: Fit -->
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Fit{% if get.fit is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'fit'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-fit" id="data-toggler" data-toggler-title='fit'>{% if get.fit is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'fit'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'fit'} %}{% endif %}</span>
+                </h3>
+                {% if get.fit is defined %}<p class="pt-10 pb-10">Selected({{get.fit|length}}): {% for fit in get.fit %}
+              <span class="selected-item">{{sliderFit[fit]|capitalize}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+              <section data-toggle-show="#sidebar-fit" id="sidebar-fit" class="{% if get %}{% if  get.fit is defined %}sidebar-reveal {% else %}sidebar-hide{% endif %}{% endif %}">
+                    {% for fit, fitValue in sliderFit %}
+                      <label for="fit-{{fit}}" class="checkbox" id="checkbox">
+                          {% if get.fit is defined %}
+                            {% if fit in get.fit %}
+                                <input filter type="checkbox" id="fit-{{fit}}" name="fit[]" value="{{fit}}" checked>
+                            {% else %}
+                                <input filter type="checkbox" id="fit-{{fit}}" name="fit[]" value="{{fit}}">
+                            {% endif %}
+                          {% else %}
+                            <input filter type="checkbox" id="fit-{{fit}}" name="fit[]" value="{{fit}}">
+                          {% endif %}
+                        <span title="Fitness: {{fitValue|capitalize}}" class="{% if fit in count.fit|keys %}text-bold{% endif %}">{{fitValue|capitalize}} {% if fit in count.fit|keys %}({{count.fit[fit]}}){% endif %}</span>
+                       </label>
+                    {% endfor %}
+                  </section>
+              </div>
+            </aside>
+            <!-- filter: Width -->
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Width{% if get.width is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'width'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-width" id="data-toggler" data-toggler-title='width'>{% if get.width is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'width'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'width'} %}{% endif %}</span>
+                </h3>
+                {% if get.width is defined %}<p class="pt-10 pb-10">Selected({{get.width|length}}): {% for width in get.width %}
+              <span class="selected-item">{{sliderWidth[width]|capitalize}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+              <section data-toggle-show="#sidebar-width" id="sidebar-width" class="{% if get %}{% if  get.width is defined %}sidebar-reveal {% else %}sidebar-hide{% endif %}{% endif %}">
+                    {% for width, widthValue in sliderWidth %}
+                      <label for="width-{{width}}" class="checkbox" id="checkbox">
+                          {% if get.width is defined %}
+                            {% if width in get.width %}
+                                <input filter type="checkbox" id="width-{{width}}" name="width[]" value="{{width}}" checked>
+                            {% else %}
+                                <input filter type="checkbox" id="width-{{width}}" name="width[]" value="{{width}}">
+                            {% endif %}
+                          {% else %}
+                            <input filter type="checkbox" id="width-{{width}}" name="width[]" value="{{width}}">
+                          {% endif %}
+                        <span title="Width: {{widthValue|capitalize}}" class="{% if width in count.width|keys %}text-bold{% endif %}">{{widthValue|capitalize}} {% if width in count.width|keys %}({{count.width[width]}}){% endif %}</span>
+                       </label>
+                    {% endfor %}
+                  </section>
+              </div>
+            </aside>
+            <!-- filter: Comfort -->
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Comfort{% if get.comfort is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'comfort'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-comfort" id="data-toggler" data-toggler-title='comfort'>{% if get.comfort is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'comfort'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'comfort'} %}{% endif %}</span>
+                </h3>
+
+                {% if get.comfort is defined %}<p class="pt-10 pb-10">Selected({{get.comfort|length}}): {% for comfort in get.comfort %}
+              <span class="selected-item">{{sliderComfort[comfort]|capitalize}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+              <section data-toggle-show="#sidebar-comfort" id="sidebar-comfort" class="{% if get %}{% if  get.comfort is defined %}sidebar-reveal {% else %}sidebar-hide{% endif %}{% endif %}">
+                    {% for comfort, comfortValue in sliderComfort %}
+                      <label for="comfort-{{comfort}}" class="checkbox" id="checkbox">
+                          {% if get.comfort is defined %}
+                            {% if comfort in get.comfort %}
+                                <input filter type="checkbox" id="comfort-{{comfort}}" name="comfort[]" value="{{comfort}}" checked>
+                            {% else %}
+                                <input filter type="checkbox" id="comfort-{{comfort}}" name="comfort[]" value="{{comfort}}">
+                            {% endif %}
+                          {% else %}
+                            <input filter type="checkbox" id="comfort-{{comfort}}" name="comfort[]" value="{{comfort}}">
+                          {% endif %}
+                        <span title="Comfort: {{comfortValue|capitalize}}" class="{% if comfort in count.comfort|keys %}text-bold{% endif %}">{{comfortValue|capitalize}} {% if comfort in count.comfort|keys %}({{count.comfort[comfort]}}){% endif %}</span>
+                       </label>
+                    {% endfor %}
+                  </section>
+              </div>
+            </aside>
+            <!-- filter: comment -->
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                <span>Comment{% if get.comment is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'comment'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-comment" id="data-toggler" data-toggler-title='comment'>{% if get.comment is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'comment'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'comment'} %}{% endif %}</span>
+                </h3>
+
+                {% if get.comment is defined %}<p class="pt-10 pb-10">Selected({{get.comment|length}}): {% for comment in get.comment %}
+              <span class="selected-item">{{commentPair[comment]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+                <section data-toggle-show="#sidebar-comment" id="sidebar-comment" class="{% if get %}{% if get.comment is defined %}sidebar-reveal {% else %}sidebar-hide{% endif %}{% endif %}">
+                    {% for comment in commentSet %}
+                      <label for="comment-{{comment.name}}" class="checkbox" id="checkbox">
+                          {% if get.comment is defined %}
+                            {% if comment.name in get.comment %}
+                                <input filter type="checkbox" id="comment-{{comment.name}}" name="comment[]" value="{{comment.name}}" checked>
+                            {% else %}
+                                <input filter type="checkbox" id="comment-{{comment.name}}" name="comment[]" value="{{comment.name}}">
+                            {% endif %}
+                          {% else %}
+                            <input filter type="checkbox" id="comment-{{comment.name}}" name="comment[]" value="{{comment.name}}">
+                          {% endif %}
+                        <span title="Comment length of review: {{comment.fullName}}" class="{% if comment.fullName in count.comment|keys %}text-bold{% endif %}">{{comment.fullName}} {% if comment.fullName in count.comment|keys %}({{count.comment[comment.fullName]}}){% endif %}</span>
+                       </label>
+                    {% endfor %}
+                  </section>
+              </div>
+            </aside>
+            <!-- filter: status -->
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+              <span>Status{% if get.like is defined or get.delivery is defined or get.recommend is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'status'} only %}{% endif %}</span>
+            <span class="sidebar-toggler" data-toggler="#sidebar-status" id="data-toggler" data-toggler-title='status'>{% if get.like is defined or get.delivery is defined or get.recommend is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'status'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'status'} %}{% endif %}</span>
+                </h3>
+
+                {% if get.like is defined or get.delivery is defined or get.recommend is defined %}
+                  {% set likeCount = 0 %}
+                  {% set deliveryCount = 0 %}
+                  {% set recommendCount = 0 %}
+
+                  {% if get.like is defined %}{% set likeCount = get.like|length %}{% endif %}
+                  {% if get.delivery is defined %}{% set deliveryCount = get.delivery|length %}{% endif %}
+                  {% if get.recommend is defined %}{% set recommendCount = get.recommend|length %}{% endif %}
+
+                  {% set totalCount = likeCount + deliveryCount + recommendCount %}
+                  <p class="pt-10 pb-10">Selected({{totalCount}}):
+
+                  {% if get.like is defined %}
+                  {% for like in get.like %}
+                    <span class="selected-item">{{likePair[like]}}</span>{% if loop.last %}.{% else %},{% endif %}
+                  {% endfor %}
+                  {% endif %}
+
+                  {% if get.delivery is defined %}
+                  {% for delivery in get.delivery %}
+                    <span class="selected-item">{{deliveryPair[delivery]}}</span>{% if loop.last %}.{% else %},{% endif %}
+                  {% endfor %}
+                  {% endif %}
+
+                  {% if get.recommend is defined %}
+                  {% for recommend in get.recommend %}
+                    <span class="selected-item">{{recommendPair[recommend]}}</span>{% if loop.last %}.{% else %},{% endif %}
+                  {% endfor %}
+                  {% endif %}
+                  </p>
+                {% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+              <section data-toggle-show="#sidebar-status" id="sidebar-status" class="{% if get %}{% if get.like is defined or get.delivery is defined or get.recommend is defined %}sidebar-reveal {% else %}sidebar-hide{% endif %}{% endif %}">
+                    {% for like in likeSet %}
+                      <label for="like-{{like.name}}" class="checkbox" id="checkbox">
+                          {% if get.like is defined %}
+                            {% if like.name in get.like %}
+                                <input filter type="checkbox" id="like-{{like.name}}" name="like[]" value="{{like.name}}" checked>
+                            {% else %}
+                                <input filter type="checkbox" id="like-{{like.name}}" name="like[]" value="{{like.name}}">
+                            {% endif %}
+                          {% else %}
+                            <input filter type="checkbox" id="like-{{like.name}}" name="like[]" value="{{like.name}}">
+                          {% endif %}
+                        <span title="like review: {{like.fullName}}" class="{% if like.name in count.like|keys %}text-bold{% endif %}">{{like.fullName}} {% if like.name in count.like|keys %}({{count.like[like.name]}}){% endif %}</span>
+                       </label>
+                    {% endfor %}
+                    {% for delivery in deliverySet %}
+                      <label for="delivery-{{delivery.name}}" class="checkbox" id="checkbox">
+                          {% if get.delivery is defined %}
+                            {% if delivery.name in get.delivery %}
+                                <input filter type="checkbox" id="delivery-{{delivery.name}}" name="delivery[]" value="{{delivery.name}}" checked>
+                            {% else %}
+                                <input filter type="checkbox" id="delivery-{{delivery.name}}" name="delivery[]" value="{{delivery.name}}">
+                            {% endif %}
+                          {% else %}
+                            <input filter type="checkbox" id="delivery-{{delivery.name}}" name="delivery[]" value="{{delivery.name}}">
+                          {% endif %}
+                        <span title="delivery review: {{delivery.fullName}}" class="{% if delivery.name in count.delivery|keys %}text-bold{% endif %}">{{delivery.fullName}} {% if delivery.name in count.delivery|keys %}({{count.delivery[delivery.name]}}){% endif %}</span>
+                       </label>
+                    {% endfor %}
+                    {% for recommend in recommendSet %}
+                      <label for="recommend-{{recommend.name}}" class="checkbox" id="checkbox">
+                          {% if get.recommend is defined %}
+                            {% if recommend.name in get.recommend %}
+                                <input filter type="checkbox" id="recommend-{{recommend.name}}" name="recommend[]" value="{{recommend.name}}" checked>
+                            {% else %}
+                                <input filter type="checkbox" id="recommend-{{recommend.name}}" name="recommend[]" value="{{recommend.name}}">
+                            {% endif %}
+                          {% else %}
+                            <input filter type="checkbox" id="recommend-{{recommend.name}}" name="recommend[]" value="{{recommend.name}}">
+                          {% endif %}
+                        <span title="recommend review: {{recommend.fullName}}" class="{% if recommend.name in count.recommend|keys %}text-bold{% endif %}">{{recommend.fullName}} {% if recommend.name in count.recommend|keys %}({{count.recommend[recommend.name]}}){% endif %}</span>
+                       </label>
+                    {% endfor %}
+                  </section>
+              </div>
+            </aside>
+
+            <!-- filter: Brand -->
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+
+                <h3 class="d-flex justify-content-between">
+                  <span>Brand{% if get.brand is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'brand'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-brand" id="data-toggler" data-toggler-title='brand'>{% if get.brand is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'brand'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'brand'} %}{% endif %}</span>
+                </h3>
+
+                {% if get.brand is defined %}<p class="pt-10 pb-10">Selected({{get.brand|length}}): {% for brand in get.brand %}
+                <span class="selected-item">{{brandPair[brand]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+                <section data-toggle-show="#sidebar-brand" id="sidebar-brand" class="{% if get.brand is defined %}sidebar-reveal
+                {% else %}sidebar-hide{% endif %}">
+                    {% for brand in brands %}
+                      <label for="{{brand.name}}" class="checkbox" id="checkbox">
+                        {% if get.brand is defined %}
+                          {% if brand.name in get.brand %}
+                            <input filter type="checkbox" id="{{brand.name}}" name="brand[]" value="{{brand.name}}" checked>
+                          {% else %}
+                            <input filter type="checkbox" id="{{brand.name}}" name="brand[]" value="{{brand.name}}">
+                          {% endif %}
+                        {% else %}
+                          <input filter type="checkbox" id="{{brand.name}}" name="brand[]" value="{{brand.name}}">
+                        {% endif %}
+
+                      <span class="{{ brand.name in count.brand|keys ? 'text-bold'}}">
+                        <a class="img-tooltip {{ brand.name in count.brand|keys  ? 'text-bold'}}">{{brand.fullName}}<span><img src="{{asset('build/images/store/color-patches/' ~ brand.name  ~ '.webp')}}"></span></a>{{ brand.name in count.brand|keys  ? ' (' ~ count.brand[brand.name] ~ ')'}}
+                      </span>
+                      </label>
+                    {% endfor %}
+                </section>
+              </div>
+            </aside>
+            <!-- filter: category -->
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Category{% if get.category is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'category'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-category" id="data-toggler" data-toggler-title='category'>{% if get.category is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'category'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'category'} %}{% endif %}</span>
+                </h3>
+
+              {% if get.category is defined %}<p class="pt-10 pb-10">Selected({{get.category|length}}): {% for category in get.category %}
+              <span class="selected-item">{{categoryPair[category]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+                <section data-toggle-show="#sidebar-category" id="sidebar-category"
+                class="{% if get.category is defined %}sidebar-reveal
+                {% else %}sidebar-hide{% endif %}">
+                {% for category in categories %}
+                  <label for="{{category.name}}" class="checkbox" id="checkbox">
+                    {% if get.category is defined %}
+                        {% if category.name in get.category %}
+                            <input filter type="checkbox" id="{{category.name}}" name="category[]" value="{{category.name}}" checked>
+                        {% else %}
+                            <input filter type="checkbox" id="{{category.name}}" name="category[]" value="{{category.name}}">
+                        {% endif %}
+                    {% else %}
+                      <input filter type="checkbox" id="{{category.name}}" name="category[]" value="{{category.name}}">
+                    {% endif %}
+                  <span title="Category: {{category.name}}" class="{% if category.name in count.category|keys %}text-bold{% endif %}">{{category.fullName}}{% if category.name in count.category|keys %} ({{count.category[category.name]}}){% endif %}</span>
+                   </label>
+                {% endfor %}
+                </section>
+              </div>
+            </aside>
+            <!-- filter: occasion -->
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Occasion{% if get.occasion is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'occasion'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-occasion" id="data-toggler" data-toggler-title='occasion'>{% if get.occasion is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'occasion'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'occasion'} %}{% endif %}</span>
+                </h3>
+                {% if get.occasion is defined %}<p class="pt-10 pb-10">Selected({{get.occasion|length}}): {% for occasion in get.occasion %}
+                <span class="selected-item">{{occasionPair[occasion]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+                <section data-toggle-show="#sidebar-occasion" id="sidebar-occasion"
+                class="{% if get.occasion is defined %}sidebar-reveal{% else %}sidebar-hide{% endif %}">
+                {% for occasion in occasions %}
+                  <label for="{{occasion.name}}" class="checkbox" id="checkbox">
+                      {% if get.occasion is defined %}
+                        {% if occasion.name in get.occasion %}
+                            <input filter type="checkbox" id="{{occasion.name}}" name="occasion[]" value="{{occasion.name}}" checked>
+                        {% else %}
+                            <input filter type="checkbox" id="{{occasion.name}}" name="occasion[]" value="{{occasion.name}}">
+                        {% endif %}
+                      {% else %}
+                        <input filter type="checkbox" id="{{occasion.name}}" name="occasion[]" value="{{occasion.name}}">
+                      {% endif %}
+                    <span title="Occasion: {{occasion.fullName}}" class="{% if occasion.name in count.occasion|keys %}text-bold{% endif %}">{{occasion.fullName}} {% if occasion.name in count.occasion|keys %}({{count.occasion[occasion.name]}}){% endif %}</span>
+                   </label>
+                {% endfor %}
+                </section>
+              </div>
+            </aside>
+            <!-- filter: type -->
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Type{% if get.type is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'type'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-type" id="data-toggler" data-toggler-title='type'>{% if get.type is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'type'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'type'} %}{% endif %}</span>
+                </h3>
+
+                {% if get.type is defined %}<p class="pt-10 pb-10">Selected({{get.type|length}}): {% for type in get.type %}
+                <span class="selected-item">{{typePair[type]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+                <section data-toggle-show="#sidebar-type" id="sidebar-type" class="{% if get %}{% if get.type is defined %}sidebar-reveal {% else %}sidebar-hide{% endif %}{% endif %}">
+                    {% for type in types %}
+                      <label for="{{type.name}}" class="checkbox" id="checkbox">
+                          {% if get.type is defined %}
+                            {% if type.name in get.type %}
+                                <input filter type="checkbox" id="{{type.name}}" name="type[]" value="{{type.name}}" checked>
+                            {% else %}
+                                <input filter type="checkbox" id="{{type.name}}" name="type[]" value="{{type.name}}">
+                            {% endif %}
+                          {% else %}
+                            <input filter type="checkbox" id="{{type.name}}" name="type[]" value="{{type.name}}">
+                          {% endif %}
+                        <span title="Type: {{type.fullName}}" class="{% if type.name in count.type|keys %}text-bold{% endif %}">{{type.fullName}} {% if type.name in count.type|keys %}({{count.type[type.name]}}){% endif %}</span>
+                       </label>
+                    {% endfor %}
+                  </section>
+              </div>
+            </aside>
+            <!-- filter: fabrics -->
+            <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                <span>Fabrics{% if get.fabrics is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'fabrics'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-fabrics" id="data-toggler" data-toggler-title='fabrics'>{% if get.fabrics is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'fabrics'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'fabrics'} %}{% endif %}</span>
+                </h3>
+
+                {% if get.fabrics is defined %}<p class="pt-10 pb-10">Selected({{get.fabrics|length}}): {% for fabrics in get.fabrics %}
+                <span class="selected-item">{{fabricPair[fabrics]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Hidden checkboxes -->
+                <section data-toggle-show="#sidebar-fabrics" id="sidebar-fabrics"
+                class="{% if get.fabrics is defined %}sidebar-reveal
+                {% else %}sidebar-hide{% endif %}">
+                {% for fabric in fabrics %}
+                  <label for="{{fabric.name}}" class="checkbox" id="checkbox">
+                      {% if get.fabrics is defined %}
+                          {% if fabric.name in get.fabrics %}
+                              <input filter type="checkbox" id="{{fabric.name}}" name="fabrics[]" value="{{fabric.name}}" checked>
+                          {% else %}
+                              <input filter type="checkbox" id="{{fabric.name}}" name="fabrics[]" value="{{fabric.name}}">
+                          {% endif %}
+                      {% else %}
+                        <input filter type="checkbox" id="{{fabric.name}}" name="fabrics[]" value="{{fabric.name}}">
+                      {% endif %}
+                    <span title="fabric: {{fabric.fullName}}" class="{% if fabric.name in count.fabrics|keys %}text-bold{% endif %}">{{fabric.fullName}} {% if fabric.name in count.fabrics|keys %} ({{count.fabrics[fabric.name]}}){% endif %}</span>
+                   </label>
+                {% endfor %}
+                </section>
+              </div>
+            </aside>
+            <!-- filter: color -->
+            <aside class="ps-widget--sidebar" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Colors{% if get.color is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'color'} only %}{% endif %}</span>
+                  <span class="sidebar-toggler" data-toggler="#sidebar-color" id="data-toggler" data-toggler-title='color'>{% if get.color is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'color'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'color'} %}{% endif %}</span>
+                </h3>
+
+                {% if get.color is defined %}<p class="pt-10 pb-10">Selected({{get.color|length}}): {% for color in get.color %}
+                <span class="selected-item">{{colorPair[color]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+              </div>
+              <div class="ps-widget__content">
+                <!-- Visible checkboxes -->
+                <section>
+                  <ul class="ps-list--color pl-10 m-0" id="list-color">
+                  {% for color in colors|slice(0, 20) %}
+                    {# The following can be used to highlight the selected color
+                    with a square border for more visibility.
+                    {% if get.color is defined %}{% if color.name in get.color %}<span class="highlight-color"></span>{% endif %}{% endif %} #}
+                  <section class="hover-tooltip {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}hover-disabled{% endif %}{% endfor %}{% endif %}">
+                    {# Strike colors which have been exluded.
+                    Ex. If 'Grey' is excluded, 'Grey', 'Light Grey' & 'Dark Grey'
+                    will all be striked out #}
+                    {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}<span class="strike"></span>{% endif %}{% endfor %}{% endif %}
+                    <li id="{{color.name}}"><input filter type="checkbox" name="color[]" value="{{color.name}}" hidden {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}disabled{% endif %}{% endfor %}{% endif %}>
+                    <span class="color-count">{% if color.name in count.color|keys %}({{count.color[color.name]}}){% endif %}</span></li>
+
+                    <div class="top {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}top-disabled{% endif %}{% endfor %}{% endif %}"><p>{{color.fullName}}{% if color.name in count.color|keys %} ({{count.color[color.name]}}){% endif %}</p><i></i></div>
+                  </section>
+                  {% endfor %}
+                  </ul>
+                </section>
+                <!-- Hidden checkboxes -->
+                <section data-toggle-show="#sidebar-color" id="sidebar-color" class="{% if get.color is defined or get.color_exclude is defined %}sidebar-reveal
+                {% else %}sidebar-hide{% endif %}">
+                  <ul class="ps-list--color pl-10" id="list-color">
+                  {% for color in colors|slice(20, colors|length) %}
+                    <section class="hover-tooltip {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}hover-disabled{% endif %}{% endfor %}{% endif %}">
+                      {# Strike colors which have been exluded.
+                      Ex. If 'Grey' is excluded, 'Grey', 'Light Grey' & 'Dark Grey'
+                      will all be striked out #}
+                      {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}<span class="strike"></span>{% endif %}{% endfor %}{% endif %}
+                      <li id="{{color.name}}"><input filter type="checkbox" name="color[]" value="{{color.name}}" hidden {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}disabled{% endif %}{% endfor %}{% endif %}><span class="color-count">{% if color.name in count.color|keys %}({{count.color[color.name]}}){% endif %}</span> </li>
+                    <div class="top {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}top-disabled{% endif %}{% endfor %}{% endif %}"><p>{{color.fullName}}{% if color.name in count.color|keys %} ({{count.color[color.name]}}){% endif %}</p><i></i></div></section>
+                  {% endfor %}
+                  </ul>
+                  <!-- Exclude colors -->
+                  <div class="mb-10">
+                    <label for="filter_form_color_exclude">Exclude colors:</label>
+                    <select id="filter_form_color_exclude" name="color_exclude[]" aria-label="Color" aria-describedby="Color" multiple="multiple">
+                      {% for color in colors %}
+                        {% if get.color is defined %}
+                          {% if color.name not in get.color %}
+                            <option value="{{color.name}}"
+                            {{get.color_exclude is defined ? color.name in get.color_exclude ? 'selected' }}>{{color.fullName}}</option>
+                          {% endif %}
+                        {% else %}
+                            <option value="{{color.name}}"
+                            {{get.color_exclude is defined ? color.name in get.color_exclude ? 'selected' }}>{{color.fullName}}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                  </div>
+                </section>
+              </div>
+            </aside>
+            <!-- filter: size -->
+            <aside class="ps-widget--sidebar" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Size{% if get.size is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'size'} only %}{% endif %}</span>
+                </h3>
+
+                {% if get.size is defined %}<p class="pt-10 pb-10">Selected({{get.size|length}}): {% for size in get.size %}
+                  <span class="selected-item">{{sizePair[size]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+
+              </div>
+              <div class="ps-widget__content">
+                <table class="table ps-table--size">
+                  <tbody>
+                    <p class="mb-20">Kids' sizes</p>
+                    <tr>
+                      {% for size in kidSizes %}
+                      <td title="Size: {{size.name}}">{{size.name}}<input filter type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.fullName}}" hidden></td>
+                      {% endfor %}
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table ps-table--size">
+                  <tbody>
+                    <p class="mb-20">Adults' sizes</p>
+                    <!-- 1st adult size row -->
+                    <tr>
+                      {% for size in adultSizes %}
+                    {% if loop.index < 6 %}<td title="Size: {{size.name}}">{{size.name}}<input filter type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.fullName}}" hidden></td>{% endif %}
+                      {% endfor %}
+                    </tr>
+
+                    <!-- 2nd adult size row -->
+                    <tr>
+                      {% for size in adultSizes %}
+                    {% if loop.index > 5 and loop.index < 11 %}<td title="Size: {{size.name}}">{{size.name}}<input filter type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.fullName}}" hidden></td>{% endif %}
+                      {% endfor %}
+                    </tr>
+
+                    <!-- 3rd adult size row -->
+                    <tr>
+                      {% for size in adultSizes %}
+                    {% if loop.index > 10 %}<td title="Size: {{size.name}}">{{size.name}}<input filter type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.fullName}}" hidden></td>{% endif %}
+                      {% endfor %}
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table ps-table--size">
+                  <tbody>
+                    <p class="mb-20">Socks' sizes</p>
+                    <!-- 1st  sock size row -->
+                    <tr>
+                      {% for size in sockSizes %}
+                          {% if loop.index > 0 and loop.index < 4 %}
+                          <td title="Size: {{size.fullName}}">{{size.fullName}}<input filter type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.name}}" hidden></td>
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                    <!-- 2nd  sock size row -->
+                    <tr>
+                      {% for size in sockSizes %}
+                          {% if loop.index > 3 %}
+                          <td title="Size: {{size.fullName}}">{{size.fullName}}<input filter type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.name}}" hidden></td>
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </aside>
+            <!-- filter: price range -->
+            <aside class="ps-widget--sidebar ps-widget--filter" parent-widget>
+              <div class="ps-widget__header">
+                <h3 class="d-flex justify-content-between">
+                  <span>Price Range{% if get.price_range is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'price_range'} only %}{% endif %}</span>
+                </h3>
+              </div>
+              <div class="ps-widget__content" id='pricing-div'>
+                <div class="">
+                  <!-- Visible checkboxes -->
+                  <section>
+                    {% for range in price_range|keys %}
+                    <label for="{{range}}" class="checkbox" id="checkbox">
+                    <input filter
+                           type="checkbox"
+                           id="{{range}}"
+                           name="price_range[]"
+                           value="{{price_range[range].value}}"
+                           {% if get.price_range is defined %}{% if price_range[range].value in get.price_range %}checked{% endif %}{% endif %}
+                           >
+                     <span title="Price range : {{price_range[range].label}}" class="{% if get.price_range is defined %}{% if price_range[range].value in get.price_range %}text-bold{% endif %}{% endif %}">{{price_range[range].label}}</span>
+                    </label>
+                    {% endfor %}
+                  </section>
+                </div>
+              </div>
+            </aside>
+
+            {% if get.q is defined %}
+            <input name="q" value="{{get["q"]}}" hidden=hidden>
+            {% endif %}
+
+            {% if get.product is defined and get.product_name %}
+            <input name="product" value="{{get.product}}" hidden=hidden>
+            <input name="product_name" value="{{get.product_name}}" hidden=hidden>
+            {% endif %}
+
+            {% if get.brand is defined and
+                  get.brand|length is same as(1) and
+                  get.brand_name is defined %}
+              <input name="brand_name" value="{{get.brand_name}}" hidden=hidden>
+              </h4>
+            {% endif %}
+
+            {% if get.customer is defined and get.customer_name %}
+            <input name="customer" value="{{get.customer}}" hidden=hidden>
+            <input name="customer_name" value="{{get.customer_name}}" hidden=hidden>
+            {% endif %}
+
+            <input name="order" value="{% if get %}{% if get.order %}{{get.order}}{% else %}pr.name-asc{% endif %}{% else %}pr.name-asc{% endif %}" id="filter-order" hidden=hidden>
+        </form>
+        <!-- Middle reviews column -->
+        <div class="products-contents" ps-products>
+            <div class="ps-product-action justify-content-end">
+              <div class="ps-product__filter">
+                <select class="ps-select selectpicker" name="order" id="sort-by">
+                  {% for sort in sorting %}
+                  <option
+                    value="{{sort.name}}"
+                    {% if get.order %}
+                    {% if sort.name is same as(get.order) %}
+                    selected
+                    {% endif %}
+                    {% endif %}>{{sort.fullName}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="ps-product-results row">
+              <div class="col-3">
+                <p>Result:{% if reviews %} {{ reviews.getTotalItemCount }}{% if reviews.getTotalItemCount == 1 %} review{% else %} reviews{% endif %}{% else %} No review found. {% endif %}</p>
+              </div>
+              <div class="col-6 text-center">
+              {% if get.product is defined and get.product_name %}
+                <h4 class="review-filter pb-20"><span>Product: {{get.product_name}}</span>
+                {% include '__icons/q-t/_square-delete.html.twig' with {'dataset': 10, 'color': 'fill-red','width': 30,
+                'height': 30, 'label':10} only %}
+                </h4>
+              {% endif %}
+
+              {% if get.brand is defined and
+                    get.brand|length is same as(1) and
+                    get.brand_name is defined %}
+                <h4 class="review-filter pb-20">
+                  <img class="" src="{{asset('build/images/store/color-patches/' ~ get.brand.0 ~ '.webp') }}"
+                      alt="image: {{get.brand_name}}">
+                  <span>{{get.brand_name}}</span>
+                {% include '__icons/q-t/_square-delete.html.twig' with {'dataset': 10, 'color': 'fill-red','width': 30,
+                'height': 30, 'label':10} only %}
+                </h4>
+              {% endif %}
+
+              {% if get.customer is defined and get.customer_name %}
+                <h4 class="review-filter pb-20"><span>Reviewer: {{get.customer_name}}</span>
+                {% include '__icons/q-t/_square-delete.html.twig' with {'dataset': 10, 'color': 'fill-red','width': 30,
+                'height': 30, 'label':10} only %}
+                </h4>
+              {% endif %}
+              </div>
+            </div>
+            <div class="ps-product__columns">
+              {% if reviews %}
+              {% for review in reviews.items %}
+              <div class="ps-review {{reviewer ? reviewer.id == review.id ? 'reviewer--review'}}" id="ps-review">
+                <div class="ps-review__content">
+                  <header class="d-flex justify-content-between">
+                    <div class="col-3">
+                     {% if review.rating %}
+                      {% for i in 1..review.rating %}
+                      {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-yellow', 'label': 'Rating: ' ~ review.rating ~ '/5'} only %}
+                      {% endfor %}
+                     {% endif %}
+                     </div>
+                    <div class="col d-flex justify-content-center align-items-center flex-row">
+                      <a title="List all reviews for {{review.brand_full}} brand" class="mr-10" href="{{ path('store_reviews', { 'brands[]': review.brand, 'brand_name': review.brand_full}) }}">
+                        <img class="review-header-img" src="{{asset('build/images/store/color-patches/' ~ review.brand ~ '.webp') }}"
+                            alt="image: {{review.brand_full}}">
+                       </a>
+                      <a title="List all reviews for {{review.brand_full}} {{review.name|title}}" href="{{ path('store_reviews', {'product': nzo_encrypt(review.productId), 'product_name': review.brand_full ~ ' ' ~ review.name|title}) }}">
+                      <h5 class="product">
+                        <span {% if search %}data-search-terms="{{search}}"
+                            data-text="{{review.name|title}}"
+                            id="text-highlight" {% endif %}> {{review.name|title}}</span>
+                      </h5></a>
+
+                     </div>
+                    <div class="col-3 text-right">
+                      <p title="{% if review.updated > review.created %}
+                    Created on {{review.created}} and updated {{review.updated_date|ago}}.
+                    {% else %}
+                      Created on {{review.created_date}}.
+                  {% endif %}
+                      ">
+                      {{review.updated_date ? review.updated_date : review.created_date }}
+                      {% if review.updated > review.created %}
+                       <span>{% include '__icons/a-d/_check-certificate-2.html.twig' with { 'class': 'fill-success', 'label': 'Review updated ' ~ review.updated_date|ago  ,'width': 30, 'height': 30} only %}</span>
+                      {% endif %}
+                      </p>
+                    </div>
+                  </header>
+                  <h5 class="pb-20" {% if search %}data-search-terms="{{search}}"
+                      data-text="{{review.headline}}"
+                      id="text-highlight" {% endif %}>{{review.headline}}</h5>
+                  <div class="d-flex justify-content-between">
+                    <div class="col-4">
+                      <p {% if search %}data-search-terms="{{search}}"
+                          data-text="{{review.comment|nl2br}}"
+                          id="text-highlight" {% endif %}>{{review.comment|nl2br}}</p>
+                      <div class="ribbon-reviewer">
+                        <span>
+                          <a title="List all reviews by {{review.firstName}} {{review.lastName}}" {% if search %}data-search-terms="{{search}}"
+                              data-text="{{review.firstName}} {{review.lastName}}"
+                            id="text-highlight" {% endif %} class="reviewer" href="{{ path('store_reviews', {'customer': nzo_encrypt(review.userId), 'customer_name':  review.firstName ~ ' ' ~ review.lastName }) }}">
+                          {{review.firstName}} {{review.lastName}}
+                          </a>
+                        </span>
+                        <div class="review-location">
+                            <span class="review-country hover-tooltip">
+                              {{review.country}}
+                              {% if review.country %}
+                                {% if review.country|lower in countries|keys %}
+                                <p class="top">
+                                  {{countries[review.country|lower].emoji}} {{countries[review.country|lower].name}}
+                                <i></i></p>
+                                {% endif %}
+                              {% endif %}
+                              </span>
+                              <a title="List all reviews by {{review.firstName}} {{review.lastName}}" class="reviewer-small" href="{{ path('store_reviews', {'customer': nzo_encrypt(review.userId), 'customer_name':  review.firstName ~ ' ' ~ review.lastName }) }}">
+                                    &nbsp;&nbsp;&nbsp; {{review.reviewerCount}} {{review.reviewerCount > 1 ? 'reviews' :  'review' }}
+                              </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col">
+                    {% set image = 'image' %}
+                    {% if review.image %}
+                      <div class="row">
+                        <div class="col text-center">
+                          <!-- Thumbnail -->
+                          <img class="review-img"
+                              src="{{asset(review.image) }}"
+                              alt="<span class='d-flex justify-content-between'>
+                                    <span class='text-bold'>{{review.headline}}</span>
+                                     <span class='text-yellow text-bold'>
+                                      {% for i in 1..review.rating %}★{% endfor %}
+                                      </span>
+                                  </span>
+                                  <br> {{review.comment|nl2br}}
+                                  <br>
+                                  <span class='d-flex justify-content-end pt-2'>
+                                  - {{review.firstName}} {{review.lastName}}
+                                  </span>"
+                              title="Click to enlarge"
+                              zoombox>
+                        </div>
+                      </div>
+                    {% elseif review.image2 %}
+                      {% set image = 'image2' %}
+                      <div class="row">
+                        <div class="col text-center">
+                          <!-- Thumbnail -->
+                          <img class="review-img"
+                              src="{{asset(review.image2) }}"
+                              alt="<span class='d-flex justify-content-between'>
+                                    <span class='text-bold'>{{review.headline}}</span>
+                                     <span class='text-yellow text-bold'>
+                                      {% for i in 1..review.rating %}★{% endfor %}
+                                      </span>
+                                  </span>
+                                  <br> {{review.comment|nl2br}}
+                                  <br>
+                                  <span class='d-flex justify-content-end pt-2'>
+                                  - {{review.firstName}} {{review.lastName}}
+                                  </span>"
+                              title="Click to enlarge"
+                              zoombox>
+                        </div>
+                      </div>
+                    {% elseif review.image3 %}
+                      {% set image = 'image3' %}
+                      <div class="row">
+                        <div class="col text-center">
+                          <!-- Thumbnail -->
+                          <img class="review-img"
+                              src="{{asset(review.image3) }}"
+                              alt="<span class='d-flex justify-content-between'>
+                                    <span class='text-bold'>{{review.headline}}</span>
+                                     <span class='text-yellow text-bold'>
+                                      {% for i in 1..review.rating %}★{% endfor %}
+                                      </span>
+                                  </span>
+                                  <br> {{review.comment|nl2br}}
+                                  <br>
+                                  <span class='d-flex justify-content-end pt-2'>
+                                  - {{review.firstName}} {{review.lastName}}
+                                  </span>"
+                              title="Click to enlarge"
+                              zoombox>
+                        </div>
+                      </div>
+                    {% elseif review.image4 %}
+                      {% set image = 'image4' %}
+                      <div class="row">
+                        <div class="col text-center">
+                          <!-- Thumbnail -->
+                          <img class="review-img"
+                              src="{{asset(review.image4) }}"
+                              alt="<span class='d-flex justify-content-between'>
+                                    <span class='text-bold'>{{review.headline}}</span>
+                                     <span class='text-yellow text-bold'>
+                                      {% for i in 1..review.rating %}★{% endfor %}
+                                      </span>
+                                  </span>
+                                  <br> {{review.comment|nl2br}}
+                                  <br>
+                                  <span class='d-flex justify-content-end pt-2'>
+                                  - {{review.firstName}} {{review.lastName}}
+                                  </span>"
+                              title="Click to enlarge"
+                              zoombox>
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    {% if review.image2 or review.image3 or review.image4 %}
+                    <div class="row justify-content-center mt-2">
+                      {% if review.image2 and image is not same as('image2') %}
+                        <!-- Thumbnail -->
+                      <img class="review-img-small {% if review.image3 or  review.image4 %}mr-10{% endif %}"
+                            src="{{asset(review.image2) }}"
+                            alt="<span class='d-flex justify-content-between'>
+                                  <span class='text-bold'>{{review.headline}}</span>
+                                   <span class='text-yellow text-bold'>
+                                    {% for i in 1..review.rating %}★{% endfor %}
+                                    </span>
+                                </span>
+                                <br> {{review.comment|nl2br}}
+                                <br>
+                                <span class='d-flex justify-content-end pt-2'>
+                                - {{review.firstName}} {{review.lastName}}
+                                </span>"
+                            title="Click to enlarge"
+                            zoombox>
+                      {% endif %}
+                      {% if review.image3 and image is not same as('image3') %}
+                        <!-- Thumbnail -->
+                        <img class="review-img-small {% if review.image4 %}mr-10{% endif %}"
+                            src="{{asset(review.image3) }}"
+                            alt="<span class='d-flex justify-content-between'>
+                                  <span class='text-bold'>{{review.headline}}</span>
+                                   <span class='text-yellow text-bold'>
+                                    {% for i in 1..review.rating %}★{% endfor %}
+                                    </span>
+                                </span>
+                                <br> {{review.comment|nl2br}}
+                                <br>
+                                <span class='d-flex justify-content-end pt-2'>
+                                - {{review.firstName}} {{review.lastName}}
+                                </span>"
+                            title="Click to enlarge"
+                            zoombox>
+                      {% endif %}
+                      {% if review.image4 and image is not same as('image4') %}
+                        <!-- Thumbnail -->
+                        <img class="review-img-small "
+                            src="{{asset(review.image4) }}"
+                            alt="<span class='d-flex justify-content-between'>
+                                  <span class='text-bold'>{{review.headline}}</span>
+                                   <span class='text-yellow text-bold'>
+                                    {% for i in 1..review.rating %}★{% endfor %}
+                                    </span>
+                                </span>
+                                <br> {{review.comment|nl2br}}
+                                <br>
+                                <span class='d-flex justify-content-end pt-2'>
+                                - {{review.firstName}} {{review.lastName}}
+                                </span>"
+                            title="Click to enlarge"
+                            zoombox>
+                      {% endif %}
+                    </div>
+                    {% endif %}
+
+                    </div>
+
+                    <div class="col-5">
+                      <!-- Fit -->
+                      <div class="row justify-content-center mb-4" id="slider-square">
+                        <div class="col-2">
+                          <span>Fit:</span>
+                        </div>
+                        <div class="col-9">
+                          <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                           <div class="noUi-base">
+                             <div class="noUi-connects"></div>
+                             <div class="noUi-origin" style="transform: translate(-{{translate[review.fit]}}%, 0px); z-index: 4;">
+                               <div title="Fit: {{sliderFit[review.fit]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                                 <div class="noUi-touch-area"></div>
+                               </div>
+                             </div>
+                           </div>
+                           <div class="noUi-pips noUi-pips-horizontal">
+                           {% set x = 0 %}
+                           {% for fit in 1..5 %}
+                             <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(fit == 1 or fit == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                             <div class="noUi-value noUi-value-horizontal noUi-value-{{(fit == 1 or fit == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderFit[fit]}}</div>
+                             {% set x = x + 25 %}
+                           {% endfor %}
+                           </div>
+                         </div>
+                        </div>
+                      </div>
+                      <!-- Width -->
+                      <div class="row justify-content-center mb-4" id="slider-square">
+                        <div class="col-2">
+                          <span>Width:</span>
+                        </div>
+                       <div class="col-9">
+                         <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                           <div class="noUi-base">
+                             <div class="noUi-connects"></div>
+                             <div class="noUi-origin" style="transform: translate(-{{translate[review.width]}}%, 0px); z-index: 4;">
+                               <div title="Width: {{sliderWidth[review.width]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                                 <div class="noUi-touch-area"></div>
+                               </div>
+                             </div>
+                           </div>
+                           <div class="noUi-pips noUi-pips-horizontal">
+                           {% set x = 0 %}
+                           {% for width in 1..5 %}
+                             <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(width == 1 or width == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                             <div class="noUi-value noUi-value-horizontal noUi-value-{{(width == 1 or width == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderWidth[width]}}</div>
+                             {% set x = x + 25 %}
+                           {% endfor %}
+                           </div>
+                         </div>
+                       </div>
+                      </div>
+                      <!-- Comfort -->
+                      <div class="row justify-content-center mb-4" id="slider-square">
+                        <div class="col-2">
+                          <span>Comfort:</span>
+                        </div>
+                       <div class="col-9">
+                         <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                           <div class="noUi-base">
+                             <div class="noUi-connects"></div>
+                             <div class="noUi-origin" style="transform: translate(-{{translate[review.comfort]}}%, 0px); z-index: 4;">
+                               <div title="Comfort: {{sliderComfort[review.comfort]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                                 <div class="noUi-touch-area"></div>
+                               </div>
+                             </div>
+                           </div>
+                           <div class="noUi-pips noUi-pips-horizontal">
+                             {% set x = 0 %}
+                             {% for comfort in 1..5 %}
+                               <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(comfort == 1 or comfort == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                               <div class="noUi-value noUi-value-horizontal noUi-value-{{(comfort == 1 or comfort == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderComfort[comfort]}}</div>
+                               {% set x = x + 25 %}
+                             {% endfor %}
+                           </div>
+                         </div>
+                       </div>
+                      </div>
+                    </div>
+                  </div>
+                  <footer class="d-flex justify-content-between mt-20">
+                    <div class="col-4 d-flex flex-column">
+                      <div class="col d-flex flex-row">
+                        {% for thumbnail in review.thumbnails %}
+                        <a href="{{ path(
+                                    'store_details',
+                                    { 'brand': review.brand_full|slug,
+                                      'name': (review.name|title)|slug,
+                                      'id': nzo_encrypt(thumbnail.productDataId)
+                                    }) }}"
+                           target="_self"
+                           title="Visit {{review.name|title}}">
+                        <div class="col card text-center mx-1 reviewer-thumbnail" id="reviewer-thumbnail">
+                          <img src="{{asset(thumbnail.imageMedium)}}" alt="reviewer thumbnail {{loop.index}}" class="card-img-top">
+                          <div class="">
+                            <p class="card-text text-center"><span class="text-bold">{{thumbnail.colors_full}}</span></p>
+                          </div>
+                        </div>
+                        </a>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <div class="col-5 row align-items-end" review-status>
+                      <div class="row text-center">
+                        <div class="col">
+                          <h6>Like</h6>
+                          <p class="text-center">
+                          {% if review.like %}
+                           {% include '__icons/i-l/_love.html.twig' with { 'class': 'fill-main', 'label': 'Like the product', 'class': 'fill-main', 'id':'like-icon' ,'width': 40, 'height': 40} only %}
+                          {% elseif review.like is same as(null) %}
+                            {% include '__icons/m-p/_minus.html.twig' with {
+                           'label': 'Not reviewed', 'class': 'fill-grey' ,'width': 40, 'height': 40} only %}
+                          {% elseif review.like is same as(false) %}
+                             {% include '__icons/i-l/_love_not.html.twig' with { 'class': 'fill-yellow',  'label': 'Dislike the product', 'class': 'fill-yellow', 'id':'dislike-icon' ,'width': 40, 'height': 40} only %}
+                          {% endif %}
+                          </p>
+                        </div>
+
+                        <div class="col">
+                          <h6>Delivery</h6>
+                          <p class="text-center">
+                            {% if review.delivery %}
+                             {% include '__icons/a-d/_delivery.html.twig' with { 'class': 'fill-main',  'label': 'Delivery timely', 'class': 'fill-main', 'id':'helpful-icon' ,'width': 50, 'height': 50} only %}
+                            {% elseif review.delivery is same as(null) %}
+                              {% include '__icons/m-p/_minus.html.twig' with {
+                             'label': 'Not reviewed', 'class': 'fill-grey' ,'width': 40, 'height': 40} only %}
+                            {% elseif review.delivery is same as(false) %}
+                              {% include '__icons/a-d/_delivery.html.twig' with {
+                              'class': 'fill-yellow', 'label': 'Delivery disappointing', 'class': 'fill-yellow', 'id':'not-helpful-icon' ,'width': 50, 'height': 50} only %}
+                            {% endif %}
+                          </p>
+                        </div>
+
+                        <div class="col">
+                          <h6>Recommend</h6>
+                          <p class="text-center">
+                            {% if review.recommend %}
+                             {% include '__icons/m-p/_others_solid.html.twig' with { 'label': 'Would recommend to others', 'class': 'fill-main', 'id':'recommend-icon' ,'width': 40, 'height': 40} only %}
+                            {% elseif review.recommend is same as(null) %}
+                              {% include '__icons/m-p/_minus.html.twig' with {
+                             'label': 'Not reviewed', 'class': 'fill-grey' ,'width': 40, 'height': 40} only %}
+                            {% elseif review.recommend is same as(false) %}
+                               {% include '__icons/m-p/_others_not_solid.html.twig' with { 'label': 'Would not recommend to others', 'class': 'fill-yellow', 'id':'not-recommend-icon' ,'width': 40, 'height': 40} only %}
+                            {% endif %}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </footer>
+                  <!-- Reviewer ribbon -->
+                  {% if reviewer %}{% if reviewer.id == review.id %}<div class="ribbon">You reviewed this item.</div>{% endif %}{% endif %}
+                </div>
+              </div>
+              <!-- Review indicators -->
+              <div class="row justify-content-end mb-40">
+                <div class="d-flex flex-row justify-content-end  col-2 text-right">
+                  <section class="review-indicator">
+                    <section class="hover-tooltip">
+                      {% if not app.user %}
+                      <a href="{{ path('app_login') }}">
+                        <button type="button"
+                          title="Login to rate review as poor."
+                          class="btn-transparent">
+                          {% include '__icons/e-h/_hand-stop.html.twig' with {'width': 25, 'height': 25, 'class': review.notHelpful ? 'cursor-pointer fill-danger' : 'cursor-pointer fill-danger-hover', 'label': '', 'dataset': '' } only %}
+                        </button>
+                      </a>
+
+                      {% else %}
+                      <button type="button"
+                        class="btn-transparent"
+                        data-review-not-helpful>
+                        {% include '__icons/e-h/_hand-stop.html.twig' with {'width': 25, 'height': 25, 'class': review.reviewer is same as(false) ? 'cursor-pointer fill-warning' : review.notHelpful ? 'cursor-pointer fill-danger' : 'cursor-pointer fill-danger-hover', 'label': '','dataset': 'data-review-not-helpful id=review-unhelpful-style-' ~ review.id } only %}
+                      </button>
+                      {% endif %}
+
+                      <span class="totality-stop" id="review-unhelpful-{{review.id}}">{{review.notHelpful ? review.notHelpful : ''}}</span>
+                      <div class="top"><p>{{review.reviewer is same as(false) ? 'You rated this review' : 'Poor review'}}</p><i></i></div>
+                    </section>
+                  </section>
+                  <section class="ml-10 review-indicator">
+                    <section class="hover-tooltip">
+                      {% if not app.user %}
+                      <a href="{{ path('app_login') }}">
+                        <button type="button"
+                          class="btn-transparent">
+                          {% include '__icons/a-d/_check-certificate.html.twig' with {'width': 28, 'height': 28, 'class' : review.helpful ? 'cursor-pointer fill-success' : 'cursor-pointer fill-success-hover' , 'label': '' ,  'dataset':''} only %}
+                        </button>
+                      </a>
+                      {% else %}
+                      <button type="button"
+                        class="btn-transparent"
+                        data-url="/helpful/{{review.id}}/{{review.reviewerId ? review.reviewerId}}"
+                        data-target="review-helpful-{{review.id}}"
+                        data-unhelpful="review-unhelpful-style-{{review.id}}"
+                        data-review-helpful>
+                        {% include '__icons/a-d/_check-certificate.html.twig' with {'width': 28, 'height': 28, 'class': review.reviewer is same as(true) ? 'cursor-pointer fill-info' : review.helpful ? 'cursor-pointer fill-success' : 'cursor-pointer fill-success-hover' , 'label': '' , 'dataset':
+                        review.reviewerId ? 'data-review-helpful data-url=/helpful/' ~ review.id ~ '/' ~ review.reviewerId ~
+                        ' data-target=review-helpful-' ~ review.id ~ ' data-unhelpful=review-unhelpful-style-' ~ review.id : 'data-review-helpful data-url=/helpful/' ~ review.id ~  ' data-target=review-helpful-' ~ review.id ~ ' data-unhelpful=review-unhelpful-style-' ~ review.id  } only %}
+                      </button>
+                      {% endif %}
+                      <span class="totality-check" id="review-helpful-{{review.id}}">{{review.helpful ? review.helpful : ''}}</span>
+                      <div class="top"><p>{{review.reviewer is same as(true) ? 'You rated this review' : 'Helpful review'}}</p><i></i></div>
+                    </section>
+                  </section>
+                </div>
+              </div>
+              {% endfor %}
+              {% endif %}
+              </div>
+            {# <div class="ps-product-action">
+
+            </div> #}
+            <!-- Pagination -->
+            <div class="d-flex justify-content-end align-items-center">
+              {% if reviews %}
+                  {{ knp_pagination_render(reviews, 'store/partials/pagination/ps-pagination.html.twig') }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="clearfix"></div>
+      </div>
+    {% include 'store/partials/footer/subscribe.html.twig' %}
+  </main>
+  <!-- Main ends -->

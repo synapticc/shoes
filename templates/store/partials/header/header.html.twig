@@ -1,0 +1,279 @@
+{# templates/store/partials/header/header.html.twig #}
+<!-- Header starts -->
+<header class="header">
+  {# <div class="header--sidebar"></div> #}
+  <div class="container-fluid">
+    {% for flash_message in app.flashes('email_verified') %}
+    <!-- Email verification message -->
+    <div class="alert alert-success text-center" role="alert">{{ flash_message }}</div>
+    {% endfor %}
+    {% for password_reset in app.flashes('password_reset') %}
+    <!-- Password reset message -->
+    <div class="row justify-content-center">
+      <div class="col-9 mt-4">
+        <div class="alert alert-success text-white text-center" role="alert">{{ password_reset }}<a href="{{ path('app_login') }}">Login</a> with the new password.</div>
+      </div>
+    </div>
+    {% endfor %}
+    <!-- Top bar -->
+    <div class="header__top">
+      <div class="row">
+        <!-- Company address -->
+        <div class="col-lg-6 col-md-8 col-sm-6 col-xs-12 ">
+          <p>75, Old Ripailles Street, Plaines Wilhems, Mauritius  -  Hotline: 435-7345 - 466-8266</p>
+        </div>
+        <div class="col-lg-6 col-md-4 col-sm-6 col-xs-12 ">
+          <div class="header__actions">
+          {% if app.user %}
+            {# Optional : Display user profile image before email.
+              <a href="{{path( 'user_profile', {'id': nzo_encrypt(app.user.id)}) }}"
+                target="_self">
+              <span class="user-avatar">
+                  <img alt="profile picture"src="{{asset(app.user.userImage.image)}}"></span></a>
+            #}
+
+            {#  Extract username (local-part) from email
+                  ex. 'maxkirk' from maxkirk@execs.com  #}
+            {% set user = app.user.username |split('@', 2) %}
+            <!-- Email -->
+            <a href="{{path( 'user_profile') }}" target="_self">{{user[0]}}</a>
+            <!-- Logout -->
+            <a href="{{ path('app_logout') }}" data-turbo="false">Logout</a>
+          {% else %}
+            <!-- Login -->
+            <a href="{{ path('app_login') }}" data-turbo="false">Login</a>
+            <!-- Sign Up -->
+            <a href="{{ path('app_register') }}" data-turbo="false">Sign Up</a>
+          {% endif %}
+            <!-- Foreign currency dropdown -->
+            <div class="btn-group ps-dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">USD<!--<i class="fa fa-angle-down"></i>--></a>
+              <ul class="dropdown-menu">
+                <li><a href="#"><img src="{{asset('build/images/store/flag/usa.svg') }}" alt=""> USD</a></li>
+                <li><a href="#"><img src="{{asset('build/images/store/flag/singapore.svg') }}" alt=""> SGD</a></li>
+                <li><a href="#"><img src="{{asset('build/images/store/flag/japan.svg') }}" alt=""> JPN</a></li>
+              </ul>
+            </div>
+            <!-- Language dropdown -->
+            <div class="btn-group ps-dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Language<!--<i class="fa fa-angle-down"></i>--></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">English</a></li>
+                <li><a href="#">Japanese</a></li>
+                <li><a href="#">Chinese</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Navigation  starts -->
+  <nav class="navigation container-fluid">
+      {% if app.user %}
+      {% if app.user.userDelete %}
+      {% if app.user.userDelete.toBeDeleted is same as(true) %}
+      <!-- UserDelete confirmation message -->
+      <div class="row my-3">
+        <div class="col justify-content-right">
+          <h4 class="text-right">{% include 'profile/partials/sidebar/delete/_undo_delete_form.html.twig' %}</h4>
+        </div>
+      </div>
+      {% endif %}
+      {% endif %}
+      {% endif %}
+      <!-- Logo image -->
+      <div class="navigation__column left">
+        <div class="header__logo"><a class="ps-logo" href="{{path('store')}}"><img src="{{asset('build/images/store/logo.png')}}" alt="Logo image"></a></div>
+      </div>
+      <!-- Navigation menu (not functional, only part of the layout) -->
+      <div class="navigation__column center">
+        <ul class="main-menu menu">
+          <li class="menu-item menu-item-has-children dropdown"><a title="Homepage" href="{{ path('store') }}">Home</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="#">Homepage #1</a></li>
+              <li class="menu-item"><a href="#">Homepage #2</a></li>
+              <li class="menu-item"><a href="#">Homepage #3</a></li>
+            </ul>
+          </li>
+          <li class="menu-item"><a title="List all reviews" href="{{path('store_reviews')}}">Reviews</a></li>
+          <li class="menu-item menu-item-has-children has-mega-menu">
+            <a href="#">Men</a>
+            <div class="mega-menu">
+              <div class="mega-wrap">
+                <div class="mega-column">
+                  <ul class="mega-item mega-features">
+                    <li><a href="#">NEW RELEASES</a></li>
+                    <li><a href="#">FEATURES SHOES</a></li>
+                    <li><a href="#">BEST SELLERS</a></li>
+                    <li><a href="#">NOW TRENDING</a></li>
+                    <li><a href="#">SUMMER ESSENTIALS</a></li>
+                    <li><a href="#">MOTHER'S DAY COLLECTION</a></li>
+                    <li><a href="#">FAN GEAR</a></li>
+                  </ul>
+                </div>
+                <div class="mega-column">
+                  <h4 class="mega-heading">Shoes</h4>
+                  <ul class="mega-item">
+                    <li><a href="#">All Shoes</a></li>
+                    <li><a href="#">Running</a></li>
+                    <li><a href="#">Training & Gym</a></li>
+                    <li><a href="#">Basketball</a></li>
+                    <li><a href="#">Football</a></li>
+                    <li><a href="#">Soccer</a></li>
+                    <li><a href="#">Baseball</a></li>
+                  </ul>
+                </div>
+                <div class="mega-column">
+                  <h4 class="mega-heading">CLOTHING</h4>
+                  <ul class="mega-item">
+                    <li><a href="#">Compression & Nike Pro</a></li>
+                    <li><a href="#">Tops & T-Shirts</a></li>
+                    <li><a href="#">Polos</a></li>
+                    <li><a href="#">Hoodies & Sweatshirts</a></li>
+                    <li><a href="#">Jackets & Vests</a></li>
+                    <li><a href="#">Pants & Tights</a></li>
+                    <li><a href="#">Shorts</a></li>
+                  </ul>
+                </div>
+                <div class="mega-column">
+                  <h4 class="mega-heading">Accessories</h4>
+                  <ul class="mega-item">
+                    <li><a href="#">Compression & Nike Pro</a></li>
+                    <li><a href="#">Tops & T-Shirts</a></li>
+                    <li><a href="#">Polos</a></li>
+                    <li><a href="#">Hoodies & Sweatshirts</a></li>
+                    <li><a href="#">Jackets & Vests</a></li>
+                    <li><a href="#">Pants & Tights</a></li>
+                    <li><a href="#">Shorts</a></li>
+                  </ul>
+                </div>
+                <div class="mega-column">
+                  <h4 class="mega-heading">BRAND</h4>
+                  <ul class="mega-item">
+                    <li><a href="#">NIKE</a></li>
+                    <li><a href="#">Adidas</a></li>
+                    <li><a href="#">Dior</a></li>
+                    <li><a href="#">B&G</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="menu-item"><a href="#">Women</a></li>
+          <li class="menu-item menu-item-has-children dropdown"><a href="#">News</a>
+            <ul class="sub-menu">
+              <li class="menu-item menu-item-has-children dropdown">
+                <a href="#">Blog-grid</a>
+                <ul class="sub-menu">
+                  <li class="menu-item"><a href="#">Blog Grid 1</a></li>
+                  <li class="menu-item"><a href="#">Blog Grid 2</a></li>
+                </ul>
+              </li>
+              <li class="menu-item"><a href="#">Blog List</a></li>
+            </ul>
+          </li>
+          <li class="menu-item menu-item-has-children dropdown"><a href="#">Contact</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="#">Contact Us #1</a></li>
+              <li class="menu-item"><a href="#">Contact Us #2</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!-- Search area -->
+      <div class="navigation__column right">
+        <form method="get" class="ps-search--header" action="{{ path('store') }}"
+        data-turbo="false">
+           <!-- Search input -->
+           <input id="instant-search" type="text" name="q" class="form-control"
+             placeholder="Search product, brand, color…" aria-describedby="search"
+             value="{% if get.q is defined %}{{get.q}}{% else %}{% endif %}"
+             hx-target="#search-results" hx-get="/search"
+             hx-swap="innerHTML"
+             hx-trigger="input, input changed, paste changed, keyup, keyup changed, mousedown">
+           <!-- Search button -->
+           <button><i class="ps-icon-search"></i></button>
+        </form>
+
+        {% if  app.current_route  == 'store' or
+               app.current_route  == 'store_details' %}
+          {% for query in get|keys %}
+            {% if get[query] is iterable %}
+              {% for qry in get[query] %}
+                <input hidden name="{{query}}[]" value="{{qry}}">
+              {% endfor %}
+            {% else %}
+                {% if query != 'q' %}
+                  {% if query == 'minPrice' %}
+                      <input hidden name="price[min]" value="{{get[query]}}">
+                  {% elseif query == 'maxPrice' %}
+                    <input hidden name="price[max]" value="{{get[query]}}">
+                  {% elseif query == 'orderPrice'%}
+                  <input hidden name="price[order]" value="{{get[query]}}">
+                  {% else %}
+                    <input hidden name="{{query}}" value="{{get[query]}}">
+                {% endif %}
+                {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        <!-- Display instant results -->
+        <div id="search-results"></div>
+        <!-- Cart -->
+        <div class="ps-cart" id="cart-listing" data-cart={{cart ? cart is not empty ? cart.updated}} >
+          <!-- Display the no. of items in the cart -->
+          <a class="ps-cart__toggle" href="{{ path('cart') }}" target="_blank"><span><i>
+          {{ cart ? cart.totalItems : 0 }}</i></span><i class="ps-icon-shopping-cart"></i></a>
+          <!-- List the latest 2 items added to the cart -->
+          <div class="ps-cart__listing {% if app.current_route  == 'user_profile' or
+                 app.current_route  == 'store_billing' %}ps-cart__profile{% endif %}" >
+            <div class="ps-cart__content">
+            {% if cart %}
+            {% if cart.items is defined %}
+            {# Display only the first two cart items  #}
+            {% for product in cart.items|slice(0, 2) %}
+            <div class="ps-cart-item">
+              <div class="ps-cart-item__thumbnail">
+                <!-- Link to the product -->
+                <a href="{{ path('store_details', {
+                            'brand': product.brand_full|slug,
+                            'name': (product.name|title)|slug,
+                            'id': nzo_encrypt(product.productDataId)}) }}"></a>
+                <!-- Product thumbnail -->
+                <img src="{{ asset(product.imageSmall ? product.imageSmall :
+                           'build/images/store/shoe-detail/1.jpg')}}"
+                     alt="{{product.name}}  - (cart preview)">
+              </div>
+              <div class="ps-cart-item__content">
+                <!-- Product name -->
+                <a class="ps-cart-item__title"
+                    href="{{ path('store_details', {
+                              'brand': product.brand_full|slug,
+                              'name': (product.name|title)|slug,
+                              'id': nzo_encrypt(product.productDataId)
+                              }) }}"
+                  >{{product.name}} (Size {{product.size}})</a>
+                <!-- Product quantity -->
+                <p><span>Quantity: <i>{{product.quantity}}</i></span>
+                   <br>
+                  <!-- Subtotal -->
+                  <span>Total:<i>Rs {{(product.sellingPrice * product.quantity)|format_number({fraction_digit: 2})}}</i></span></p>
+              </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endif %}
+            </div>
+            <div class="ps-cart__total">
+              <p>Number of items:<span>{{ cart ? cart.totalItems : 0 }}</span></p>
+              <p>Total:<span>Rs {{cart ? cart.total|format_number({fraction_digit: 2}) : 0 }}</span></p>
+            </div>
+            <div class="ps-cart__footer"><a class="ps-btn"  href="{{ path('cart') }}" target="_blank">Check out<i class="ps-icon-arrow-left"></i></a></div>
+          </div>
+        </div>
+        </div>
+        <div class="menu-toggle"><span></span></div>
+      </div>
+  </nav>
+  <!-- Navigation ends -->
+</header>
+<!-- Header ends -->

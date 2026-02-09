@@ -1,0 +1,76 @@
+<main class="content">
+  {% include 'admin/_partials/navbar-main.html.twig' with
+    { 'features': ['Display all carts',
+                   'Access each cart'],
+      'item' : 'cart',
+      'route': '',
+      'route_index': 'admin_cart',
+      'search': 'Search customer or product',
+      'brand': '',
+      'items': purchases} %}
+
+  <div class="card card-body bg-{{ app.user.theme == 'light' ? 'white' : 'gray-500'  }} border-light shadow-sm table-wrapper table-responsive pt-0" id="transactions-table">
+    <table class="table table-hover text-center">
+      <thead>
+        <tr>
+          <th>Order Ref.</th>
+          <th>Pic</th>
+          <th class="text-left">Customer</th>
+          <th>Action</th>
+          <th>Thumbnails</th>
+          <th>Date added to cart</th>
+          <th>No. of items</th>
+          <th>Total (Rs)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for purchase in purchases %}
+        <!-- Item -->
+        <tr>
+          <td>
+            <a class="font-weight-bold" href="{{ path('user_profile_purchase_list', {'order': nzo_encrypt(purchase.id)}) }}">Invoice Ref.{{purchase.id}}</a>
+          </td>
+          <td class="text-center">
+            <img
+                src="{{asset(purchase.pic ? purchase.pic : 'build/images/admin/team/profile-picture-3.jpg')}}"
+                class="user-avatar xl-avatar m-auto rounded-circle"
+                alt="..." ></td>
+          <td class="text-left">{{purchase.email}}</td>
+          <td><a href="{{ path('admin_users_show', {'id': purchase.id}) }}">
+            <button type="submit" class="btn btn-light">show</button>
+          </a></td>
+          <td>
+            <div class="d-flex flex-row justify-content-start">
+            {% for item in purchase.items|slice(0, 4) %}
+            <div class="purchases-img mr-1" title="{{item.category_full ~ ' ' ~ item.brand_full ~ ' ' ~ item.name ~ ' ' ~ item.type_full ~ ' | ' ~ item.colors_full ~ ' (' ~ item.quantity ~ ' pcs)'}}">
+              <img class="img-fluid"
+                  src="{{asset(item.imageSmall)}}"
+                  alt="image: {{item.name}}">
+            </div>
+            {% endfor %}
+            {% if purchase.items|length > 4 %}
+              {% set remaining = purchase.items|length - 4 %}
+              <div class="remaining-img d-flex flex-column justify-content-center text-center" title="{{remaining}} more items">
+                <span class="font-weight-bold"> + {{remaining}}</span>
+                <span>more</span>
+                <span>items</span>
+              </div>
+            {% endif %}
+            </div>
+          </td>
+          <td><span class="font-weight-normal">{{ purchase.purchaseDate|date("F jS, Y \\a\\t g:ia") }}</span></td>
+          <td><span class="font-weight-normal text-center">{{purchase.items|length}}</span></td>
+          <td><span class="font-weight-bold">{{purchase.total|number_format(2, '.', ',')}}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <!-- Pagination -->
+    <div class="card-footer px-3 border-0 d-flex align-items-center justify-content-end">
+      <div class="col-2">
+        {{ knp_pagination_render(purchases) }}
+      </div>
+    </div>
+    </div>
+  {% include 'admin/_partials/footer.html.twig' %}
+</main>

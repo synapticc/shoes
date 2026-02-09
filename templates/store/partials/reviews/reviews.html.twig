@@ -1,0 +1,154 @@
+<div class="ps-product__content mt-20" id="reviews">
+  <div class="loader-content">
+    <!-- Loader overlay -->
+    <div class="loader-overlay" id="loader-overlay">
+      <div class="loader-overlay-content">
+        <img src="{{asset('build/images/store/spinner.gif')}}" alt="Loading...">
+      </div>
+    </div>
+    {% if reviews %}
+    {% for review in reviews.items %}
+    <div class="ps-review {{reviewer ? reviewer.id == review.id ? 'reviewer--review'}}" id="ps-review">
+      <div class="ps-review__content">
+        <header class="d-flex justify-content-between">
+          <div class="">
+           {% if review.rating %}
+            {% for i in 1..review.rating %}
+            {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-yellow', 'label': 'Rating: ' ~ review.rating ~ '/5'} only %}
+            {% endfor %}
+           {% endif %}
+         </div>
+         <p title="{{review.reviews.created|ago }}">{{review.reviews.created|format_datetime('short', 'short', locale='en')}}</p>
+        </header>
+        <h5 class="pb-20">{{review.reviewComment.headline}}</h5>
+        <div class="row justify-content-between">
+          <div class="col-{{review.reviewImage ? 4 : 7}}">
+            <p>{{review.reviewComment.comment|nl2br}}</p>
+            <p class="reviewer">- {{review.reviews.users.firstName}} {{review.reviews.users.lastName}}</p>
+          </div>
+          {% if review.reviewImage %}
+          <div class="col text-center">
+            <!-- Thumbnail -->
+            <img class="review-img"
+                src="{{asset(review.reviewImage.image) }}"
+                alt="<span class='text-bold'>{{review.reviewComment.headline}}</span>
+                <br> {{review.reviewComment.comment|nl2br}}
+                <br>
+                <span class='d-flex justify-content-end'>
+                - [{{review.reviews.users.firstName}} {{review.reviews.users.lastName}}]
+                </span>"
+                title="Click to enlarge"
+                zoombox>
+          </div>
+          {% endif %}
+          <div class="col-5">
+            {% set translate = [100, 75, 50, 25, 0] %}
+            <!-- Fit -->
+            <div class="row justify-content-center mb-4" id="slider-square">
+             <div class="col-10">
+               <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                 <div class="noUi-base">
+                   <div class="noUi-connects"></div>
+                   <div class="noUi-origin" style="transform: translate(-{{translate[review.fit - 1]}}%, 0px); z-index: 4;">
+                     <div title="Fit: {{sliderFit[review.fit - 1]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                       <div class="noUi-touch-area"></div>
+                     </div>
+                   </div>
+                 </div>
+                 <div class="noUi-pips noUi-pips-horizontal">
+                 {% set x = 0 %}
+                 {% for i in 1..5 %}
+                   <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                   <div class="noUi-value noUi-value-horizontal noUi-value-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderFit[loop.index0]}}</div>
+                   {% set x = x + 25 %}
+                 {% endfor %}
+                 </div>
+               </div>
+             </div>
+            </div>
+            <!-- Width -->
+            <div class="row justify-content-center mb-4" id="slider-square">
+             <div class="col-10">
+               <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                 <div class="noUi-base">
+                   <div class="noUi-connects"></div>
+                   <div class="noUi-origin" style="transform: translate(-{{translate[review.width - 1]}}%, 0px); z-index: 4;">
+                     <div title="Width: {{sliderWidth[review.width - 1]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                       <div class="noUi-touch-area"></div>
+                     </div>
+                   </div>
+                 </div>
+                 <div class="noUi-pips noUi-pips-horizontal">
+                 {% set x = 0 %}
+                 {% for i in 1..5 %}
+                   <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                   <div class="noUi-value noUi-value-horizontal noUi-value-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderWidth[loop.index0]}}</div>
+                   {% set x = x + 25 %}
+                 {% endfor %}
+                 </div>
+               </div>
+             </div>
+            </div>
+            <!-- Comfort -->
+            <div class="row justify-content-center mb-4" id="slider-square">
+             <div class="col-10">
+               <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                 <div class="noUi-base">
+                   <div class="noUi-connects"></div>
+                   <div class="noUi-origin" style="transform: translate(-{{translate[review.comfort - 1]}}%, 0px); z-index: 4;">
+                     <div title="Comfort: {{sliderComfort[review.comfort - 1]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                       <div class="noUi-touch-area"></div>
+                     </div>
+                   </div>
+                 </div>
+                 <div class="noUi-pips noUi-pips-horizontal">
+                   {% set x = 0 %}
+                   {% for i in 1..5 %}
+                     <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                     <div class="noUi-value noUi-value-horizontal noUi-value-{{(i == 1 or i == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderComfort[loop.index0]}}</div>
+                     {% set x = x + 25 %}
+                   {% endfor %}
+                 </div>
+               </div>
+             </div>
+            </div>
+          </div>
+        </div>
+        <footer class="d-flex justify-content-end mt-20">
+         <p>
+         {% if review.reviewLike.like %}
+          {% include '__icons/i-l/_love.html.twig' with { 'class': 'fill-main', 'label': 'Like the product', 'id':'like-icon' ,'width': 20, 'height': 20} only %}
+         {% elseif review.reviewLike.like is same as(null) %}
+          {% elseif review.reviewLike.like is same as(false) %}
+            {% include '__icons/i-l/_love_not.html.twig' with { 'class': 'fill-yellow',  'label': 'Dislike the product', 'id':'dislike-icon' ,'width': 20, 'height': 20} only %}
+         {% endif %}
+
+         {% if review.reviewDelivery.delivery %}
+          {% include '__icons/q-t/_thumbs-up.html.twig' with { 'class': 'fill-main',  'label': 'Delivery satisfactory', 'id':'helpful-icon' ,'width': 20, 'height': 20} only %}
+         {% elseif review.reviewDelivery.delivery is same as(null) %}
+          {% elseif review.reviewDelivery.delivery is same as(false) %}
+            {% include '__icons/q-t/_thumbs-down.html.twig' with {
+           'class': 'fill-yellow', 'label': 'Delivery disappointing', 'id':'not-helpful-icon' ,'width': 20, 'height': 20} only %}
+         {% endif %}
+
+         {% if review.reviewRecommend.recommend %}
+          {% include '__icons/m-p/_others_solid.html.twig' with { 'class': 'fill-main',  'label': 'Would recommend to others', 'id':'recommend-icon' ,'width': 20, 'height': 20} only %}
+         {% elseif review.reviewRecommend.recommend is same as(null) %}
+          {% elseif review.reviewRecommend.recommend is same as(false) %}
+            {% include '__icons/m-p/_others_not_solid.html.twig' with {'class':'fill-yellow', 'label': 'Would not recommend to others', 'id':'not-recommend-icon' ,'width': 20, 'height': 20} only %}
+         {% endif %}
+         </p>
+        </footer>
+        <!-- Reviewer ribbon -->
+        {% if reviewer %}{% if reviewer.id == review.id %}<div class="ribbon">You reviewed this item.</div>{% endif %}{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+  <!-- Pagination -->
+  <div class="d-flex justify-content-end align-items-center" id="pagination" data-turbo=false>
+    {% include 'store/partials/pagination/pagination.html.twig'
+       with { 'paginator': reviews, 'product': product } only %}
+  </div>
+</div>

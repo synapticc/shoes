@@ -1,0 +1,328 @@
+<!-- Main starts -->
+<main class="ps-main">
+  <div class="profile-container">
+    <div class="row">
+      <!-- Sidebar menu -->
+      <div class="col">
+        {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+      </div>
+      <!-- Center form -->
+      <div class="col-9">
+        <!-- Form starts -->
+        {{ form_start(form,
+            {'attr':
+              {'class': 'user-profile-form',
+               'data-form': 'store'}}) }}
+        <div class="row">
+          <!-- Middle section form) -->
+          <div class="col-9">
+            <div class="d-flex justify-content-between align-items-center pb-4">
+              <h2 class="text-right">Profile Settings </h2>
+            </div>
+            {# retrieve get query for billing  #}
+            {% set billing = app.request.query.get('billing') %}
+            {% if billing %}
+              <div class="row">
+                <h3 class="bg-warning profile-billing">Complete your profile before checking out. <br><br>Your <span>First Name</span> ,
+                                  <span>Last Name</span> ,
+                                  <span>Street</span> ,
+                                  <span>City</span> ,
+                                  <span>ZIP</span> and
+                                  <span>Country</span> are mandatory for shipping.</h3>
+              </div>
+            {% endif %}
+            <!-- First name & Last name row -->
+            <div class="row">
+              <!-- First Name -->
+              <div class="col-md-6">
+                 {{ form_label(form.firstName, null, {
+                     'label': billing ? 'First Name* ' : 'First Name ',
+                     'label_attr': {'class': 'foo'}
+                 }) }}
+                 {{ form_widget(form.firstName, {'attr':
+                    {'class': billing ? 'form-focus' : 'form-style',
+                     'placeholder': 'first name',
+                     'autocomplete': 'on',
+                     'autofocus':'on' }}) }}
+               {{ form_errors(form.firstName) }}
+              </div>
+
+              <!-- Last Name -->
+              <div class="col-md-6">
+                 {{ form_label(form.lastName, null, {
+                     'label': billing ? 'Last Name* ' : 'Last Name ',
+                     'label_attr': {'class': 'foo'}
+                 }) }}
+                 {{ form_widget(form.lastName,{'attr':
+                    {'class': billing ? 'form-focus' : 'form-style',
+                     'placeholder': 'last name'}}) }}
+                 {{ form_errors(form.lastName) }}
+              </div>
+            </div>
+
+            <!-- Title & Middle name row -->
+            <div class="row mt-4">
+              <!-- Title -->
+              <div class="col-md-4">
+                {{ form_label(form.title, 'Title',
+                  {'label_attr': {'class': ''}}) }}
+                 {{ form_widget(form.title,
+                  {'attr':
+                    {'class': 'form-style',
+                    'placeholder': 'title'}}) }}
+                 {{ form_errors(form.title) }}
+               </div>
+
+              <!-- Middle name -->
+              <div class="col-md-8">
+                {{ form_label(form.middleName, 'Middle Name ',
+                {'label_attr': {'class': ''}}) }}
+                {{ form_widget(form.middleName,
+                  {'attr':
+                    {'class': 'form-style',
+                     'placeholder': 'middle name'}}) }}
+                {{ form_errors(form.middleName) }}
+               </div>
+            </div>
+
+            <!-- Street row -->
+            <div class="row mt-4">
+              <!-- Street 1 -->
+              <div class="col-md-12">
+                {{ form_label(form.userAddress.street, 'Street',
+                      {'label_attr': {'class': ''}}) }}
+                {{ form_widget(form.userAddress.street,
+                  {'attr':
+                    {'class': billing ? 'form-focus' : 'form-style',
+                     'placeholder': 'street'}}) }}
+                {{ form_errors(form.userAddress.street) }}
+              </div>
+            </div>
+
+            <!-- Street 2 -->
+            <div class="row mt-3">
+              <div class="col-md-12">
+               {{ form_label(form.userAddress.street2, 'Street 2 ',
+                     {'label_attr': {'class': ''}}) }}
+               {{ form_widget(form.userAddress.street2,
+                 {'attr':
+                   {'class': 'form-style',
+                    'placeholder': 'street 2'}}) }}
+               {{ form_errors(form.userAddress.street2) }}
+               </div>
+            </div>
+
+            <!-- Mobile & Phone row -->
+            <div class="row mt-3">
+              <!-- Mobile -->
+              <div class="col-md-6">
+                {{ form_label(form.userPhone.mobile, 'Mobile*: ',
+                  {'label_attr': {'class': ''}}) }}
+                <div class="row mb-4 flex-column flex-sm-row" data-phone data-phone-type="mobile">
+                 <div class="col-5 m-0 pr-0">
+                   {{ form_widget(form.userPhone.mobile.country,
+                    {'attr':
+                      {'class': billing ? 'form-focus' : 'form-style',
+                      'placeholder': 'code',
+                      'data-country-code':'',
+                      'data-target': billing ? 'user_profile_billing_form_userPhone_mobile_number' :
+                      'user_profile_form_userPhone_mobile_number',
+                      'data-selected': app.user.userAddress ?  app.user.userAddress.country ? app.user.userAddress.country}}) }}
+
+                 </div>
+                 <div class="col-5 m-0 p-0">
+                   {{ form_widget(form.userPhone.mobile.number,
+                    {'attr':
+                      {'class': billing ? 'form-focus' : 'form-style',
+                       'data-phone-number':'',
+                       'data-phone-type': 'mobile',
+                       'data-target': billing ? 'user_profile_billing_form_userPhone_mobile_country' :
+                       'user_profile_form_userPhone_mobile_country',
+                       'data-original-number': app.user.userPhone ?  (app.user.userPhone.mobile ? app.user.userPhone.mobile|phone_number_format('NATIONAL')),
+                       'data-original-country': app.user.userAddress ?  app.user.userAddress.country ? app.user.userAddress.country,
+                       'value': app.user.userPhone ?  (app.user.userPhone.mobile ? app.user.userPhone.mobile|phone_number_format('NATIONAL'))}}) }}
+
+                    <div class="row justify-content-end mt-1">
+                      <div class="col text-center">
+                        <span class="phone-format phone-format-color" id="phone-format"></span>
+                      </div>
+                    </div>
+                 </div>
+                 <!-- Smartphone icon -->
+                 <div class="col m-0 p-0">
+                    <span class="mobile-validation-icon">
+                      <img src="{{asset('build/images/admin/smartphone.png')}}"
+                           class="mobile-{{ app.user.userPhone ?  app.user.userPhone.mobile ? 'valid' : 'invalid' : 'invalid'}}"
+                           id="smartphone-icon"
+                           title="Valid mobile number">
+                    </span>
+                 </div>
+                </div>
+                {{ form_errors(form.userPhone.mobile) }}
+              </div>
+              <!-- Phone -->
+              <div class="col-md-6">
+                {{ form_label(
+                      form.userPhone.landline, 'Landline*: ',
+                      {'label_attr': {'class': ''}}) }}
+                <div class="row mb-4 flex-column flex-sm-row" data-phone data-phone-type="landline">
+                  <div class="col-5 m-0 pr-0">
+                    {{ form_widget(form.userPhone.landline.country,
+                      {'attr':
+                        {'class': billing ? 'form-focus' : 'form-style',
+                         'data-country-code':'',
+                         'data-target': billing ? 'user_profile_billing_form_userPhone_landline_number' : 'user_profile_form_userPhone_landline_number',
+                         'data-selected': app.user.userAddress ? app.user.userAddress.country ? app.user.userAddress.country}}) }}
+                  </div>
+                  <div class="col-5 m-0 p-0">
+                    {{ form_widget(form.userPhone.landline.number,
+                      {'attr':
+                        {'class': billing ? 'form-focus' : 'form-style',
+                         'data-phone-number':'',
+                         'data-phone-type':'landline',
+                         'data-original-number': app.user.userPhone ?  (app.user.userPhone.landline ? app.user.userPhone.landline|phone_number_format('NATIONAL')),
+                         'data-original-country': app.user.userAddress ?  app.user.userAddress.country ? app.user.userAddress.country,
+                         'data-target': billing ? 'user_profile_billing_form_userPhone_landline_country' : 'user_profile_form_userPhone_landline_country',
+                         'value': app.user.userPhone ?  (app.user.userPhone.landline ? app.user.userPhone.landline|phone_number_format('NATIONAL') : '')}})
+                         }}
+
+                  </div>
+                  <!-- Old phone icon -->
+                  <div class="col">
+                    <span class="phone-validation-icon">
+                      <img src="{{asset('build/images/admin/old-phone.png')}}"
+                           class="phone-{{ app.user.userPhone ?  app.user.userPhone.landline ? 'valid' : 'invalid' : 'invalid'}}"
+                           id="old-phone-icon"
+                           title="Valid fixed line number">
+                    </span>
+                  </div>
+                {{ form_errors(form.userPhone.landline) }}
+                </div>
+              </div>
+            </div>
+
+            <!-- City & Country row -->
+            <div class="row">
+              <!-- City -->
+              <div class="col-md-5">
+                {{ form_label(form.userAddress.city, 'City ',
+                  {'label_attr': {'class': ''}}) }}
+                {{ form_widget(form.userAddress.city,
+                  {'attr':
+                    {'class': billing ? 'form-focus' : 'form-style',
+                     'placeholder': 'city',
+                     'data-city': '',
+                     'data-selected': app.user.userAddress ? app.user.userAddress.city ? app.user.userAddress.city}}) }}
+                {{ form_errors(form.userAddress.city) }}
+              </div>
+
+              <!-- ZIP -->
+              <div class="col-md-2">
+                {{ form_label(form.userAddress.zip, 'ZIP: ',
+                  {'label_attr': {'class': ''}}) }}
+                {{ form_widget(form.userAddress.zip,
+                  {'attr':
+                    {'class': billing ? 'form-focus' : 'form-style',
+                     'placeholder': 'zip'}}) }}
+                  {{ form_errors(form.userAddress.zip) }}
+              </div>
+
+              <!-- Country -->
+              <div class="col-md-5">
+                {{ form_label(form.userAddress.country, 'Country ',
+                  {'label_attr': {'class': ''}}) }}
+                {{ form_widget(form.userAddress.country,
+                  {'attr':
+                    {'class': billing ? 'form-focus' : 'form-style',
+                     'placeholder': 'country',
+                     'data-country': '',}}) }}
+              </div>
+            </div>
+
+            <!-- Backup email row-->
+            <div class="row mt-3">
+              <!-- Email 1 -->
+              <div class="col-md-6">
+                {{ form_label(form.userEmail.email, 'Backup email*: ',
+                  {'label_attr': {'class': ''}}) }}
+                {{ form_widget(form.userEmail.email,
+                  {'attr':
+                    {'class': 'form-style',
+                     'placeholder': 'backup email'}}) }}
+              </div>
+
+              <!-- Email 2 -->
+              <div class="col-md-6">
+                {{ form_label(form.userEmail.email2, 'Backup email: ',
+                  {'label_attr': {'class': ''}}) }}
+                {{ form_widget(form.userEmail.email2,
+                  {'attr':
+                    {'class': 'form-style',
+                     'placeholder': 'backup email'}}) }}
+              </div>
+            </div>
+          </div>
+          <!-- Right-end section (Profile image upload) -->
+          <div class="col-3">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+          <div class="avatar-upload" id="image-upload-profile" data-image={% if app.user.userImage %}{% if app.user.userImage.image %}true{% else %}false{% endif %}{% else %}false{% endif %}>
+                <div class="avatar-edit">
+                  {# <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />
+                  <label for="imageUpload"></label> #}
+                  {{ form_widget(form.image,
+                    {'attr':
+                      {'class': '',
+                        'accept' : '.png, .jpg, .jpeg'}}) }}
+
+                  {{ form_label(form.image, null, {
+                      'label': ' ',
+                      'label_attr': {'title': 'Upload profile photo'}
+                  }) }}
+
+                </div>
+                <a href="{% if app.user.userImage %}{% if app.user.userImage.image %}{{asset(app.user.userImage.image) }}{% else %}{{asset('build/images/store/user/1.jpg') }}{% endif %}{% else %}{{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}" target="_blank">
+                  <div class="avatar-preview">
+                    <div
+                      id="image-preview"
+                      style="{% if app.user.userImage %}{% if app.user.userImage.image %}background-image: url('{{asset(app.user.userImage.image) }}');{% else %}background-image: url('{{asset('build/images/store/user/1.jpg') }}');{% endif %}{% else %}background-image: url('{{asset('build/images/store/shoe-detail/1.jpg') }}');{% endif %}"
+                      data-img-path="{% if app.user.userImage %}{% if app.user.userImage.image %}{{asset(app.user.userImage.image)}}{% endif %}{% endif %}">
+                    </div>
+                  </div>
+                </a>
+
+                <!-- Cancel icon -->
+                <div class="text-right">
+                  <button  type="button" id="cancel-image">{% include '__icons/a-d/_cancel-icon.html.twig' with {'label': 'Remove image', 'dataset': 'data-cancel-image', 'width': 28, 'height': 28} only %}</button>
+                </div>
+
+                <!-- Delete icon -->
+                <div class="text-right">
+                   <button type="button" id="delete-image">
+                    <input type="hidden" name="delete-image" value="">
+                      {% include '__icons/a-d/_delete-icon.html.twig' %}
+                   </button>
+                </div>
+              </div>
+              <span class="avatar-email">{{app.user.username}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-end mb-5">
+          <div class="col mt-5 text-right">
+
+          <!-- CSRF Token -->
+          {{ form_widget(form._token,)}}
+
+          <!-- Save button -->
+          <button class="profile-btn-save" id="user_profile_save">
+            {{billing ? 'Save & Checkout ' : 'Save Profile '}}</button>
+          </div>
+        </div>
+        {{ form_end(form, {render_rest: false}) }}
+        <!-- Form ends -->
+      </div>
+    </div>
+   </div>
+  {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>
+<!-- Main ends -->

@@ -1,0 +1,61 @@
+<!-- Modal Content -->
+<div class="modal fade" id="modal-form-{{index}}" tabindex="-1" aria-labelledby="modal-form-{{index}}" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <div class="card border-light p-4">
+          <div class="card-header border-0 text-center pb-0">
+            <h2 class="h4">Edit {{user.firstName}} {{user.lastName}}</h2>
+          </div>
+          <div class="card-body">
+            {# <div class="mt-2"> #}
+            <form
+                id="admin_edit_user_form"
+                data-url="{{ path('admin_users_edit', {'user': user.id}) }}"
+                data-updated-target="updated-user-{{user.id}}"
+                data-roles-target="cell-roles-{{user.id}}"
+                data-status-target="cell-status-{{user.id}}"
+                class="mt-2"
+                method="post">
+              <!-- Form -->
+              <div class="form-group mb-4">
+                <label for="user_admin_form_roles_{{index}}">Roles</label>
+                <div class="input-group">
+                <select id="user_admin_form_roles_{{index}}" name="roles[]" aria-label="Roles" aria-describedby="Roles" slim-select data-placeholder="Roles" data-show-search="false" data-search-msg="No record found." data-allow-deselect="false" data-search-highlight="false" multiple="multiple" data-selected="Roles">
+                  <option value="ROLE_USER" data-mandatory="true" selected>USER</option>
+                  <option value="ROLE_ADMIN" {{'ROLE_ADMIN' in user.roles ? 'selected'}}>ADMIN</option>
+                  <option value="ROLE_MODERATOR" {{'ROLE_MODERATOR' in user.roles ? 'selected'}}>MODERATOR</option>
+                </select>
+                  </div>
+              </div>
+              <!-- End of Form -->
+              <div class="form-group d-flex align-items-center justify-content-center">
+                <label for="user_admin_form_deactivate_{{index}}">Deactivate: </label>
+                <input type="checkbox" id="user_admin_form_deactivate_{{index}}" name="deactivate" class="p-3 ml-2 form-check-input" {{ user.userDeactivate and user.userDeactivate.deactivate ? 'checked' }}>
+              </div>
+              <div id="edit_user_btn_{{user.id}}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('edit-user') }}">
+
+                <button type="submit" class="btn btn-block btn-success mt-4"
+                {# data-dismiss="modal" #}
+                >Update</button>
+                <button id="close-modal" type="button" data-dismiss="modal" hidden>Close</button>
+              </div>
+            </form>
+            <section id="updated-user-{{user.id}}"></section>
+
+
+          <!-- <form data-url="/admin/user/{{user.id}}/update" method="post">
+              {# the argument of csrf_token() is the ID of this token #}
+              <input type="hidden" name="_token" value="{{ csrf_token('update-item') }}">
+
+              <button class="btn btn-block btn-info mt-4" type="submit">Update item</button>
+          </form> #}
+          -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of Modal Content -->

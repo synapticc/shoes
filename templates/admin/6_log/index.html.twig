@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+  {% block meta %}{% include 'admin/_partials/meta.html.twig' %}{% endblock %}
+
+  {% block title %}
+  {{ app.current_route == 'admin_login_report_index' ? 'Logins' :
+     app.current_route == 'admin_user_visits_index' ? 'User Visits' :
+   app.current_route == 'admin_anonymous_visits_index' ? 'Anonymous visits' }} | Admin{% endblock %}
+
+  {% block stylesheets %}{{ encore_entry_link_tags('admin') }}{% endblock %}
+
+{% block body %}
+  <div class="bg-soft">
+    <!-- top navigation -->
+    {% include 'admin/_partials/navbar.html.twig' %}
+    <div class="container-fluid bg-{{ app.user.theme == 'light' ? 'soft' : 'dark' }}">
+      <div class="row">
+        <div class="col-12">
+          <!-- Left sidebar  -->
+          {% include 'admin/_partials/left-sidebar.html.twig' %}
+          <!-- Main content  -->
+          {% if app.current_route  == 'admin_login_report_index' %}
+
+            {% include 'admin/6_log/partials/login-report-table.html.twig' %}
+
+          {% elseif app.current_route  == 'admin_user_visits_index' %}
+
+            {% include 'admin/6_log/partials/user-visits-table.html.twig' %}
+
+          {% elseif app.current_route  == 'admin_anonymous_visits_index' %}
+
+            {% include 'admin/6_log/partials/anonymous-visits-table.html.twig' %}
+
+          {% endif %}
+          </div>
+       </div>
+    </div>
+  </div>
+  {% block javascripts %}{{ encore_entry_script_tags('admin') }}{% endblock %}
+{% endblock %}

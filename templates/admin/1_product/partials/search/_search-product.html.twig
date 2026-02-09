@@ -1,0 +1,54 @@
+{% if productArray %}
+  <div class="row align-items-center justify-content-start p-1 mx-2 product-results">
+    <div class="col" data-result-thumbnail>
+      <div class="">
+        <a data-product-anchor href="{{ path('admin_product_show',{'id': productArray.id}) }}" target="_blank">
+          <p class="p-0 m-0 font-weight-bold text-name">
+        {{productArray.brand_full}} {{productArray.name}}</p>
+        </a>
+        <small class="p-0 m-0 text-color">{{productArray.category_full}}{% if not (productArray.category_full ends with 's') %}'s {% else %}'{% endif %} {{productArray.type_full}}
+        </small>
+      </div>
+      <div class="row pl-2 mt-2">
+      {% if productArray.colors %}
+        {% for color in productArray.colors %}
+          <figure class="col mr-1 mb-1">
+            <div
+              class="thumbnail"
+            style="background-image: url({% if color.imageMedium %}{{asset(color.imageMedium) }}{% else %}{{asset('build/images/store/shoe/1.jpg')}}{% endif %});"
+              data-color-id={{color.pcId}}
+              data-color="{{color.colors_full}}"
+              data-fabric="{{color.fabrics_full}}"></div>
+              <figcaption hidden>
+                <p class="p-0 pt-2 m-0 text-color">{{color.colors_full}}</p>
+                <small class="p-0 m-0 text-fabric">{{color.fabrics_full}}</small>
+              </figcaption>
+          </figure>
+        {% endfor %}
+      {% endif %}
+      </div>
+    </div>
+
+    <div class="col-2 d-flex">
+      <button type="button"
+          id="add-product-btn"
+          class="btn btn-info py-1 px-2"
+          data-product-name="{{productArray.brand_full}} {{productArray.name}} {{productArray.type_full}}"
+          data-product-id="{{productArray.id}}"
+          data-link="{{ path('admin_product_show',{'id': productArray.id}) }}">Add</button>
+    </div>
+    <span class="col-1 text-right align-self-end cancel-icon">
+      {% include '__icons/a-d/_cancel-large.html.twig' with {'dataset': 'data-clear-search', 'width': 25, 'height': 25, 'label': 'Clear search'} only %}
+    </span>
+  </div>
+{% else %}
+  {% if id != 0 %}
+  <div class="row align-items-center justify-content-between mx-2 product-results">
+      <div class="col py-1 pl-3"><span class="font-weight-bold no-result">No product match found.</span>
+      </div>
+      <div class="col-2 text-right">
+        {% include '__icons/a-d/_cancel-large.html.twig' with {'dataset': 'data-clear-search', 'width': 25, 'height': 25, 'label': 'Clear search'} only %}
+      </div>
+  </div>
+  {% endif %}
+{% endif %}

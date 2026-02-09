@@ -1,0 +1,204 @@
+<!-- Main starts -->
+<main class="content">
+  <!-- Top navigation bar -->
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Suppliers</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+      {% if app.current_route == 'admin_supplier_edit' %}
+        <a href="{{ path('admin_supplier_edit', {'id': supplier.id}) }}">Edit Supplier</a>
+      {% else %}
+        <a href="{{ path('admin_supplier_new') }}">New Supplier</a>
+      {% endif %}
+      </li>
+    </ol>
+  </nav>
+  <!-- Page overview & Search bar -->
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% if app.current_route == 'admin_supplier_new' %}
+      {% set features =
+          ['Create new supplier'] %}
+    {% else %}
+      {% set features =
+          ['Edit supplier',
+           'Access all products of each supplier',
+           'Delete supplier'] %}
+    {% endif %}
+
+    <!-- Page overview -->
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <!-- Main heading -->
+      <h1 class="h4 pb-3">{{app.current_route == 'admin_supplier_edit' ? 'Edit' : 'New'}} Supplier</h1>
+      <!-- Features list -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/4_supplier/partials/_search-form.html.twig' %}
+  </div>
+
+  <!-- Supplier form row starts -->
+  <div class="row">
+    <div class="col-lg-7 col-md-8 mb-2 d-flex flex-row justify-content-end">
+      {% if app.current_route == 'admin_supplier_edit' %}
+        <!-- List button -->
+        <a title="List all products from {{supplier.name}}" href="{{ path('admin_product_data_index', {'supplier': supplier.id, 'supplier_name': supplier.name}) }}"><button type="button" class="btn btn-primary mr-2">list</button></a>
+      {% endif %}
+      <!-- Back button -->
+      <a href="{{ path('admin_supplier_index') }}">
+        <button type="button" class="btn btn-light">Back to suppliers</button>
+      </a>
+      {% if app.current_route  == 'admin_supplier_edit'
+          and checkDelete %}
+        <!-- Delete button -->
+        {% include 'admin/4_supplier/partials/_delete_form.html.twig' %}
+      {% endif %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-7 col-md-8 mb-4">
+      <div class="card border-light shadow-sm components-section">
+        <div class="card-body">
+          <div class="row mb-4">
+            <section class="forms-sample">
+              <!-- Form starts -->
+              {{ form_start(form,{'attr':
+                {'novalidate': 'novalidate', 'data-form': 'admin' }}) }}
+                <!-- Name -->
+                <div class="form-group mb-4">
+                  {{ form_label(form.name, null,
+                    {'label': 'Name: ',}) }}
+                  {{ form_widget(form.name, {'attr':
+                      {'class': 'form-control',
+                      'placeholder': 'Enter supplier name'}}) }}
+                  <span class="alert-danger" role="alert">{{ form_errors(form.name) }}</span>
+                </div>
+
+                <!-- Details textarea -->
+                <div class="form-group mb-4">
+                  {{ form_label(form.details, null,
+                    {'label': 'Details: ',}) }}
+                  {{ form_widget(form.details, {'attr':
+                      {'class': 'form-control',
+                      'placeholder': 'Enter supplier description',
+                      'rows': '5'}}) }}
+                  {{ form_errors(form.details) }}
+                </div>
+
+                <!-- Email & Phone row -->
+                <div class="row">
+                  <!-- Email -->
+                  <div class="col-5">
+                    <div class="row">
+                      {{ form_label(form.email, null,
+                        {'label': 'Email: ',}) }}
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="far fa-envelope"></i></span>
+                          {{ form_widget(form.email, {'attr':
+                              {'class': 'form-inline',
+                              'placeholder': 'Enter supplier\'s email'}}) }}
+                        </div>
+                      </div>
+                    </div>
+                    {{ form_errors(form.email) }}
+                  </div>
+
+                  <!-- Phone number -->
+                  <div class="col-7">
+                    {{ form_label(form.phone, 'Phone: ') }}
+                    <div class="d-flex flex-column flex-sm-row" data-phone data-phone-type="landline">
+                      {{ form_widget(form.phone.country,{'attr':
+                         {'class': '',
+                         'data-country-code':'',
+                         'data-target': 'supplier_form_phone_number',
+                         'data-selected': supplier.countryCode ? supplier.countryCode}})}}
+
+                      {{ form_widget(form.phone.number,{'attr':
+                        {'class': 'mx-1 form-control',
+                         'data-phone-number':'',
+                         'data-phone-type': 'landline',
+                         'data-target': 'supplier_form_phone_country',
+                         }})}}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Address row -->
+                <div class="row form-group mt-4">
+                  <h6>Address</h6>
+                  <!-- Address -->
+                  <div class="col-12 col-md-6">
+                    {{ form_label(form.street, null,
+                      {'label': 'Street: ',}) }}
+                    {{ form_widget(form.street, {'attr':
+                        {'class': 'form-control',
+                        'placeholder': 'Enter supplier\'s street'}}) }}
+                    {{ form_errors(form.street) }}
+                  </div>
+
+                  <!-- City -->
+                  <div class="col-12 col-md-3">
+                    <div class="form-group">
+                      {{ form_label(form.city, 'City ',
+                         {'label_attr': {'class': ''}}) }}
+                      {{ form_widget(form.city, {'attr':
+                        {'class': '',
+                         'placeholder': 'city',
+                         'data-city': '',
+                         'data-selected': supplier.city ? supplier.city}
+                        }) }}
+                        {{ form_errors(form.city) }}
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-3">
+                   {{ form_label(form.countryCode, null,
+                      {'label': 'Country: ',}) }}
+                    {{ form_widget(form.countryCode, {'attr':
+                        {'class': '',
+                        'data-country': '',
+                        'placeholder': 'Enter supplier\'s country'}}) }}
+                    {{ form_errors(form.countryCode) }}
+                  </div>
+                </div>
+
+                <!-- CSRF Token -->
+                {{ form_widget(form._token)}}
+
+                <!-- Submit button -->
+                <div class="row justify-content-end mt-5">
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 d-flex justify-content-end">
+                    {% if app.current_route  == 'admin_supplier_edit' %}
+                      <button class="btn btn-lg btn-success py-2 px-5"
+                         title="Save supplier" type="submit">Update
+                      </button>
+                    {% else %}
+                      <button class="btn btn-lg btn-info py-2 px-5"
+                        title="Update supplier" type="submit">Save</button>
+                    {% endif %}
+                    </div>
+                </div>
+
+              {{ form_end(form, {render_rest: false}) }}
+              <!-- Form ends -->
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Supplier form row ends -->
+  {% include 'admin/_partials/footer.html.twig' %}
+</main>
+<!-- Main panel ends -->

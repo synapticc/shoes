@@ -1,0 +1,112 @@
+
+<div class="row justify-content-between align-items-end">
+  {% if items is not empty %}
+    <div class="col-10 col-sm-3 col-md-3 col-lg-3">
+      <div class="row mb-4 items-btn-row">
+        <div class="col">
+          <!-- Cart button -->
+          <form title="{{get.status is not defined or (get.status is defined and get.status != 'cart') ? 'Display only cart items' : 'Remove filter' }}" method="get" action="{{ path('admin_items') }}">
+            {% for key, query in get %}
+              {% if key != 'status' %}
+                <input name="{{key}}" value="{{query}}" hidden=hidden>
+              {% endif %}
+            {% endfor %}
+            {% if get.status is not defined or (get.status is defined and get.status != 'cart' ) %}
+              <input name="status" value="cart" hidden=hidden>
+            {% endif %}
+            <button class="btn btn-{{(app.request.get('status') == 'cart') ? 'warning' : 'status-cart'}} mb-1"><i class="fas fa-shopping-cart mr-1"></i>Cart</button>
+          </form>
+          <!-- Paid button -->
+          <form title="{{get.status is not defined or (get.status is defined and get.status != 'paid') ? 'Display only paid items' : 'Remove filter' }}" method="get" action="{{ path('admin_items') }}">
+            {% for key, query in get %}
+              {% if key != 'status' %}
+                <input name="{{key}}" value="{{query}}" hidden=hidden>
+              {% endif %}
+            {% endfor %}
+            {% if  get.status is not defined or (get.status is defined and get.status != 'paid' ) %}
+              <input name="status" value="paid" hidden=hidden>
+            {% endif %}
+            <button class="btn btn-{{(app.request.get('status') == 'paid') ? 'success' : 'status-paid'}}"><i class="fas fa-file-invoice-dollar mr-1"></i>Paid</button>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <form method="get" id="items_page_form">
+          <!-- items -->
+          <select id="items_page" name="items_page"
+                  class="items-num-select {{app.user.theme == 'dark' ? 'bg-gray'}}">
+            {% for item in pages %}
+              {% if item < items.getTotalItemCount  %}
+                <option value="{{item}}" {% if items_page == item %}selected{% endif %}>{{item}}</option>
+              {% endif %}
+
+            {% endfor %}
+            <option value="{{items.getTotalItemCount}}" {% if items_page == items.getTotalItemCount %}selected{% endif %}>All</option>
+          </select>
+
+          <span class="{{ app.user.theme == 'dark' ? 'text-gray-500' }}"> of {{items.getTotalItemCount}} {{item}}s listed</span>
+          <input name="page" value="{{items.currentPageNumber}}" hidden="hidden">
+
+          {% for key, query in get %}
+            {% if key != 'sort' and  key != 'order'
+                  and key != 'items_page' and key != 'page' %}
+              <input name="{{key}}" value="{{query}}" hidden=hidden>
+            {% endif %}
+          {% endfor %}
+        </form>
+      </div>
+    </div>
+    {% else %}
+    <div class="col-10 col-sm-3 col-md-3 col-lg-3">
+      <div class="row mb-4 items-btn-row">
+        <div class="col">
+          <form title="{{get.status is not defined or (get.status is defined and get.status != 'cart') ? 'Display only cart items' : 'Remove filter' }}" method="get" action="{{ path('admin_items') }}">
+            {% for key, query in get %}
+              {% if key != 'status' %}
+                <input name="{{key}}" value="{{query}}" hidden=hidden>
+              {% endif %}
+            {% endfor %}
+            {% if  get.status is not defined or (get.status is defined and get.status != 'cart' ) %}
+              <input name="status" value="cart" hidden=hidden>
+            {% endif %}
+            <button class="btn btn-{{(app.request.get('status') == 'cart') ? 'warning' : 'status-cart'}} mb-1"><i class="fas fa-shopping-cart mr-1"></i>Cart</button>
+          </form>
+          <form title="{{get.status is not defined or (get.status is defined and get.status != 'paid') ? 'Display only paid items' : 'Remove filter' }}" method="get" action="{{ path('admin_items') }}">
+            {% for key, query in get %}
+              {% if key != 'status' %}
+                <input name="{{key}}" value="{{query}}" hidden=hidden>
+              {% endif %}
+            {% endfor %}
+            {% if  get.status is not defined or (get.status is defined and get.status != 'paid' )  %}
+              <input name="status" value="paid" hidden=hidden>
+            {% endif %}
+            <button class="btn btn-{{(app.request.get('status') == 'paid') ? 'success' : 'status-paid'}}"><i class="fas fa-file-invoice-dollar mr-1"></i>Paid</button>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <span class="{{ app.user.theme == 'dark' ? 'text-gray-500' }}">{{items.getTotalItemCount == 0 ? 'No' : items.getTotalItemCount}} {{item}}{{items.getTotalItemCount > 1 ? 's'}} listed</span>
+      </div>
+    </div>
+  {% endif %}
+
+  {% include 'admin/_partials/filter-top.html.twig' %}
+
+  <div class="col-10 col-sm-2 col-md-2 col-lg-2 d-flex flex-column justify-content-center text-center">
+    <button type="button" class="button-black">
+      Total: Rs {{total.total ? total.total|format_number({fraction_digit: 2}) : '0.00' }}
+    </button>
+      <table id="cart-total">
+        <tbody>
+          <tr>
+            <th>Cart</th>
+            <th>Paid</th>
+          </tr>
+          <tr>
+            <td>{{total.totalCart ? total.totalCart|format_number({fraction_digit: 2}) : '0.00'}}</td>
+            <td>{{total.totalPaid ? total.totalPaid|format_number({fraction_digit: 2}) : '0.00'}}</td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+</div>

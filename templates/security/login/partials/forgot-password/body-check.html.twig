@@ -1,0 +1,28 @@
+<!-- main starts -->
+<main>
+  <!-- Section -->
+  <section class="vh-lg-100 d-flex align-items-center">
+    <div class="container">
+      <div class="row justify-content-center form-bg-image" data-background-lg="{{asset('build/images/admin/illustrations/signin.svg') }}">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+          <div class="signin-inner my-3 my-lg-0 bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+            <div class="text-center text-md-center mb-4 mt-md-0">
+              <h1 class="mb-0 h3">Reset your password</h1>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col-md-12 text-justify">
+                <p>
+                    If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
+                    This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                </p>
+                <p>If you don't receive an email please check your spam folder or <a href="{{ path('forgot_reset_password_request') }}">try again</a>.</p>
+              </div>
+            </div>
+            {% include 'security/login/partials/forgot-password/partials/_register.html.twig'  %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<!-- Main ends -->

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+  {% block meta %}{% include 'admin/_partials/meta.html.twig' %}{% endblock %}
+
+  {% block title %}
+    {{ app.current_route == 'admin_purchases' ? 'Purchases' :
+       app.current_route == 'admin_transactions_show' ? 'Order' :
+       app.current_route == 'admin_items'        ? 'Order Items' :
+       app.current_route == 'admin_invoices'     ? 'Invoices' :
+       app.current_route == 'admin_cart'         ? 'Cart' }} | Admin
+  {% endblock %}
+
+  {% block stylesheets %}{{ encore_entry_link_tags('admin') }}{% endblock %}
+{% block body %}
+    <!-- Top navigation -->
+    {% include 'admin/_partials/navbar.html.twig' %}
+
+    <div class="container-fluid bg-{{ app.user.theme == 'light' ? 'soft' : 'dark'  }}">
+      <div class="row">
+        <div class="col-12">
+          <!-- Left sidebar  -->
+          {% include 'admin/_partials/left-sidebar.html.twig' %}
+          <!-- Main content -->
+          {% include
+              app.current_route == 'admin_purchases' ?
+              'admin/7_transactions/partials/_purchases-table.html.twig' :
+
+              app.current_route == 'admin_transactions_show' ?
+              'admin/7_transactions/partials/_show-items.html.twig' :
+
+              app.current_route == 'admin_invoices' ?
+              'admin/7_transactions/partials/_invoices-table.html.twig' :
+
+              app.current_route == 'admin_cart' ?
+              'admin/7_transactions/partials/_cart-table.html.twig' :
+
+              app.current_route == 'admin_invoices' ?
+              'admin/7_transactions/partials/_invoices-table.html.twig' :
+
+              app.current_route == 'admin_cart' ?
+              'admin/7_transactions/partials/_cart-table.html.twig' :
+
+              app.current_route == 'admin_items' ?
+              'admin/7_transactions/partials/_items-table.html.twig' %}
+        </div>
+      </div>
+    </div>
+
+  {% block javascripts %}{{ encore_entry_script_tags('datepicker') }}{{ encore_entry_script_tags('admin') }}{% endblock %}
+
+{% endblock %}

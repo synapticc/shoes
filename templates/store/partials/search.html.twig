@@ -1,0 +1,48 @@
+
+{% if results is not empty or products is not empty %}
+<div id="search-content">
+  <table class="table text-left">
+    <tbody>
+    {% if results %}
+      {% for result in results|slice(0, 3) %}
+        <tr>
+          <td>
+            <a target="_self" href="/?{{result.item.attribute ~ '[]=' ~ result.item.name}}" target="_blank">
+            {% if result.item.attribute == 'brand' or result.item.attribute == 'color' %}
+              <img class="result-icon-sm"
+                   src="{% if result.item.name %}{{asset('build/images/store/color-patches/' ~ result.item.name ~ '.webp')}}{% else %}{{asset('build/images/store/shoe/1.jpg')}}{% endif %}">
+            {% endif %}
+              <span class="pl-10" title="{{result.item.fullName}} {{result.item.attribute}}">{{result.item.fullName}} {% if result.item.attribute != 'brand' and
+            result.item.attribute != 'color' and result.item.attribute != 'sort' %}({{result.item.attribute}}){% endif %}
+              </span>
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    {% endif %}
+    {% for product in products %}
+      <tr>
+        <td>
+          <a
+            class="ps-shoe__name"
+            href="{{ path('store_details', {
+                          'brand': product.brand_full|slug,
+                          'name': (product.name|title)|slug,
+                          'id': nzo_encrypt(product.id)
+                            }) }}"
+            target="_self">
+            <span title="{{product.colors_full}}" class="result-icon-lg" id="result-icon-lg" {% if product.imageSmall is defined %}style="background-image: url({{asset(product.imageSmall)}} );
+          background-position: {{product.type == 'socks' ? '50% 90%' : '50% 48%' }};" {% endif %}></span>
+            <span title="{{product.brand_full}} {{product.name}} {{product.type_full}}" class="pl-10">{{product.brand_full ~ ' ' ~ product.name}}</span>
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+  {% if results is empty and products is empty %}
+    <div id="search-empty">No product found.</div>
+  {% endif %}
+{% endif %}

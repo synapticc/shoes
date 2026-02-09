@@ -1,0 +1,151 @@
+<main class="content">
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Transactions</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        <a href="{{ path('admin_invoices') }}">Invoices</a>
+      </li>
+    </ol>
+  </nav>
+  <div class="row justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Display all invoices',
+         'Access each invoice'] %}
+    <div class="col-2 mb-3 mb-lg-0">
+      <h1 class="h4 pb-3">Invoices</h1>
+      <!-- Features -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/7_transactions/partials/_search-form.html.twig' %}
+  </div>
+  <!-- No. of items per page> -->
+  {% include 'admin/_partials/select-items.html.twig'
+     with { 'items' : invoices, 'item' : 'invoice', 'route_index': 'admin_invoices', 'route': '' } %}
+  <!-- Table row -->
+
+<div class="row mt-1">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card {{ app.user.theme == 'dark' ? 'bg-gray-300' }} border-light shadow-sm components-section">
+      <div class="card-body">
+        <div class="table-responsive" id="invoices-table">
+          <table class="table table-nowrap mb-0 rounded text-center">
+            <thead class="{{ app.user.theme == 'light' ? 'thead-light' : 'thead bg-gray-500' }}">
+              <tr>
+                <!-- Invoice ID -->
+                <th class="id">
+                  <span>Invoice Ref.</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : invoices, 'sort_param': 'o.order_id', 'label': 'ID'} %}</span>
+                </th>
+                <!-- Invoice -->
+                <th>Invoice</th>
+                <!-- Profile pic -->
+                <th>Pic</th>
+                <!-- Customer -->
+                <th>
+                  <span>Customer</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : invoices, 'sort_param': 'u.lastName', 'label': 'name'} %}</span>
+                </th>
+                <!-- Action -->
+                <th>Action</th>
+                <!-- Date of purchase -->
+                <th>
+                  <span>Date of purchase</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : invoices, 'sort_param': 'o.purchaseDate', 'label': 'date of purchase'} %}</span>
+                </th>
+                <!-- Total -->
+                <th>
+                  <span>Total (Rs)</span>
+                  <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : invoices, 'sort_param': 'total', 'label': 'total sum'} %}</span>
+                </th>
+              </tr>
+            </thead>
+            <!-- Table header ends -->
+            <!-- Table body starts -->
+            <tbody>
+              {% for invoice in invoices %}
+              <!-- Item -->
+              <tr class="row-hover">
+                <td>
+                  {{invoice.order_id|pad(6)}}
+                </td>
+                <td>
+                  <div class="pdf-wrapper">
+                    <div class="pdf-view{{ app.user.theme == 'dark' ? '-dark' }} mb-1" style="background-image: url(
+                        {% if invoice.thumbnail %}{{asset(invoice.thumbnail)}}
+                        {% else %}{{asset('build/images/store/cart-preview/1.jpg')}}
+                        {% endif %});"
+                        title="View invoice online">
+                    </div>
+                    {% set fileName = invoice.invoicePath |split('/', 5) %}
+                    <div class="pdf-buttons d-flex flex-column justify-content-end align-items-center">
+                      <a href="{% if invoice.invoicePath %}{{asset(invoice.invoicePath) }}{% endif %}" download="{{fileName[4]}}" target="_blank">
+                        <button title="Download invoice (PDF)" class="transparent-btn" type="button" name="button">
+                        {% include '__icons/m-p/_pdf.html.twig' with {'width': 53, 'height': 53, 'class': 'invoices-arrow'} %}
+                        </button>
+                      </a>
+                      <button class="transparent-btn section-hide"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#pdf-{{loop.index}}"
+                        data-color='invoices-arrow'
+                        data-width=33
+                        data-height=33
+                        id="arrow-button">{% include '__icons/a-d/_arrow-down.html.twig' with {'width': 33, 'height': 33, 'class': 'invoices-arrow','dataset': ''} %}</button>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <a title="Search all {{invoice.title ? invoice.title}} {{invoice.firstName}} {{ invoice.lastName}} invoices." class="" {% if search %} data-search-terms="{{search}}"
+                    data-text="{{invoice.title ? invoice.title}} {{invoice.firstName}} {{ invoice.lastName}}"
+                  id="text-highlight" {% endif %} href="{{ path('admin_invoices', {'customer': invoice.userId, 'customer_url': invoice.pic, 'customer_email': invoice.email}) }}">
+                    <img src="{% if invoice.pic %}{{asset(invoice.pic)}}{% else %}{% if invoice.title is same as 'Mr' %}{{asset('build/images/admin/man.png')}}{% else %}{% if invoice.title is same as 'Mrs' %}{{asset('build/images/admin/woman.png')}}{% else %}{{asset('build/images/admin/man.png')}}{% endif %}{% endif %}{% endif %}" class="table-avatar border-radius-5 m-auto" alt="..." >
+                  </a>
+                </td>
+                <td>
+                  <a title="Search all {{invoice.title ? invoice.title}} {{invoice.firstName}} {{ invoice.lastName}} invoices." class="border-hover" {% if search %} data-search-terms="{{search}}"
+                    data-text="{{invoice.title ? invoice.title}} {{invoice.firstName}} {{ invoice.lastName}}"
+                  id="text-highlight" {% endif %} href="{{ path('admin_invoices', {'customer': invoice.userId, 'customer_url': invoice.pic, 'customer_email': invoice.email}) }}">{{invoice.title ? invoice.title}} {{invoice.firstName}} {{ invoice.lastName}}</a></td>
+                <td>
+                  <a href="{{ path('admin_transactions_show', {'order':invoice.order_id}) }}">
+                  <button title="Display detailed Invoice." type="button" class="btn btn-light">show</button>
+                </a></td>
+
+                <td><span class="font-weight-normal">{{ invoice.purchaseDate|date("F jS, Y \\a\\t g:ia") }}</span></td>
+
+                <td><span class="font-weight-bold">{{invoice.total|number_format(2, '.', ',')}}</span></td>
+              </tr>
+              <tr class="pdf-row">
+                <td colspan="5" class="p-0">
+                  <div class="collapse form-control p-3" pdf-viewer data-id="#pdf-{{loop.index}}" id="pdf-{{loop.index}}" data-address="{{asset(invoice.invoicePath) }}">
+                  </div>
+                </td>
+              </tr>
+              {% else %}
+                <tr><td colspan="7" id="empty-cell" class="{{app.user.theme == 'dark' ? 'text-gray'}}">No invoice found</td></tr>
+              {% endfor %}
+            </tbody>
+            <!-- Table body ends -->
+          </table>
+          <!-- Table ends -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Pagination -->
+<section data-turbo=false>
+{% include 'admin/_partials/pagination.html.twig' with { 'items' : invoices } %}
+</section>
+<!-- Footer -->
+{% include 'admin/_partials/footer.html.twig' %}
+</main>

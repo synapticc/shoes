@@ -1,0 +1,48 @@
+{% if product %}
+  {% if checkProduct %}
+  <div class="row align-items-center justify-content-center pc-error" id="product-color-error">
+    <div class="col">
+      <p class="text-center text-white bg-danger">This product color cannot be excluded. It has been included already.</p>
+    </div>
+  </div>
+  {% endif %}
+  <div class="row align-items-center justify-content-between mx-2 pc-results">
+    <div class="col-3 thumbnail"
+  style="background-image: url({% if product.imageMedium %}{{asset(product.imageMedium) }}{% else %}{{asset('build/images/store/shoe/1.jpg')}}{% endif %});" data-color-id={{product.colorId}}>
+    </div>
+    <div class="pl-2 col">
+      <p class="p-0 m-0 font-weight-bold">{{product.colors_full}} {{product.fabrics_full}}</p>
+      <small class="p-0 m-0">{{product.brand_full}} {{product.type_full}}</small>
+    </div>
+    <div class="col-2 mr-2 d-flex">
+      <div class="">
+        <button
+          title="Add {{product.colors_full}}"
+          {% if checkProduct %}disabled{% endif %}
+          type="button"
+          class="btn btn-{{checkProduct ? 'lighten' : 'info'}} py-1 px-2"
+          data-add-color-option
+          data-exclude-product-color
+          data-pc-id="{{product.colorId}}"
+          data-name="{{product.brand_full}} {{product.name}}"
+          data-color="{{product.colors_full}}"
+          data-fabric="{{product.fabrics_full}}"
+          data-thumbnail-url="{% if product.imageMedium %}{{asset(product.imageMedium) }}{% else %}{{asset('build/images/store/shoe/1.jpg')}}{% endif %}"
+          >Add</button>
+      </div>
+      <div class="cancel-icon text-right">
+        {% include '__icons/a-d/_cancel-large.html.twig' with {'dataset': 'data-clear-search', 'width': 25, 'height': 25, 'label': 'Clear search'} only %}
+      </div>
+    </div>
+  </div>
+  {% else %}
+    {% if id != 0 %}
+    <div class="row align-items-center justify-content-between mx-2 pc-results">
+      <div class="col py-1 pl-3 no-result"><span class="font-weight-bold">No color match found.</span>
+      </div>
+      <div class="col-2 text-right">
+        {% include '__icons/a-d/_cancel-large.html.twig' with {'dataset': 'data-clear-search', 'label': 'Clear search', 'width': 35, 'height': 35,} only %}
+      </div>
+    </div>
+  {% endif %}
+{% endif %}

@@ -1,0 +1,20 @@
+
+<div class="d-flex justify-content-end align-items-start p-3">
+    <div class="">{{ knp_pagination_render(items) }}</div>
+    {% if items.getTotalItemCount > items.getItemNumberPerPage %}
+    {# Pass query parameters alongside with page number entered #}
+    <div class="go-to-page">
+      <form method="GET">
+      {% for key, query in get %}
+        {% if key != 'page' %}
+        <input name="{{key}}" value="{{query}}" hidden=hidden>
+        {% endif %}
+      {% endfor %}
+        <input type="number" name="page" class="page-input" min=1
+               max="{{maxPage}}" value="{{get.page is defined ? get.page }}"
+               title="Enter page">
+        <button type="submit" class="btn btn-primary">Go</button>
+      </form>
+    </div>
+    {% endif %}
+</div>

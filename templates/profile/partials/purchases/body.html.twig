@@ -1,0 +1,73 @@
+<div class="profile-container rounded bg-white mt-5 mb-5">
+  <div class="row">
+    <!-- Sidebar menu -->
+    <div class="col-md-3">
+      {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+    </div>
+    <!-- Middle section form -->
+    <div class="col-md-8 ml-30 border-right">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+         <h4 class="text-right">Invoices</h4>
+      </div>
+      <div class="ps-cart-listing">
+        <table class="table ps-cart__table">
+           <thead>
+             <tr>
+               <th>#</th>
+               <th>Order Reference</th>
+               <th>Thumbnails</th>
+               <th>Date of purchase</th>
+               <th class="text-center">No.of items</th>
+               <th>Total (Rs)</th>
+             </tr>
+           </thead>
+           <tbody>
+            {% for purchase in purchases %}
+            {% if purchase.items is defined  %}
+              <tr>
+                <td>{{loop.index}}</td>
+                <td><a href="{{ path('user_profile_purchase_list', {'order': nzo_encrypt(purchase.id)}) }}">Invoice Ref.{{purchase.id}}</a></td>
+                <td>
+                  {% for item in purchase.items %}
+                  <a target="_blank"
+                    href="{{
+                     path('store_details', {
+                              'brand': item.brand_full|slug,
+                              'name': item.name|slug,
+                              'id': nzo_encrypt(item.productDataId)
+                              }) }}">
+
+                  <div class="purchases-img" title="{{ item.name ~ ' (' ~ item.quantity ~ ' pcs)'}}">
+                    <img class="img-fluid"
+                        src="{{asset(item.imageSmall) }}"
+                        alt="image: {{item.name}}">
+                  </div>
+                  </a>
+                  {% endfor %}
+                </td>
+                <td>{% if purchase.purchaseDate %}
+                  {{ purchase.purchaseDate|date("F jS, Y \\a\\t g:ia") }}
+                {% else %}
+                  <span class="text-secondary">Not yet updated</span>
+                {% endif %}</td>
+                <td class="text-center"> {{purchase.totalQty}}</td>
+                <td>{{purchase.invoiceTotal|format_number({fraction_digit: 2})}}</td>
+              </tr>
+            {% else %}
+              <div class="alert alert-info">
+                You haven't purchased yet. Go to <a href="{{ path('store') }}">store</a>.
+              </div>
+            {% endif %}
+            {% endfor %}
+           </tbody>
+         </table>
+         <!-- Pagination -->
+         <div class="d-flex justify-content-center">
+            <div class="col-4">
+              {{ knp_pagination_render(purchases) }}
+            </div>
+         </div>
+      </div>
+    </div>
+  </div>
+</div>

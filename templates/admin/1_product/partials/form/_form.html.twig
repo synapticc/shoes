@@ -1,0 +1,2071 @@
+<!-- Main starts -->
+<main class="content" data-turbo=false>
+  <!-- Top navigation bar -->
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Products</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        {% if app.current_route == 'admin_product_edit' %}
+          <a href="{{ path('admin_product_edit', {'id': product.id}) }}">Edit Product</a>
+        {% else %}
+          <a href="{{ path('admin_product_new') }}">New Product</a>
+        {% endif %}
+      </li>
+    </ol>
+  </nav>
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% if app.current_route == 'admin_product_new' %}
+      {% set features =
+          ['Create a new product',
+           'Add different colors with their corresponding sets of images',
+           'Configure similar items for the bottom "Related Product" slider',
+           'Activate display'] %}
+    {% else %}
+      {% set features =
+          ['Edit product',
+           'Edit colors and their corresponding sets of images',
+           'Configure similar items for the bottom "Related Product" slider',
+           'Activate display'] %}
+    {% endif %}
+
+    <!-- Page overview -->
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <!-- Main heading -->
+      <h1 class="h4 pb-3 {{ app.user.theme == 'dark' ? 'text-white' }}">{{app.current_route == 'admin_product_new' ?  'New' : 'Edit'}} Product</h1>
+      <!-- Features list -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/1_product/partials/form/_search-form.html.twig' %}
+  </div>
+  {% if app.current_route == 'admin_product_edit' %}
+  <!-- 'Back to products' & 'Edit' buttons -->
+  <div class="row mt-1 mb-2">
+    <div class="col-xl-8 col-lg-9 col-md-11 d-flex justify-content-end">
+      <!-- Back to products button -->
+      <a title="Back to products table" href="{{ path('admin_product_index') }}" class="">
+        <button type="button" class="btn btn-secondary">Back to products</button>
+      </a>
+      <!-- Show button -->
+      <a href="{{ path('admin_product_show', {'id': product.id}) }}">
+        <button type="button" class="btn btn-lighten ml-2">show</button>
+      </a>
+      <!-- List button -->
+      <a href="{{ path('admin_product_data_index', {'product': product.id, 'product_name': product.category_full ~ ' ' ~ product.name ~ ' ' ~ product.type_full }) }}">
+        <button title="List all [{{product.brand_full}} {{product.name}} {{product.type_full}}] items" type="button" class="btn btn-gray ml-2">list</button>
+      </a>
+    </div>
+  </div>
+  {% endif %}
+  <!-- Product form  row starts -->
+  <div class="row">
+    <div class="col-xl-8 col-lg-9 col-md-11 mb-4">
+      <div class="card {{ app.user.theme == 'dark' ? 'bg-gray-500' }} border-light shadow-sm components-section">
+        <div class="card-body">
+          {% if app.current_route == 'admin_product_edit' and deleteProduct %}
+          <!-- 'Delete product' button row -->
+          <div class="row justify-content-end">
+            <div class="col-4 d-flex justify-content-end">
+              {% include 'admin/1_product/partials/form/_delete_form.html.twig' %}
+            </div>
+          </div>
+          {% endif %}
+          <!-- Form row -->
+          <div class="row mb-4">
+            <section class="forms-sample">
+              <!-- Prototype (blank template for new HTML addition -->
+              {% include 'admin/1_product/partials/_prototype.html.twig' %}
+              <!-- Form starts -->
+              {{ form_start(form,
+                {'attr':
+                  {'data-route': app.current_route=='admin_product_new'
+                                 ? 'admin_product_new' :  'admin_product_edit',
+                    'id': 'product_form',
+                    'novalidate': 'novalidate'}}) }}
+              <!-- Name, Date of display row -->
+              <div class="row mb-4 justify-content-between">
+                <!-- Name -->
+                <div class="col-7">
+                  {{ form_label( form.name, null,
+                    {'label': 'Name*:',
+                     'label_attr': {'title': 'Name required'}}) }}
+                  {{ form_widget( form.name, {'attr':
+                    {'class': 'form-control',
+                     'placeholder': 'Enter product name'}}) }}
+                  {{ form_errors(form.name) }}
+                  {% for flash_error in app.flashes('product_exists') %}
+                      <div class="alert alert-danger text-center text-white mt-1"
+                           role="alert">{{ flash_error }}</div>
+                  {% endfor %}
+                </div>
+                <!-- Displayed checkbox -->
+                <div class="col-5">
+                  <div class="row justify-content-end align-items-end display-row">
+                    <div class="col-2 display-check">
+                      {{ form_label( form.displayed, null,
+                         {'label': 'Display: ',}) }}
+                      {% if app.current_route  == 'admin_product_new' %}
+                        {{ form_widget(form.displayed,{'attr':
+                            {'class': 'ml-2 p-3 form-check-input bs-indigo',
+                             'title': 'Display product.',
+                             'checked': (app.current_route  == 'admin_product_new') ? true}}) }}
+                      {% else %}
+                        {{ form_widget(form.displayed,{'attr':
+                            {'class': 'ml-2 p-3 form-check-input bs-indigo',
+                             'title': 'Display product.'}}) }}
+                      {% endif %}
+                    </div>
+                    <!-- Displayed datepicker -->
+                    <div class="col-8">
+                      <div class="input-group" title="Display date">
+                        <span class="input-group-text">
+                           <span class="far fa-calendar-alt"></span>
+                        </span>
+                        <!-- Aeon datepicker -->
+                        <aeon-datepicker
+                           id="aeon-datepicker"
+                           locale="en-fr"
+                           default-date="{% if app.current_route == 'admin_product_edit' %}{{ product.displayDate|date("Y-m-d") }}{% else %}{{"now"|date("Y-m-d")}}{% endif %}"
+                         default-time="{% if app.current_route == 'admin_product_edit' %}{{product.displayDate|format_datetime('none', 'short', locale='fr')}}{% else %}{{"now"|format_datetime('none', 'short', locale='fr')}}{% endif %}"
+                           data-target="product_form_displayDate">
+
+                          <input id="date-start"
+                                 name="date-start"
+                                 type="date"
+                                 value="{% if app.current_route == 'admin_product_edit' %}{{ product.displayDate|date("Y-m-d") }}{% else %}{{"now"|date("Y-m-d")}}{% endif %}"
+                                 placeholder="Display date">
+
+                          <input id="time-start"
+                                 name="time-start"
+                                 type="time"
+                               value="{% if app.current_route == 'admin_product_edit' %}{{product.displayDate|format_datetime('none', 'short', locale='fr')}}{% else %}{{"now"|format_datetime('none', 'short', locale='fr')}}{% endif %}">
+                        </aeon-datepicker>
+                        {{ form_widget(form.displayDate,
+                          {'attr': { 'hidden': ''}}) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Description textarea -->
+              <div class="form-group mb-4">
+                {{ form_label( form.description, null,
+                    {'label': 'Description*: ',
+                     'label_attr': {'title': 'Description required'}}) }}
+                {{ form_widget( form.description, {'attr':
+                    {'class': 'form-control',
+                     'placeholder': 'Enter product description',
+                     'rows': '5'
+                     }})}}
+                {{ form_errors(form.description) }}
+              </div>
+              <!-- Features list -->
+              <div class="form-group mb-4">
+                <div class="row justify-content-around">
+                  {{ form_label( form.features, null,
+                    {'label': 'Features*: ',
+                     'label_attr':
+                        {'class': 'pb-2 col-11',
+                         'title': 'Features required'}}) }}
+                <button title="Add new feature" class="col-1 transparent-btn"
+                        type="button" id="add-features">{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': ''} only  %}</button>
+                </div>
+                {{ form_widget(form.features, {'attr':
+                  {'class': 'form-control'},
+                   'row_attr':
+                     {'class': 'row p-3 mb-2 feature-list'}}) }}
+                {{ form_errors(form.features) }}
+              </div>
+              <!-- Category, Type, Quantity, Brand, Occasion row -->
+              <div class="row mt-3 mb-3">
+                <div class="col-6">
+                  <!-- Category choices -->
+                  <div class="col mb-2">
+                    <div class="row">
+                      <div class="col-3">
+                        {{ form_label(form.category, null,
+                          {'label': 'Category*: ',
+                           'label_attr': {'title': 'Category required'}}) }}
+                      </div>
+                      <div class="col-9">
+                        {{ form_widget(form.category,
+                          {'attr':
+                             {'aria-label': 'Category',
+                              'aria-describedby': 'Category',
+                              'slim-select': '',
+                              'data-placeholder': 'category',
+                              'data-selected': 'Category',
+                              'data-show-search': 'true',
+                              'data-search-msg': 'No record found.',
+                              'data-allow-deselect': 'false',
+                              'data-search-highlight': 'true'}}) }}
+                        {{ form_errors(form.category) }}
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Type choices -->
+                  <div class="col mb-2">
+                    <div class="row">
+                      <div class="col-3">
+                        {{ form_label(form.type, null,
+                            {'label': 'Type*:',
+                             'label_attr': {'title': 'Type required'}}) }}
+                      </div>
+                      <div class="col-9">
+                        {{ form_widget(form.type,
+                          {'attr':
+                             {'aria-label': 'Type',
+                              'aria-describedby': 'Type',
+                              'slim-select': '',
+                              'data-placeholder': 'Type',
+                              'data-selected': 'Type',
+                              'data-show-search': 'true',
+                              'data-search-msg': 'No record found.',
+                              'data-allow-deselect': 'false',
+                              'data-search-highlight': 'true'}}) }}
+                        {{ form_errors(form.type) }}
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Quantity (pack) -->
+                  <div class="col">
+                    <div class="row">
+                      <div class="col-3">
+                        {{ form_label(form.qtyPack.qtyPack, null,
+                          {'label': 'Socks per pack: ',
+                           'label_attr': {'title': 'Socks per pack optional'}}) }}
+                      </div>
+                      <div class="col-6">
+                        {{ form_widget(form.qtyPack.qtyPack,
+                          {'attr':
+                             {'aria-label': 'Pack',
+                              'aria-describedby': 'Pack',
+                              'slim-select': '',
+                              'data-placeholder': 'Pack',
+                              'data-selected': 'Pack',
+                              'data-show-search': 'true',
+                              'data-search-msg': 'No record found.',
+                              'data-allow-deselect': 'true',
+                              'data-search-highlight': 'false'}}) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <!-- Brand choices -->
+                  <div class="col mb-2">
+                    <div class="row form-brand">
+                      <div class="col-3">
+                        {{ form_label(form.brand, null,
+                          {'label': 'Brand*: ',
+                           'label_attr': {'title': 'Brand required'}}) }}
+                      </div>
+                      <div class="col-6">
+                        {{ form_widget(form.brand,
+                          {'attr':
+                             {'aria-label': 'Brand',
+                              'aria-describedby': 'Brand',
+                              'slim-select': '',
+                              'data-placeholder': 'Brand',
+                              'data-selected': 'Brand',
+                              'data-show-search': 'true',
+                              'data-search-msg': 'No record found.',
+                              'data-allow-deselect': 'false',
+                              'data-search-highlight': 'true'}}) }}
+                      </div>
+                    <div title="{{app.current_route  == 'admin_product_edit' ? product.brand_full}}" class="col-3" id="brand-icon"
+                  {% if app.current_route  == 'admin_product_edit' %}
+                    {% if product.brand is defined %}style="background-image: url({{asset('build/images/store/color-patches/' ~ product.brand ~ '.webp')}} )"
+                    {% endif %}
+                  {% elseif app.current_route  == 'admin_product_new' %}
+                    style="background-image: url({{asset('/build/images/empty-image.svg')}} )"
+                  {% endif %}></div>
+                    </div>
+                  </div>
+                  <!-- Occasion choices -->
+                  <div class="col mb-2">
+                    <div class="row">
+                      <div class="col-3">
+                        {{ form_label(form.occasion, null,
+                          {'label': 'Occasion*:',
+                           'label_attr': {'title': 'Occasion required'}}) }}
+                      </div>
+                      <div class="col-9">
+                        {{ form_widget(form.occasion,
+                          {'attr':
+                             {'aria-label': 'Occasion',
+                              'aria-describedby': 'Occasion',
+                              'slim-select': '',
+                              'data-placeholder': 'Choose occasion',
+                              'data-selected': 'Occasion',
+                              'data-show-search': 'true',
+                              'data-search-msg': 'No record found.',
+                              'data-allow-deselect': 'false',
+                              'data-search-highlight': 'true'}}) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Video, Embedded video row -->
+              <div class="row">
+                <!-- Video URL -->
+                <div class="col-6">
+                  {{ form_label(
+                      form.video.videoUrl, null,
+                        {'label': 'Video URL: ',}) }}
+                  {{ form_widget(form.video.videoUrl,
+                    {'attr':
+                      {'class': 'form-control',
+                      'hx-trigger':'input changed, paste changed' ,
+                      'hx-target':'#embed-video',
+                      'hx-swap':'innerHTML',
+                      'hx-get':'/video'
+                      }}) }}
+                </div>
+                <!-- Embedded video -->
+                <div class="col-6" id="embed-video" embed-video>
+
+                  {% if app.current_route  == 'admin_product_edit' %}
+                    {% if product.videoUrl %}
+                      {% set URL = product.videoUrl|split('v=') %}
+                      <iframe
+                            src="https://www.youtube.com/embed/{% if URL %}{{URL[1]}}{% endif %}"
+                            width="325"
+                            height="200"
+                            frameborder="0"
+                            allowfullscreen="">
+                      </iframe>
+                    {% else %}
+                      <div title="No video detected" class="empty-video" style="background-image: url({{asset('build/images/admin/video.png')}})">
+                      </div>
+                    {% endif %}
+                  {% elseif app.current_route  == 'admin_product_new' %}
+                    <div title="No video detected" class="empty-video" style="background-image: url({{asset('build/images/admin/video.png')}})">
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              <!-- Image set -->
+              <div class="form-group">
+                <!-- Image label, 'Add new images' button -->
+                <div class="row justify-content-around">
+                  <label class="mb-2 mt-3 col-11" title="Images required">Image set*: </label>
+                  <button title="Add new color" class="col-1 transparent-btn" type="button" id="add-colors">{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': ''} %}</button>
+                </div>
+                {% if app.current_route  == 'admin_product_edit' %}
+                {% if product.colors is defined %}
+                  {% for color in product.colors %}
+                  <!-- Images set grouped by their color -->
+                  <div class="hide" id="product-image-set"
+                      data-color-set="{% if color.color %}{{color.color|join('-')}}{% endif %}"
+                      data-color-select-set="{% if colorSelectSet %}{{ colorSelectSet|json_encode() }}{% endif %}"
+                      data-color-id-set="{% if colorIdSet %}{{ colorIdSet|json_encode() }}{% endif %}"
+                      {% if  color.similarColors is defined %}data-similar-color-set="{{color.similarColors|json_encode() }}"{% endif %}
+                      >
+                    <!--image 1 -->
+                    <img src="{% if color.image %}{{asset(color.image) }}{% endif %}" alt="{{product.name}} image 1" data-image-path="{% if color.image %}{{color.image }}{% endif %}">
+                    <!--image 2 -->
+                    <img src="{% if color.image2 %}{{asset(color.image2) }}{% endif %}" alt="{{product.name}} image 2" data-image-path="{% if color.image2 %}{{color.image2 }}{% endif %}">
+                    <!--image 3 -->
+                    <img src="{% if color.image3 %}{{asset(color.image3) }}{% endif %}" alt="{{product.name}} image 3" data-image-path="{% if color.image3 %}{{color.image3 }}{% endif %}">
+                    <!--image 4 -->
+                    <img src="{% if color.image4 %}{{asset(color.image4) }}{% endif %}" alt="{{product.name}} image 4" data-image-path="{% if color.image4 %}{{color.image4 }}{% endif %}">
+                    <!--image 5 -->
+                    <img src="{% if color.image5 %}{{asset(color.image5) }}{% endif %}" alt="{{product.name}} image 2" data-image-path="{% if color.image5 %}{{color.image5 }}{% endif %}">
+                  </div>
+                  {% endfor %}
+                {% endif %}
+                {% endif %}
+                {# {{ form_widget(form.colors) }} #}
+                <div id="product_form_productColor" class="form-control">
+                {% if app.current_route  == 'admin_product_edit' %}
+                  {% if product.colors is defined %}
+                  {% for color in product.colors %}
+                  <!-- Color & images area -->
+                  <section class="container form-control mb-4" data-id={{color.pcId}} id={{color.pcId}} pc-field>
+                    <div class="row mt-3 mb-4 justify-content-between pc-summary" id="pc-summary">
+                      <!-- Label -->
+                      <span class="col-4"><label class="color-label">Color {{loop.index}} : {{color.colors_full}}</label></span>
+                      <!-- Color patches -->
+                      <div class="col" id="patch">
+                        <!-- Patch 1 -->
+                        <div class="patch" id="patch-1" {% if color.colors_set.0 is defined %}style="background-image: url({{asset('build/images/store/color-patches/' ~ color.colors_set.0 ~ '.webp')}} )" {% endif %}></div>
+                        <!-- Patch 2 -->
+                        <div class="patch" id="patch-2" {% if color.colors_set.1 is defined %}style="background-image: url({{asset('build/images/store/color-patches/' ~ color.colors_set.1 ~ '.webp')}} )"{% endif %}></div>
+                        <!-- Patch 3 -->
+                        <div class="patch" id="patch-3" {% if color.colors_set.2 is defined %}style="background-image: url({{asset('build/images/store/color-patches/' ~ color.colors_set.2 ~ '.webp')}} )"{% endif %}></div>
+                      </div>
+                      <!-- Product mini thumbnails -->
+                      <div class="col-5" id="thumbnail">
+                        <!-- Thumbnail 1 -->
+                        <div class="thumbnail" id="thumbnail-1" {% if color.imageSmall %} style="background-image: url({{asset(color.imageSmall)}} )"{% endif %}></div>
+                        <!-- Thumbnail 2 -->
+                        <div class="thumbnail" id="thumbnail-2" {% if color.imageSmall2 %} style="background-image: url({{asset(color.imageSmall2)}} )"{% endif %}></div>
+                        <!-- Thumbnail 3 -->
+                        <div class="thumbnail" id="thumbnail-3" {% if color.imageSmall3 %} style="background-image: url({{asset(color.imageSmall3)}} )"{% endif %}></div>
+                        <!-- Thumbnail 4 -->
+                        <div class="thumbnail" id="thumbnail-4" {% if color.imageSmall4 %} style="background-image: url({{asset(color.imageSmall4)}} )"{% endif %}></div>
+                        <!-- Thumbnail 5 -->
+                        <div class="thumbnail" id="thumbnail-5" {% if color.imageSmall5 %} style="background-image: url({{asset(color.imageSmall5)}} )"{% endif %}></div>
+                      </div>
+                      {% if color.pcId not in deleteColor  %}
+                      <!-- Delete area -->
+                      <div class="col-1 d-flex flex-column justify-content-center">
+                        <!-- Delete button -->
+                        <button class="transparent-btn" type="button">
+                          {% include '__icons/q-t/_square-delete.html.twig' with {'label': 'Delete all images', 'dataset': 'data-remove-color', 'width': '40', 'height': '40', 'color': 'fill-red'} only %}
+                        </button>
+                      </div>
+                      {% else %}
+                      <!-- Delete area (disabled) -->
+                      <div class="col-1 d-flex flex-column justify-content-center">
+                        <!-- Delete button -->
+                        <button class="transparent-btn disabled-icon" type="button" disabled->
+                          {% include '__icons/q-t/_square-delete.html.twig' with {'label': 'Cannot be deleted', 'dataset': 'disabled', 'width': '40', 'height': '40', 'color': 'fill-grey'} only %}
+                        </button>
+                      </div>
+                      {% endif %}
+                    </div>
+                    <div id="product_form_productColor_{{loop.index0}}">
+                      <!-- Colors separator -->
+                      <section>
+                        <!-- Expand/hide button -->
+                        <button
+                          type="button"
+                          class="transparent-btn section-hide"
+                          data-width=32
+                          data-height=32
+                          data-color='fill-grey'
+                          data-toggle="collapse"
+                          data-target="#colors_{{loop.index0}}"
+                          arrow-down-icon
+                          id="arrow-button">{% include '__icons/a-d/_arrow-down.html.twig' with {'width': 32, 'height': 32, 'class': 'fill-grey','dataset': 'arrow-down-icon'} %}</button>
+                        <h6 class="text-gray-700">Colors</h6>
+                        <!-- Horizontal line -->
+                        <hr class="hr">
+                      </section>
+                      <!-- Colors hidden section -->
+                      <section class="collapse form-control mb-3" data-colors id="colors_{{loop.index0}}">
+                        <div class="row justify-content-between">
+                          <!-- Colors selects -->
+                          <div class="col-lg-6">
+                            <input type="hidden"
+                             id="product_form_productColor_{{loop.index0}}_colorId"
+                             name="product_form[colors][{{loop.index0}}][colorId]" value="{{color.pcId}}">
+                            <!-- Color 1 -->
+                            <div class="row mb-3 align-items-center" data-mono-color data-color-patch-parent>
+                              <!-- Color select -->
+                              <div class="col-lg-10">
+                                <select id="product_form_productColor_{{loop.index0}}_color1"
+                                  required
+                                  name="product_form[colors][{{loop.index0}}][color1]"
+                                  data-color-select
+                                  data-apply-color
+                                  data-color-order=1
+                                  data-label="Choose color 1"
+                                  data-deselect="false"
+                                  data-required
+                                  data-error="The first color is required."
+                                  aria-label="Color"
+                                  aria-describedby="Color"
+                                  slim-select
+                                  data-placeholder="Choose color 1"
+                                  data-selected="Color"
+                                  data-show-search=true
+                                  data-search-msg="No record found"
+                                  data-allow-deselect=false
+                                  data-search-highlight=true>
+                                  <option data-placeholder="true"></option>
+                                  {% for colorSet in colors %}<option value="{{colorSet.name}}" {% if color.colors_set.0  == colorSet.name %}selected{% endif %}>{{colorSet.fullName}}</option>{% endfor %}
+                                </select>
+                              </div>
+                              <!-- Color patch -->
+                              <span title="{% if color.colors_set.0 is defined %}{% for colorSet in colors %}{% if colorSet.name == color.colors_set.0 %}{{colorSet.fullName}}{% endif %}{% endfor %}{% endif %}" data-color-patch="" class="col-lg-1"
+                              {% if color.colors_set.0 is defined %}style="background-image: url({{asset('build/images/store/color-patches/' ~ color.colors_set.0 ~ '.webp')}} )"{% endif %}></span>
+                            </div>
+                            <!-- Color 2 -->
+                            <div class="row mb-3 align-items-center" data-mono-color data-color-patch-parent>
+                              <!-- Color select -->
+                              <div class="col-lg-10">
+                                <select
+                                 id="product_form_productColor_{{loop.index0}}_color2"
+                                 name="product_form[colors][{{loop.index0}}][color2]"
+                                 data-color-select
+                                 data-color-order=2
+                                 data-label="Choose color 2"
+                                 data-apply-color
+                                 aria-label="Color"
+                                 aria-describedby="Color"
+                                 slim-select
+                                 data-placeholder="Choose color 2"
+                                 data-selected="Color"
+                                 data-show-search=true
+                                 data-search-msg="No record found"
+                                 data-allow-deselect=true
+                                 data-search-highlight=true>
+                                <option data-placeholder="true"></option>{% for colorSet in colors %}<option value="{{colorSet.name}}" {% if color.colors_set.1 is defined %}{% if color.colors_set.1  == colorSet.name %}selected{% endif %}{% endif %}>{{colorSet.fullName}}</option>{% endfor %}
+                                </select>
+                              </div>
+                              <!-- Color patch -->
+                              <span title="{% if color.colors_set.1 is defined %}{% for colorSet in colors %}{% if colorSet.name == color.colors_set.1 %}{{colorSet.fullName}}{% endif %}{% endfor %}{% endif %}" data-color-patch class="col-lg-1"
+                                {% if color.colors_set.1 is defined %}style="background-image: url({{asset('build/images/store/color-patches/' ~ color.colors_set.1 ~ '.webp')}} )"{% endif %}></span>
+                            </div>
+                            <!-- Color 3 -->
+                            <div class="row mb-3 align-items-center" data-mono-color data-color-patch-parent>
+                              <!-- Color select -->
+                              <div class="col-lg-10">
+                                <select
+                                 id="product_form_productColor_{{loop.index0}}_color3"
+                                 name="product_form[colors][{{loop.index0}}][color3]"
+                                 data-color-select
+                                 data-color-order=3
+                                 data-label="Choose color 3"
+                                 data-apply-color
+                                 aria-label="Color"
+                                 aria-describedby="Color"
+                                 slim-select
+                                 data-placeholder="Choose color 3"
+                                 data-selected="Color"
+                                 data-show-search=true
+                                 data-search-msg="No record found"
+                                 data-allow-deselect=true
+                                 data-search-highlight=true>
+                                <option data-placeholder="true"></option>{% for colorSet in colors %}<option value="{{colorSet.name}}" {% if color.colors_set.2 is defined %}{% if color.colors_set.2 == colorSet.name %}selected{% endif %}{% endif %}>{{colorSet.fullName}}</option>{% endfor %}</select>
+                              </div>
+                                <!-- Color patch -->
+                                <span title="{% if color.colors_set.2 is defined %}{% for colorSet in colors %}{% if colorSet.name == color.colors_set.2 %}{{colorSet.fullName}}{% endif %}{% endfor %}{% endif %}" data-color-patch="" class="col-lg-1" {% if color.colors_set.2 is defined %}style="background-image: url({{asset('build/images/store/color-patches/' ~ color.colors_set.2 ~ '.webp')}} )"{% endif %}></span>
+                            </div>
+                          </div>
+                          <!-- Fabrics, Textures -->
+                          <div class="col-lg-6 pr-4">
+                            <div class="row">
+                              <!-- Fabrics -->
+                              <div>
+                                <label for="product_form_productColor_{{loop.index0}}_fabrics" title="Fabrics required">Fabrics*</label>
+                                <select id="product_form_productColor_{{loop.index0}}_fabrics"
+                                  name="product_form[colors][{{loop.index0}}][fabrics][]"
+                                  data-fabrics-select
+                                  multiple
+                                  data-label="Choose fabrics"
+                                  data-required
+                                  data-error="At least one fabric is required."
+                                  aria-label="Fabrics"
+                                  aria-describedby="Fabrics"
+                                  slim-select
+                                  data-placeholder="Choose fabrics"
+                                  data-selected="Fabrics"
+                                  data-show-search=true
+                                  data-search-msg="No record found"
+                                  data-allow-deselect=false
+                                  data-search-highlight=true>
+                                  {% for fabricSet in fabrics %}
+                                   <option value="{{fabricSet.name}}" {% for fabric in color.fabrics %}{% if fabric == fabricSet.name %}selected{% endif %}{% endfor %}>{{fabricSet.fullName}}</option>
+                                 {% endfor %}
+                                </select>
+                              </div>
+                              <!-- Textures -->
+                              <div class="texture-parent mt-2">
+                                <label for="product_form_productColor_{{loop.index0}}_textures">Textures</label>
+                                  <select
+                                    id="product_form_productColor_{{loop.index0}}_textures"
+                                    name="product_form[colors][{{loop.index0}}][textures][textures][]"
+                                    data-textures-select
+                                    multiple
+                                    data-label="Choose textures"
+                                    aria-label="Texture"
+                                    aria-describedby="Texture"
+                                    slim-select
+                                    data-placeholder="Choose textures"
+                                    data-selected="Texture"
+                                    data-show-search=true
+                                    data-search-msg="No record found"
+                                    data-allow-deselect=true
+                                    data-search-highlight=true>{% for textureSet in textures %}<option value="{{textureSet.name}}" {% for texture in color.textures %}{% if texture  == textureSet.name %}selected{% endif %}{% endfor %}>{{textureSet.fullName}}</option>{% endfor %}
+                                  </select>
+                              </div>
+                              <!-- Tags -->
+                              <div class="tag-parent mt-2">
+                                <label for="product_form_productColor_{{loop.index0}}_tags_tags">Tags</label>
+                                  <select
+                                    id="product_form_productColor_{{loop.index0}}_tags_tags"
+                                    name="product_form[colors][{{loop.index0}}][tags][tags][]"
+                                    data-tags-select
+                                    multiple
+                                    data-label="Choose tags"
+                                    aria-label="Tags"
+                                    aria-describedby="Tags"
+                                    slim-select
+                                    data-placeholder="Choose tags"
+                                    data-selected="Tags"
+                                    data-show-search=true
+                                    data-search-msg="No record found"
+                                    data-allow-deselect=true
+                                    data-search-highlight=true>{% for tagSet in tags %}<option value="{{tagSet.name}}" {% for tag in color.tags %}{% if tag  == tagSet.name %}selected{% endif %}{% endfor %}>{{tagSet.fullName}}</option>{% endfor %}
+                                  </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Video URL -->
+                        <div>
+                          <div id="product_form_productColor_{{loop.index0}}_video" class="row mb-3 mt-3">
+                            <!-- Video URL input -->
+                            <div class="col-6">
+                              <label for="product_form_productColor_{{loop.index0}}_video_videoUrl">Video URL: </label>
+                              <input type="text"
+                              id="product_form_productColor_{{loop.index0}}_video_videoUrl"
+                              name="product_form[colors][{{loop.index0}}][video][videoUrl]"
+                              class="form-control"
+                              value="{{color.pcVideo}}"
+                              placeholder="Paste Youtube URL"
+                              hx-trigger="input changed, paste changed" hx-target="#embed-video-{{loop.index0}}" hx-swap="innerHTML" hx-get="/video">
+                            </div>
+                            <!-- Embedded video -->
+                            <div class="col-6" id="embed-video-{{loop.index0}}" embed-video>
+                              {% if app.current_route  == 'admin_product_edit' %}
+                              {% if color.pcVideo %}
+                                {% set URL = color.pcVideo|split('v=') %}
+                                <iframe
+                                      src="https://www.youtube.com/embed/{% if URL %}{{URL[1]}}{% endif %}"
+                                      width="325"
+                                      height="200"
+                                      frameborder="0"
+                                      allowfullscreen="">
+                                </iframe>
+                              {% else %}
+                                <div title="No video detected" class="empty-video" style="background-image: url({{asset('build/images/admin/video.png')}})">
+                                </div>
+                              {% endif %}
+                              {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                      <!-- Images separator -->
+                      <div>
+                        <!-- Expand/hide button -->
+                        <button
+                          type="button"
+                          class="transparent-btn section-hide"
+                          data-width=32
+                          data-height=32
+                          data-color='fill-grey'
+                          data-toggle="collapse"
+                          data-target="#images_{{loop.index0}}"
+                          arrow-down-icon
+                          id="arrow-button">{% include '__icons/a-d/_arrow-down.html.twig' with {'width': 32, 'height': 32, 'class': 'fill-grey','dataset': 'arrow-down-icon'} %}</button>
+                        <h6 class="text-gray-700">Images</h6>
+                        <!-- Horizontal line -->
+                        <hr class="hr">
+                      </div>
+                      <!-- Images hidden section -->
+                      <div class="collapse form-control p-3 mb-3" data-images id="images_{{loop.index0}}">
+                        <!-- Images 1 -->
+                        <div id="image-upload" class="mb-2">
+                          <span id="upload-dialog">
+                            <p>Image 1: </p></span>
+                            <label for="product_form_productColor_{{loop.index0}}_image1" class="btn btn-secondary">Browse </label>
+                            <span class="px-5" id="file-chosen">{% if color.image %}{{color.image}}{% else %}No file chosen{% endif %}</span>
+                            <a target="_blank" href="{% if color.image %}{{asset(color.image) }}{% endif %}"><img src="{% if color.imageMedium %}{{asset(color.imageMedium) }}{% endif %}" data-src="{% if color.imageSmall %}{{asset(color.image) }}{% endif %}"
+                            original="{% if color.imageMedium %}{{asset(color.imageMedium) }}{% endif %}"
+                            alt="{% if color.image %}{{color.image}}{% endif %}" id="preview-image"></a>
+                            <input type="file" id="product_form_productColor_{{loop.index0}}_image1" name="product_form[colors][{{loop.index0}}][image1]" hidden="hidden" data-image-input data-image-order=1 data-error="The first image is required." value="{{asset(color.imageMedium ? color.imageMedium) }}">
+                            <button id="cancel-image" type="button">{% include '__icons/a-d/_cancel-icon.html.twig' with {'label': 'Remove image', 'dataset': 'data-cancel-image', 'width': 28, 'height': 28} only %}</button>
+                            <button id="delete-image" type="button" {% if color.image %}style="display:inline-block;"{% endif %}>
+                            <input name="product_form[colors][{{loop.index0}}][delete-image][delete-image1]" type="hidden">
+                            {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Delete image', 'dataset': 'data-delete-image','width': 28, 'height': 28} only %}
+                            </button>
+                        </div>
+                        <!-- Images 2 -->
+                        <div id="image-upload" class="mb-2">
+                          <span id="upload-dialog">
+                            <p>Image 2: </p></span>
+                          <label for="product_form_productColor_{{loop.index0}}_image2" class="btn btn-secondary">Browse </label>
+                          <span class="px-5" id="file-chosen">{% if color.image2 %}{{color.image2}}{% else %}No file chosen{% endif %}</span>
+                          <a target="_blank" href="{% if color.image2 %}{{asset(color.image2) }}{% endif %}"><img src="{% if color.imageMedium2 %}{{asset(color.imageMedium2) }}{% endif %}" data-src="{% if color.image2 %}{{asset(color.image2) }}{% endif %}" original="{% if color.imageMedium2 %}{{asset(color.imageMedium2) }}{% endif %}"
+                          alt="{% if color.image2 %}{{color.image2}}{% endif %}" id="preview-image"></a>
+                          <input type="file" id="product_form_productColor_{{loop.index0}}_image2" name="product_form[colors][{{loop.index0}}][image2]" hidden="hidden" data-image-input data-image-order=2>
+                          <button id="cancel-image" type="button">{% include '__icons/a-d/_cancel-icon.html.twig' with {'label': 'Remove image', 'dataset': 'data-cancel-image', 'width': 28, 'height': 28} only %}</button>
+                          <button id="delete-image" type="button" {% if color.image2 %}style="display:inline-block;"{% endif %}>
+                            <input name="product_form[colors][{{loop.index0}}][delete-image][delete-image2]" type="hidden">
+                            {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Delete image', 'dataset': 'data-delete-image', 'width': 28, 'height': 28} only %}
+                          </button>
+                        </div>
+                        <!-- Images 3 -->
+                        <div id="image-upload" class="mb-2">
+                          <span id="upload-dialog">
+                            <p>Image 3: </p></span>
+                          <label for="product_form_productColor_{{loop.index0}}_image3" class="btn btn-secondary">Browse </label>
+                          <span class="px-5" id="file-chosen">{% if color.image3 %}{{color.image3}}{% else %}No file chosen{% endif %}</span>
+                          <a target="_blank" href="{% if color.image3 %}{{asset(color.image3) }}{% endif %}"><img src="{% if color.imageMedium3 %}{{asset(color.imageMedium3) }}{% endif %}" original="{% if color.imageMedium3 %}{{asset(color.imageMedium3) }}{% endif %}" data-src="{% if color.image3 %}{{asset(color.image3) }}{% endif %}" alt="{% if color.image3 %}{{color.image3}}{% endif %}" id="preview-image"></a>
+                          <input type="file" id="product_form_productColor_{{loop.index0}}_image3" name="product_form[colors][{{loop.index0}}][image3]" hidden="hidden" data-image-input data-image-order=3>
+                          <button id="cancel-image" type="button">{% include '__icons/a-d/_cancel-icon.html.twig' with {'label': 'Remove image', 'dataset': 'data-cancel-image', 'width': 28, 'height': 28} only %}</button>
+                          <button id="delete-image" type="button" {% if color.image3 %}style="display:inline-block;"{% endif %}>
+                            <input name="product_form[colors][{{loop.index0}}][delete-image][delete-image3]" type="hidden">
+                            {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Delete image', 'dataset': 'data-delete-image', 'width': 28, 'height': 28} only %}
+                          </button>
+                        </div>
+                        <!-- Images 4 -->
+                        <div id="image-upload" class="mb-2">
+                          <span id="upload-dialog">
+                            <p>Image 4: </p></span>
+                          <label for="product_form_productColor_{{loop.index0}}_image4" class="btn btn-secondary">Browse </label>
+                          <span class="px-5" id="file-chosen">{% if color.image4 %}{{color.image4}}{% else %}No file chosen{% endif %}</span>
+                          <a target="_blank" href="{% if color.image4 %}{{asset(color.image4) }}{% endif %}"><img src="{% if color.imageMedium4 %}{{asset(color.imageMedium4) }}{% endif %}" data-src="{% if color.image4 %}{{asset(color.image4) }}{% endif %}" original="{% if color.imageMedium4 %}{{asset(color.imageMedium4) }}{% endif %}" alt="{% if color.image4 %}{{color.image4}}{% endif %}" id="preview-image"></a>
+                          <input type="file" id="product_form_productColor_{{loop.index0}}_image4" name="product_form[colors][{{loop.index0}}][image4]" hidden="hidden" data-image-input data-image-order=4>
+                          <button id="cancel-image" type="button">{% include '__icons/a-d/_cancel-icon.html.twig' with {'label': 'Remove image', 'dataset': 'data-cancel-image', 'width': 28, 'height': 28} only %}</button>
+                          <button id="delete-image" type="button" {% if color.image4 %}style="display:inline-block;"{% endif %}>
+                            <input name="product_form[colors][{{loop.index0}}][delete-image][delete-image4]" type="hidden">
+                            {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Delete image', 'dataset': 'data-delete-image', 'width': 28, 'height': 28} only %}
+                          </button>
+                        </div>
+                        <!-- Images 5 -->
+                        <div id="image-upload">
+                          <span id="upload-dialog">
+                            <p>Image 5: </p></span>
+                          <label for="product_form_productColor_{{loop.index0}}_image5" class="btn btn-secondary">Browse </label>
+                          <span class="px-5" id="file-chosen">{% if color.image5 %}{{color.image5}}{% else %}No file chosen{% endif %}</span>
+                          <a target="_blank" href="{% if color.image5 %}{{asset(color.image5) }}{% endif %}"><img src="{% if color.imageMedium5 %}{{asset(color.imageMedium5) }}{% endif %}" data-src="{% if color.image5 %}{{asset(color.image5) }}{% endif %}" original="{% if color.imageMedium5 %}{{asset(color.imageMedium5) }}{% endif %}" alt="{% if color.image5 %}{{color.image5}}{% endif %}" id="preview-image"></a>
+                          <input type="file" id="product_form_productColor_{{loop.index0}}_image5" name="product_form[colors][{{loop.index0}}][image5]" hidden="hidden" data-image-input data-image-order=5>
+                          <button id="cancel-image" type="button">{% include '__icons/a-d/_cancel-icon.html.twig' with {'label': 'Remove image', 'dataset': 'data-cancel-image', 'width': 28, 'height': 28} only %}</button>
+                          <button id="delete-image" type="button" {% if color.image5 %}style="display:inline-block;"{% endif %}>
+                            <input name="product_form[colors][{{loop.index0}}][delete-image][delete-image5]" type="hidden">
+                            {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Delete image', 'dataset': 'data-delete-image', 'width': 28, 'height': 28} only %}
+                          </button>
+                        </div>
+                      </div>
+                      <!-- Similar colors separator -->
+                      <section>
+                        <button
+                          type="button"
+                          class="transparent-btn section-hide"
+                          data-width=32
+                          data-height=32
+                          data-color='fill-grey'
+                          data-toggle="collapse"
+                          data-target="#similar-color_{{loop.index0}}"
+                          arrow-down-icon
+                          id="arrow-button">{% include '__icons/a-d/_arrow-down.html.twig' with {'width': 32, 'height': 32, 'class': 'fill-grey','dataset': 'arrow-down-icon'} %}</button>
+                        <h6 class="text-gray-700">Similar Colors</h6>
+                        <hr class="hr">
+                      </section>
+                      {% if color.similarColors is defined %}
+                      <!-- Similar colors hidden section -->
+                      <section class="collapse form-control mb-3" id="similar-color_{{loop.index0}}" data-similar similar-parent>
+                        <div>
+                          <div id="product_form_productColor_{{loop.index0}}_similarProductColor" class="p-2">
+                            <div class="row mb-5">
+                              <!-- Other colors -->
+                              <div class="col-7 p-1">
+                                <button title="Add similar color" data-add-other-colors class="transparent-btn" type="button" id="add-other-colors">{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': 'data-add-other-colors'} %}</button>
+                                  <label>Similar colors: </label>
+                                  <div id="product_form_productColor_{{loop.index0}}_similarProductColor_otherColors" class="form-control other-colors" data-exclude="product_form_productColor_{{loop.index0}}_similarProductColor_excludeColor_colors" data-other-colors>
+                                    {% if color.similarColors.otherColors is defined %}
+                                    {% for otherColor in color.similarColors.otherColors %}
+                                    <div class="mb-3 m-1" data-new-other-color>
+                                      <label>Color {{loop.index}}</label>
+                                      <div id="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_otherColors_{{loop.index0}}" class="row align-items-center" data-color-patch-parent>
+                                        <div class="col-6">
+                                          <select id="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_otherColors_{{loop.index0}}_color"
+                                          name="product[colors][{{loop.parent.loop.index0}}][similarProductColor][otherColors][{{loop.index0}}][color]"
+                                          data-required data-error="The color is required." class=""
+                                          data-onload-other-color-select
+                                          data-label="Choose color"
+                                          data-deselect="false"
+                                          data-apply-color
+                                          data-remove-grid
+                                          data-add-grid
+                                          data-exclude-color
+                                          data-input="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_otherColors_{{loop.index0}}_qtyColor"
+                                          data-exclude="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_excludeColor_colors"
+                                          data-other-colors="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_otherColors">
+                                          <option value="" data-placeholder="true"></option>{% for colorSet in colors %}<option value="{{colorSet.name}}" {% if otherColor.color == colorSet.name %}selected{% endif %} {% if colorSet.name in color.similarColors.otherColors|keys %}{% if otherColor.color != colorSet.name %}disabled{% endif %}{% endif %}>{{colorSet.fullName}}</option>{% endfor %}
+                                          </select>
+                                        </div>
+                                        <div class="col-2 other-color-patch" data-color-patch {% if otherColor.color %}style="background-image: url({{asset('build/images/store/color-patches/' ~ otherColor.color ~ '.webp')}} )"{% endif %}></div>
+
+                                        <div class="col-3">
+                                          <div class="row flex-row align-items-center justify-content-start">
+                                            <div class="col-7 pr-1">
+                                              <input type="number" id="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_otherColors_{{loop.index0}}_qtyColor" name="product[colors][{{loop.parent.loop.index0}}][similarProductColor][otherColors][{{loop.index0}}][qtyColor]"  class="form-control text-center" data-required data-error="required." placeholder="qty" max="15"
+                                              value="{{otherColor.qtyColor}}"
+                                              data-color-qty>
+                                            </div>
+                                            <div class="col d-flex flex-column m-0 p-0">
+                                              <button data-input="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_otherColors_{{loop.index0}}_qtyColor" class="transparent-svg" type="button" data-increase-btn>
+                                                {% include '__icons/a-d/_arrow-up-thin.html.twig' with {'width': 18, 'height': 18, 'class': 'fill-grey','dataset': 'data-increase-btn data-input=product_form_productColor_' ~ loop.parent.loop.index0 ~ '_similarProductColor_otherColors_' ~ loop.index0 ~ '_qtyColor', 'title': 'Increase'} %}
+                                              </button>
+                                              <button data-input="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_otherColors_{{loop.index0}}_qtyColor" class="transparent-svg" type="button" data-decrease-btn>
+                                                {% include '__icons/a-d/_arrow-down-thin.html.twig' with {'width': 18, 'height': 18, 'class': 'fill-grey','dataset': 'data-decrease-btn data-input=product_form_productColor_' ~ loop.parent.loop.index0 ~ '_similarProductColor_otherColors_' ~ loop.index0 ~ '_qtyColor', 'title': 'Decrease'} %}
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <span class="col-1 p-0">{% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove color', 'dataset': 'data-remove-other-color data-exclude=product_form_productColor_' ~ loop.parent.loop.index0 ~ '_similarProductColor_excludeColor_colors data-other-colors=product_form_productColor_' ~ loop.parent.loop.index0 ~'_similarProductColor_otherColors data-select=product_form_productColor_' ~ loop.parent.loop.index0  ~ '_similarProductColor_otherColors_' ~ loop.index0 ~ '_color','width': 26, 'height': 26} only %}</span>
+                                      </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+                                  </div>
+                              </div>
+                              <!-- Exclude colors -->
+                              <div class="col-5 p-1">
+                                <label>Exclude colors: </label>
+                                <div id="product_form_productColor_{{loop.index0}}_similarProductColor_excludeColor" class="form-control exclude-colors" data-exclude-colors>
+                                  <div id="product_form_productColor_{{loop.index0}}_similarProductColor_excludeColor_{{loop.index0}}" class="p-2" data-color-patch-parent>
+                                    <div class="row mb-2 exclude-color-patch" data-multi-color-patch>
+                                      {% if color.similarColors.excludeColors is defined and color.similarColors.excludeColors is not empty %}
+                                      {% for exclude in color.similarColors.excludeColors %}<div class="patch" data-color="{{exclude}}" style="background-image: url({{asset('build/images/store/color-patches/' ~ exclude ~ '.webp')}} )"></div>{% endfor %}
+                                      {% else %}
+                                      <div class="patch" data-color style="background-image: url({{asset('/build/images/empty-image.svg')}} )"></div>
+                                      {% endif %}
+                                    </div>
+                                    <div class="row">
+                                      <select id="product_form_productColor_{{loop.index0}}_similarProductColor_excludeColor_colors"
+                                        name="product_form[colors][{{loop.index0}}][similarProductColor][excludeColor][colors][]"
+                                        class=""
+                                        multiple
+                                        data-exclude
+                                        data-label="Choose color"
+                                        slim-select
+                                        data-placeholder="Choose color"
+                                        data-selected="Color"
+                                        data-show-search=true
+                                        data-search-msg="No record found"
+                                        data-allow-deselect=true
+                                        data-search-highlight=true>
+                                        <option value="" data-placeholder="true"></option>
+                                        {% for colorSet in colors %}
+                                          <option value="{{colorSet.name}}" {% if color.similarColors.excludeColors is defined %}{% for exclude in color.similarColors.excludeColors %}{% if exclude == colorSet.name %}selected{% endif %}{% endfor %}{% endif %} {% if color.similarColors.otherColors is defined %}
+                                          {% for otherColor in color.similarColors.otherColors %}
+                                        {% if otherColor.color == colorSet.name %}disabled{% endif %}
+                                          {% endfor %}
+                                          {% endif %}>{{colorSet.fullName}}</option>
+                                        {% endfor %}
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-6 p-1">
+                                  <button title="Add similar product color" class="transparent-btn" type="button" data-add-product-colors>{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': 'data-add-product-colors'} %}
+                                  </button>
+                                  <label>Similar product colors: </label>
+                                  <div id="product_form_productColor_{{loop.index0}}_similarProductColor_otherProductColors" class="form-control p-3" data-product-colors data-id={{color.pcId}} data-target="product_form_productColor_{{loop.index0}}_similarProductColor_excludeProductColors">
+                                  {% if color.similarColors.otherProductColors is defined  %}
+                                  {% for otherPC in color.similarColors.otherProductColors %}
+                                    <div id="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_otherProductColors_{{loop.index0}}" class="form-control p-3 mb-2" data-parent data-pc data-color="{{otherPC.pcId}}">
+                                      <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="col">
+                                          <label>Product color {{loop.index}}</label>
+                                        </div>
+                                        <span class="col-1 align-self-center" data-remove-pc>
+                                          {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove product color',  'width': 30, 'height': 30, 'dataset': 'data-remove-pc'} only %}
+                                        </span>
+                                      </div>
+                                      <div class="row">
+                                        <div data-search class="input-group"><span class="input-group-text"><span class="fas fa-search"></span></span>
+                                            <input type="search" id="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_otherProductColors_{{loop.index0}}_colorInput" name="id" class="form-control" placeholder="Search product color" aria-label="Search  color" data-product-color-input hx-get="/colors/{{color.pcId}}" hx-target="#search-product-results-{{loop.parent.loop.index0}}{{loop.index0}}" hx-swap="innerHTML" hx-trigger="keyup changed delay:100ms, keydown changed, mousedown changed, paste changed, enter, input changed delay:100ms">
+                                          </div>
+                                      </div>
+                                      <section id="search-product-results-{{loop.parent.loop.index0}}{{loop.index0}}" data-results></section>
+                                      <div data-pc-select class="card product-color-card mt-1">
+                                          <div class="row g-0 justify-content-between">
+                                            <div data-previous-color="{{otherPC.pcId}}" data-thumbnail class="col-md-5 d-flex align-items-center img-card"
+                                            style="background-image: url({{asset(otherPC.imageMedium) }});"></div>
+                                            <div class="col img-text">
+                                              <div class="card-body px-0">
+                                                <h6 data-color-target class="card-title m-0 px-1">{{otherPC.colors_full}}</h6>
+                                                <p data-fabric-target class="card-text px-1 second-head">{{otherPC.fabrics_full}}</p>
+                                                <p class="card-text"><small data-name-target class="text-muted px-1">{{otherPC.brand_full}} {{otherPC.name }}</small></p>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                  {% endfor %}
+                                  {% endif %}
+                                  </div>
+                              </div>
+                              <div class="col-6 p-1">
+                                <button title="Add product color to be excluded" class="transparent-btn" type="button" data-add-exclude-product-colors>{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': 'data-add-exclude-product-colors'} %}</button>
+                                  <label>Exclude product colors: </label>
+                                  <div id="product_form_productColor_{{loop.index0}}_similarProductColor_excludeProductColors" class="form-control p-3" data-product-colors data-id={{color.pcId}} data-target="product_form_productColor_{{loop.index0}}_similarProductColor_otherProductColors">
+                                  {% if color.similarColors.excludeProductColors is defined  %}
+                                  {% for excludePC in color.similarColors.excludeProductColors %}
+                                    <div id="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_excludeProductColors_{{loop.index0}}" data-parent data-pc class="form-control p-3 mb-2">
+                                      <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="col">
+                                          <label>Exclude color {{loop.index}}</label>
+                                        </div>
+                                        <span class="col-1 align-self-center" data-remove-pc>
+                                          {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove product color',  'width': 30, 'height': 30, 'dataset': 'data-remove-pc'} only %}
+                                        </span>
+                                      </div>
+                                      <div class="row">
+                                        <div data-search class="input-group"><span class="input-group-text"><span class="fas fa-search"></span></span>
+                                          <input type="search" id="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_excludeProductColors_{{loop.index0}}_colorInput" name="id" class="form-control" placeholder="Search product color" aria-label="Search color" data-product-color-input hx-get="/color-exclude/{{color.pcId}}" hx-swap="innerHTML" hx-target="#search-exclude-results-{{loop.parent.loop.index0}}{{loop.index0}}" hx-trigger="keyup changed delay:100ms, keydown changed, mousedown changed, paste changed, enter, input changed delay:100ms" >
+                                        </div>
+                                      </div>
+                                      <div id="search-exclude-results-{{loop.parent.loop.index0}}{{loop.index0}}" data-results></div>
+                                      <div data-pc-select class="card product-color-card mt-1">
+                                        <div class="row g-0 justify-content-between">
+                                          <div data-thumbnail class="col-md-5 d-flex align-items-center img-card" style="background-image: url({{asset(excludePC.imageMedium) }});"></div>
+                                          <div class="col img-text">
+                                            <div class="card-body px-0">
+                                              <h6 data-color-target class="card-title m-0 px-1">{{excludePC.colors_full}}</h6>
+                                              <p data-fabric-target class="card-text second-head px-1">{{excludePC.fabrics_full}}</p>
+                                              <p class="card-text"><small data-name-target class="text-muted px-1">{{excludePC.brand_full}} {{excludePC.name }}</small></p>
+                                            </div>
+                                          </div>
+                                          <div hidden data-select>
+                                          <select id="product_form_productColor_{{loop.parent.loop.index0}}_similarProductColor_excludeProductColors_{{loop.index0}}_color" name="product_form[colors][{{loop.parent.loop.index0}}][similarProductColor][excludeProductColors][{{loop.index0}}][color]" class="form-control mt-3" data-slim="false" hidden><option selected value="{% if excludePC.pcId %}{{excludePC.pcId}}{% endif %}">{{excludePC.colors_full}} {{excludePC.fabrics_full}} ({{excludePC.brand_full}} {{excludePC.name }})</option></select>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  {% endfor %}
+                                {% endif %}
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Slider grid -->
+                            <div id="grid" class="form-group mt-3">
+                              <div class="row justify-content-between align-items-center">
+                                <div class="col"><h6>Rearrange slider items</h6></div>
+                                <!-- Reset slider -->
+                                <div class="col text-right">
+                                  <button id="product_form_pc_resetSlider" type="button" class="btn btn-lg btn-secondary">Reset slider</button>
+                                </div>
+                              </div>
+                              <div class="form-control">
+                                <div id="gridColor">
+                                  {% if color.similarColors.sort is defined %}
+                                    {% for grid in color.similarColors.sort %}
+                                      {% if grid.type == 'product' %}
+                                      <div class="grid-square"
+                                          style="background-image: url({{asset(grid.sort.imageSmall) }});"
+                                          title="{{ grid.sort.colors_full ~ ' ' ~ grid.sort.fabrics_full ~ ' (' ~ grid.sort.category_full ~ ' ' ~ grid.sort.brand_full ~ ' ' ~ grid.sort.name  ~ ' ' ~ grid.sort.type_full ~ ')' }}">
+                                         <input type="text"
+                                         name="product_form[colors][{{loop.parent.loop.index0}}][similarProductColor][sort][{{loop.index0}}]"
+                                         value={{grid.sort.pcId}}
+                                         hidden
+                                         ><span>{{grid.sort.colors_full}}</span>
+                                      </div>
+                                      {% else %}
+                                        {% if grid.type == 'color' %}
+                                        <div class="grid-square"
+                                          style="background-image: url({{asset('build/images/store/color-patches/' ~ grid.sort.color ~ '_sample.png')}} );background-size: 70%;background-position: 50% 68%;">
+                                          <input type="text"
+                                           name="product_form[colors][{{loop.parent.loop.index0}}][similarProductColor][sort][{{loop.index0}}]"
+                                           value="{{grid.sort.color}}"
+                                           hidden
+                                            ><span>{{grid.sort.color_full }}</span>
+                                        </div>
+                                        {% endif %}
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                      {% else %}
+                      <!-- Similar colors hidden section -->
+                      <section class="collapse form-control mb-3" id="similar-color_{{loop.index0}}" similar-parent>
+                        <div>
+                          <div id="product_form_productColor_{{loop.index0}}_similarProductColor" class="p-2">
+                            <div class="row mb-5">
+                              <!-- Other colors -->
+                              <div class="col-7 p-1">
+                                <button title="Add similar color" data-add-other-colors class="transparent-btn" type="button" id="add-other-colors">{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': 'data-add-other-colors'} %}</button>
+                                  <label>Similar colors: </label>
+                                  <div id="product_form_productColor_{{loop.index0}}_similarProductColor_otherProductColors" class="form-control other-colors" data-other-colors>
+                                  </div>
+                              </div>
+                              <!-- Exclude colors -->
+                              <div class="col-5 p-1">
+                                <label>Exclude colors: </label>
+                                <div id="product_form_productColor_{{loop.index0}}_similarProductColor_excludeColor" class="form-control exclude-colors" data-exclude-colors>
+                                  <div id="product_form_productColor_{{loop.index0}}_similarProductColor_excludeColor_{{loop.index0}}" class="p-2" data-color-patch-parent>
+                                    <div class="row mb-2 exclude-color-patch" data-multi-color-patch><div class="patch" data-color></div></div>
+                                    <div class="row">
+                                    <select id="product_form_productColor_{{loop.index0}}_similarProductColor_excludeColor_colors" name="product_form[colors][{{loop.index0}}][similarProductColor][excludeColor][colors][]" class="" multiple data-exclude data-label="Choose color"><option value="" data-placeholder="true"></option>{% for color in colors %}<option value="{{color.name}}" {% if color.similarColors.excludeColor is defined %}
+                                    {% for exclude in color.similarColors.excludeColor %}{% if exclude == color.name %}selected{% endif %}{% endfor %}{% endif %}>{{color.fullName}}</option>{% endfor %}</select>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-6 p-1"><button title="Add similar product color" class="transparent-btn" type="button" data-add-product-colors>{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': 'data-add-product-colors'} %}
+                                </button>
+                                <label>Similar product colors: </label>
+                                <div id="product_form_productColor_{{loop.index0}}_similarProductColor_otherProductColors" class="form-control mb-3" data-product-colors data-id=0>
+                                </div>
+                              </div>
+                              <div class="col-6 p-1"><button title="Add product color to be excluded" class="transparent-btn" type="button" data-add-exclude-product-colors>{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': 'data-add-exclude-product-colors'} %}</button>
+                                <label>Exclude product colors: </label>
+                                <div id="product_form_productColor_{{loop.index0}}_similarProductColor_excludeProductColors" class="form-control mb-3" data-product-colors></div>
+                              </div>
+                            </div>
+                            <!-- Slider grid -->
+                            <div id="grid" class="form-group mt-3">
+                              <div class="row justify-content-between align-items-center">
+                                <div class="col"><h6>Rearrange slider items</h6></div>
+                                <!-- Reset slider -->
+                                <div class="col text-right">
+                                  <button id="product_form_pc_resetSlider" type="button" class="btn btn-lg btn-secondary">Reset slider</button>
+                                </div>
+                              </div>
+                              <div class="form-control">
+                                <div id="gridColor">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                      {% endif %}
+                    </div>
+                  </section>
+                  {% endfor %}
+                  {% endif %}
+                {% endif %}
+                </div>
+              </div>
+              <!-- Image set error message  -->
+              <div class="p-2">
+                <span class="invalid-img-msg">Upload at least one image set.</span>
+              </div>
+              <!-- Similar product -->
+              <section class="mt-4">
+                <button
+                  type="button"
+                  class="transparent-btn section-hide"
+                  data-toggle="collapse"
+                  data-target="#similar-product"
+                  data-turbo=false
+                  data-color='bs-indigo'
+                  data-width=35
+                  data-height=35
+                  id="arrow-button">{% include '__icons/a-d/_arrow-down.html.twig' with {'width': 35, 'height': 35, 'class': 'bs-indigo','dataset': ''} %}</button>
+                <h5>Similar</h5>
+                <hr class="hr">
+              </section>
+              <!-- Similar product hidden  -->
+              <section class="collapse form-control mb-3 pt-4" id="similar-product">
+                <div id="product_form_similarProduct">
+                <!-- Similar brand -->
+                <div class="row">
+                  <div class="col-lg-9">
+                    {{ form_label(form.similarProduct.brands, null,
+                      {'label': 'Brands*:',
+                       'label_attr': {'title': 'Brands required'}}) }}
+                    {{ form_widget(form.similarProduct.brands,
+                      {'attr':
+                         {'aria-label': 'Brands',
+                          'aria-describedby': 'Brands',
+                          'data-label': 'brands',
+                          'slim-select': '',
+                          'data-placeholder': 'Brands',
+                          'data-selected': 'Brands',
+                          'data-show-search': 'true',
+                          'data-search-msg': 'No record found.',
+                          'data-allow-deselect': 'false',
+                          'data-search-highlight': 'true'}}) }}</div>
+                  <div class="col-lg-2">
+                    {{ form_label(form.similarProduct.qtyBrand, null,
+                      {'label': 'Quantity: ',}) }}
+                    <div class="input-group">
+                      <span class="input-group-text">items</span>
+                      {{ form_widget(form.similarProduct.qtyBrand,
+                      {'attr':
+                        {'class': 'form-inline w-50',
+                         'data-input': 'brand',
+                         'similar-input': '',
+                         'data-select':'product_form_similarProduct_brands',
+                         'value': app.current_route  == 'admin_product_edit' ? sort.brand : 0}}) }}
+                    </div>
+                  </div>
+                </div>
+                <!-- Similar occasion -->
+                <div class="row mt-3">
+                  <div class="col-lg-9">
+                    {{ form_label(form.similarProduct.occasions, null,
+                      {'label': 'Occasions*:',
+                       'label_attr': {'title': 'Occasions required'}}) }}
+                    {{ form_widget(form.similarProduct.occasions,
+                      {'attr':
+                         {'aria-label': 'Occasions',
+                          'aria-describedby': 'Occasions',
+                          'data-label': 'occasions',
+                          'slim-select': '',
+                          'data-placeholder': 'Occasions',
+                          'data-selected': 'Occasions',
+                          'data-show-search': 'true',
+                          'data-search-msg': 'No record found.',
+                          'data-allow-deselect': 'false',
+                          'data-search-highlight': 'true'}}) }}</div>
+                  <div class="col-lg-2 align-self-end">
+                    <div class="input-group">
+                      <span class="input-group-text">items</span>
+                      {{ form_widget(form.similarProduct.qtyOccasion,
+                        {'attr':
+                          {'class': 'form-inline w-50',
+                           'similar-input': '',
+                           'data-input': 'occasion',
+                           'value': app.current_route  == 'admin_product_edit' ? sort.occasion : 0}}) }}
+                        </div>
+                  </div>
+                </div>
+                <!-- Similar type -->
+                <div class="row mt-3">
+                  <div class="col-lg-9">
+                    {{ form_label(form.similarProduct.types, null,
+                      {'label': 'Types*: ',
+                       'label_attr': {'title': 'Types required'}}) }}
+                    {{ form_widget(form.similarProduct.types,
+                      {'attr':
+                         {'aria-label': 'Types',
+                          'aria-describedby': 'Types',
+                          'data-label': 'types',
+                          'slim-select': '',
+                          'data-placeholder': 'Types',
+                          'data-selected': 'Types',
+                          'data-show-search': 'true',
+                          'data-search-msg': 'No record found.',
+                          'data-allow-deselect': 'false',
+                          'data-search-highlight': 'true'}}) }}</div>
+                  <div class="col-lg-2 align-self-end">
+                    <div class="input-group">
+                      <span class="input-group-text">items</span>
+                      {{ form_widget(form.similarProduct.qtyType,
+                        {'attr':
+                          {'class': 'form-inline w-50',
+                          'similar-input': '',
+                           'data-input': 'type',
+                           'value': app.current_route  == 'admin_product_edit' ? sort.type : 0}}) }}
+                    </div>
+                  </div>
+                </div>
+                <!-- Similar color -->
+                <div class="row mt-3">
+                  <div class="col-lg-9">
+                    {{ form_label(form.similarProduct.colors, null,
+                      {'label': 'Colors*: ',
+                       'label_attr': {'title': 'Colors required'}}) }}
+                    {{ form_widget(form.similarProduct.colors,
+                      {'attr':
+                         {'aria-label': 'Colors',
+                          'aria-describedby': 'Colors',
+                          'data-label': 'colors',
+                          'slim-select': '',
+                          'data-placeholder': 'Colors',
+                          'data-selected': 'Colors',
+                          'data-show-search': 'true',
+                          'data-search-msg': 'No record found.',
+                          'data-allow-deselect': 'false',
+                          'data-search-highlight': 'true'}}) }}</div>
+                  <div class="col-lg-2 align-self-end">
+                    <div class="input-group">
+                      <span class="input-group-text">items</span>
+                      {{ form_widget(form.similarProduct.qtyColor,
+                        {'attr':
+                          {'class': 'form-inline w-50',
+                           'similar-input': '',
+                           'data-input': 'color',
+                           'value': app.current_route  == 'admin_product_edit' ? sort.color : 0}}) }}
+                    </div>
+                  </div>
+                </div>
+                <!-- Similar fabric -->
+                <div class="row mt-3">
+                  <div class="col-lg-9">
+                    {{ form_label(form.similarProduct.fabrics, null,
+                        {'label': 'Fabrics*:',
+                         'label_attr': {'title': 'Fabrics required'}}) }}
+                    {{ form_widget(form.similarProduct.fabrics,
+                      {'attr':
+                         {'aria-label': 'Fabrics',
+                          'aria-describedby': 'Fabrics',
+                          'data-label': 'fabrics',
+                          'slim-select': '',
+                          'data-placeholder': 'Fabrics',
+                          'data-selected': 'Fabrics',
+                          'data-show-search': 'true',
+                          'data-search-msg': 'No record found.',
+                          'data-allow-deselect': 'false',
+                          'data-search-highlight': 'true'}}) }}</div>
+                  <div class="col-lg-2 align-self-end">
+                    <div class="input-group">
+                      <span class="input-group-text">items</span>
+                      {{ form_widget(form.similarProduct.qtyFabric,
+                        {'attr':
+                          {'class': 'form-inline w-50',
+                           'similar-input': '',
+                           'data-input': 'fabric',
+                           'value': app.current_route  == 'admin_product_edit' ? sort.fabric : 0}}) }}
+                    </div>
+                  </div>
+                </div>
+                <!-- Similar texture -->
+                <div class="row mt-3">
+                  <div class="col-lg-9">
+                    {{ form_label(
+                        form.similarProduct.textures, null,
+                        {'label': 'Textures: ',
+                         'label_attr': {'title': 'Textures optional'}}) }}
+                    {{ form_widget(
+                        form.similarProduct.textures,
+                        {'attr':
+                           {'aria-label': 'Textures',
+                            'aria-describedby': 'Textures',
+                            'data-label': 'textures',
+                            'slim-select': '',
+                            'data-placeholder': 'Textures',
+                            'data-selected': 'Textures',
+                            'data-show-search': 'true',
+                            'data-search-msg': 'No record found.',
+                            'data-allow-deselect': 'false',
+                            'data-search-highlight': 'true'}}) }}</div>
+                  <div class="col-lg-2 align-self-end">
+                    <div class="input-group">
+                      <span class="input-group-text">items</span>
+                      {{ form_widget(form.similarProduct.qtyTexture,
+                          {'attr':
+                            {'class': 'form-inline w-50',
+                             'similar-input': '',
+                             'data-input': 'texture',
+                             'value': app.current_route  == 'admin_product_edit' ? sort.texture : 0}}) }}
+                    </div>
+                  </div>
+                </div>
+                <!-- Similar tags -->
+                <div class="row mt-3">
+                  <div class="col-lg-9">
+                    {{ form_label(
+                        form.similarProduct.tags, null,
+                        {'label': 'Tags: ',
+                         'label_attr': {'title': 'Tags optional'}}) }}
+                    {{ form_widget(
+                        form.similarProduct.tags,
+                        {'attr':
+                           {'aria-label': 'Tags',
+                            'aria-describedby': 'Tags',
+                            'data-label': 'tags',
+                            'slim-select': '',
+                            'data-placeholder': 'Tags',
+                            'data-selected': 'Tags',
+                            'data-show-search': 'true',
+                            'data-search-msg': 'No record found.',
+                            'data-allow-deselect': 'false',
+                            'data-search-highlight': 'true'}}) }}</div>
+                  <div class="col-lg-2 align-self-end">
+                    <div class="input-group">
+                      <span class="input-group-text">items</span>
+                      {{ form_widget(form.similarProduct.qtyTags,
+                          {'attr':
+                            {'class': 'form-inline w-50',
+                             'similar-input': '',
+                             'data-input': 'tags',
+                             'value': app.current_route  == 'admin_product_edit' ? sort.tags : 0}}) }}
+                    </div>
+                  </div>
+                </div>
+                <!-- Similar size -->
+                <div class="row mt-3">
+                  <div class="col-lg-9">
+                    {{ form_label(form.similarProduct.sizes, null,
+                      {'label': 'Sizes: ',
+                       'label_attr': {'title': 'Sizes optional'}}) }}
+                    {{ form_widget(form.similarProduct.sizes,
+                      {'attr':
+                         {'aria-label': 'Sizes',
+                          'aria-describedby': 'Sizes',
+                          'data-label': 'sizes',
+                          'slim-select': '',
+                          'data-placeholder': 'Sizes',
+                          'data-selected': 'Sizes',
+                          'data-show-search': 'true',
+                          'data-search-msg': 'No record found.',
+                          'data-allow-deselect': 'false',
+                          'data-search-highlight': 'true'}}) }}</div>
+                  <div class="col-lg-2 align-self-end">
+                    <div class="input-group">
+                      <span class="input-group-text">items</span>
+                      {{ form_widget(form.similarProduct.qtySize,
+                        {'attr':
+                          {'class': 'form-inline w-50',
+                            'similar-input': '',
+                            'data-input': 'size',
+                            'value': app.current_route  == 'admin_product_edit' ? sort.size : 0}}) }}
+                    </div>
+                  </div>
+                </div>
+                <!-- Similar Product -->
+                <div class="form-group mt-2 mb-4">
+                  <div class="row justify-content-around">
+                    <label class="pb-2 col-11">Matching products: </label>
+                    <button title="Add new product"
+                        class="col-1 transparent-btn"
+                        type="button"
+                        id="add-products">{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': ''} only  %}</button>
+                  </div>
+                  {#{{ form_widget(form.similarProduct.otherProducts) }}#}
+                  <div id="product_form_similarProduct_otherProducts" class="form-control other-products py-3" data-main="products">
+                  {% if product.otherProducts is defined %}
+                  {% for similarProduct in product.otherProducts.products %}
+                    <div data-parent class="mt-{{loop.index == 1 ? 0 : 3}} form-control pb-3 pr-3">
+                      <div id="product_form_similarProduct_otherProducts_{{loop.index0}}" class="row align-items-center" data-product>
+                        <div class="col">
+                          <div class="row mt-2">
+                            <div class="col">
+                              <div class="product-color-label align-self-center">
+                                <label>Product {{loop.index}}</label>
+                              </div>
+                            </div>
+                            <div class="col-1 align-self-center" data-remove-similar-product>
+                              {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove product', 'dataset': 'data-remove-similar-product', 'width': 34, 'height': 34} only %}
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-4">
+                              <div data-search class="input-group"><span class="input-group-text"><span class="fas fa-search"></span></span>
+                                <!-- Similar product search -->
+                                <input type="search" id="product_form_similarProduct_otherProducts_{{loop.index0}}_input" name="productId" class="form-control" placeholder="Search product" aria-label="Search  color" data-product-color-input hx-get="/products" hx-target="#search-product-results-{{loop.index0}}" hx-swap="innerHTML" hx-trigger="keyup changed delay:100ms, keydown changed, mousedown changed, paste changed, enter, input changed delay:100ms">
+                              </div>
+                              <div data-results id="search-product-results-{{loop.index0}}"></div>
+                            </div>
+                            <div class="col-8 "data-product-row>
+                              <div class="">
+                                <!-- Similar product name -->
+                                <h6>
+                                  <a data-anchor-target href="{{ path('admin_product_show',{'id': similarProduct.id}) }}" target="_blank"><span data-product-target>{{similarProduct.brand_full}} {{similarProduct.name}} {{similarProduct.type_full}}</span></a>
+                                <button type="button" class="transparent-btn">{% include '__icons/q-t/_refresh-square.html.twig' with {'dataset': 'data-refresh-similar', 'width': 25, 'height': 25, 'label': 'Refresh product', 'class': 'refresh-svg'} only  %}</button></h6>
+                              </div>
+                              <!-- Similar product thumbnails -->
+                              <div class="row text-center justify-content-start figure-row" data-thumbnail class="">
+                              {% if similarProduct.colors is defined %}
+                                {% for productColor in similarProduct.colors %}
+                                <figure class="col mr-2">
+                                  <div
+                                    class="thumbnail"
+                                  style="background-image: url({% if productColor.imageMedium %}{{asset(productColor.imageMedium) }}{% else %}{{asset('build/images/store/shoe/1.jpg')}}{% endif %});"
+                                    data-color-id={{productColor.pcId}}
+                                    data-color="{{productColor.colors_full}}"
+                                    ></div>
+                                  <figcaption>
+                                    <!-- Similar product color -->
+                                    <p class="p-0 pt-2 m-0 text-color">{{productColor.colors_full}}</p>
+                                    <!-- Similar product fabrics -->
+                                    <small class="p-0 m-0 text-fabric">{{productColor.fabrics_full}}</small>
+                                  </figcaption>
+                                </figure>
+                                {% endfor %}
+                              {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                  {% endif %}
+                  </div>
+                </div>
+                </div>
+                <!-- Combination row -->
+                <div class="row mt-5">
+                  <div class="col-lg-6">
+                    <!-- Brand + Type quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-6">
+                          {{ form_label(form.similarProduct.brandType, null,
+                            {'label': 'Brand + Type: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.brandType,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                 'similar-input': '',
+                                 'data-input': 'brand-type',
+                                 'value': app.current_route == 'admin_product_edit' ? sort.brandType : 2 }}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Brand + Color quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-6">
+                          {{ form_label(form.similarProduct.brandColor, null,
+                            {'label': 'Brand + Color: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.brandColor,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                 'similar-input': '',
+                                 'data-input': 'brand-color',
+                                 'value': app.current_route == 'admin_product_edit' ? sort.brandColor : 2}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Brand + Color + Type quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-6">
+                          {{ form_label(form.similarProduct.brandColorType, null,
+                            {'label': 'Brand + Color + Type: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.brandColorType,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                 'similar-input': '',
+                                 'data-input': 'brand-color-type',
+                                 'value': app.current_route == 'admin_product_edit' ? sort.brandColorType : 2}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Brand + Occasion quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-6">
+                          {{ form_label(form.similarProduct.brandOccasion, null,
+                            {'label': 'Brand + Occasion: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.brandOccasion,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                 'similar-input': '',
+                                 'data-input': 'brand-occasion',
+                                 'value': app.current_route == 'admin_product_edit' ? sort.brandOccasion : 1}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Brand + Occasion + Type quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-6">
+                          {{ form_label(form.similarProduct.brandOccasionType, null,
+                            {'label': 'Brand + Occasion + Type : ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.brandOccasionType,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                  'similar-input': '',
+                                  'data-input': 'brand-type-occasion',
+                                  'value': app.current_route  == 'admin_product_edit' ? sort.brandOccasionType : 1
+                                  }}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Brand + Occasion + Color quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-6">
+                          {{ form_label(form.similarProduct.brandOccasionColor, null,
+                            {'label': 'Brand + Occasion + Color: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.brandOccasionColor,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                'similar-input': '',
+                                'data-input': 'brand-occasion-color',
+                                'value': app.current_route  == 'admin_product_edit' ? sort.brandOccasionColor : 1}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Similar features input -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-6">
+                          {{ form_label(form.similarProduct.features, null,
+                            {'label': 'Related features: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.features,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                 'similar-input': '',
+                                 'data-input': 'features',
+                                 'value': app.current_route  == 'admin_product_edit' ? sort.features : 0}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- BestSeller product checkbox -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-6">
+                          {{ form_label(form.similarProduct.bestSellerProduct, null,
+                            {'label': 'Best-selling products: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.bestSellerProduct,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                 'similar-input': '',
+                                 'data-input': 'best_seller'}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Best reviewed product -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-6">
+                          {{ form_label(form.similarProduct.bestReviewProduct, null,
+                            {'label': 'Best reviewed products: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.bestReviewProduct,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                 'similar-input': '',
+                                 'data-input': 'best_review'}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-lg-8 col-md-8 col-sm-8 col-12">
+                    <!-- Color + Type quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProduct.colorType, null,
+                            {'label': 'Color + Type: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.colorType,
+                               {'attr':
+                                 {'class': 'form-inline w-50',
+                                  'similar-input': '',
+                                  'data-input': 'color-type',
+                                  'value': app.current_route  == 'admin_product_edit' ? sort.colorType : 2 }}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Color + Occasion quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProduct.colorOccasion, null,
+                            {'label': 'Color + Occasion: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.colorOccasion,
+                               {'attr':
+                                 {'class': 'form-inline w-50',
+                                  'similar-input': '',
+                                  'data-input': 'color-occasion',
+                                  'value': app.current_route  == 'admin_product_edit' ? sort.colorOccasion : 2 }}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Color + Fabric quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProduct.colorFabric, null,
+                            {'label': 'Color + Fabric: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.colorFabric,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                 'similar-input': '',
+                                 'data-input': 'color-fabric',
+                                 'value': app.current_route  == 'admin_product_edit' ? sort.colorFabric : 2 }}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Color + Texture quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProduct.colorTexture, null,
+                            {'label': 'Color + Texture: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.colorTexture,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                 'similar-input': '',
+                                 'data-input': 'color-texture',
+                                 'value': app.current_route  == 'admin_product_edit' ? sort.colorTexture : 2}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Fabric + Type quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProduct.fabricType, null,
+                            {'label': 'Fabric + Type: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.fabricType,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                 'similar-input': '',
+                                 'data-input': 'fabric-type',
+                                 'value': app.current_route  == 'admin_product_edit' ? sort.fabricType : 1}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Fabric + Texture quantity -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProduct.fabricTexture, null,
+                            {'label': 'Fabric + Texture: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget( form.similarProduct.fabricTexture,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                  'similar-input': '',
+                                  'data-input': 'fabric-texture',
+                                  'value': app.current_route  == 'admin_product_edit' ? sort.fabricTexture : 1}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Similar description input -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProduct.description, null,
+                            {'label': 'Related description: ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProduct.description,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                 'similar-input': '',
+                                 'data-input': 'description',
+                                 'value': app.current_route  == 'admin_product_edit' ? sort.description : 0}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Minimum price -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProduct.minPrice, null,
+                            {'label': 'Min. price: ',}) }}
+                        </div>
+                        <div class="col-8">
+                          <div class="input-group">
+                            <span class="input-group-text">Rs</span>
+                            {{ form_widget(form.similarProduct.minPrice,
+                              {'attr':
+                                  {'class': 'form-inline w-75',
+                                   'value': '500'}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Maximum price -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProduct.maxPrice, null,
+                            {'label': 'Max. price: ',}) }}
+                        </div>
+                        <div class="col-8">
+                          <div class="input-group">
+                            <span class="input-group-text">Rs</span>
+                            {{ form_widget(form.similarProduct.maxPrice,
+                            {'attr':
+                              {'class': 'form-inline w-75',
+                               'value': '25000'}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Slider grid of similar product -->
+                <div id="grid" class="form-group my-3">
+                  <div class="row justify-content-between align-items-center">
+                    <div class="col"><h6>Rearrange slider items</h6></div>
+                    <!-- Reset slider -->
+                    <div class="col text-right">
+                      <button id="product_form_resetSlider" type="button" class="btn btn-lg btn-secondary">Reset slider</button>
+                    </div>
+                  </div>
+                  <div class="form-control">
+                    <div id="gridProduct">
+                      {% if product.sort is defined %}
+                        {% for grid in product.sort %}
+                        <!-- Grid -->
+                        <div class="grid-square"
+                            {% if grid matches '/\\d/' %}
+                            style="background-image: url({{asset(product.otherProducts.thumbnails[grid].imageMedium  is defined ?  product.otherProducts.thumbnails[grid].imageMedium) }});"
+                            {% endif %}
+                            >
+                          <!-- Grid sort input -->
+                          <input type="text" name="product[similarProduct][sort][{{loop.index0}}]" value="{{grid}}" hidden>
+                          <!-- Grid label -->
+                          {% if grid matches '/\\d/' %}
+                            <span>{{product.otherProducts.thumbnails[grid].colors_full  is defined ? product.otherProducts.thumbnails[grid].colors_full}}</span>
+                          {% else %}
+                            <span>{{grid|capitalize}}</span>
+                          {% endif %}
+                        </div>
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                <!-- Slider count -->
+                <div class="row justify-content-end">
+                  <div class="col-2 text-right">
+                    <p class="p-0 m-0">Slider count :<span class="pl-1" id="slider-count"> {{(app.current_route  == 'admin_product_new') ? 0 : (app.current_route  == 'admin_product_edit') ? sort.sliderCount}}</span></p>
+                  </div>
+                </div>
+              </section>
+              <!-- Pricing -->
+              <section>
+                <button
+                  type="button"
+                  class="transparent-btn section-hide"
+                  data-toggle="collapse"
+                  data-target="#pricing"
+                  data-turbo=false
+                  data-color='bs-indigo'
+                  data-width=35
+                  data-height=35
+                  id="arrow-button">{% include '__icons/a-d/_arrow-down.html.twig' with {'width': 35, 'height': 35, 'class': 'bs-indigo','dataset': ''} %}</button>
+                <h5>Pricing</h5>
+                <hr class="hr">
+              </section>
+              <!-- Pricing hidden  -->
+              <section class="collapse form-control mb-3 p-3 py-4" id="pricing">
+                <div class="row mt-3">
+                  <!-- Discount -->
+                  <div class="col-3">
+                    <div class="row">
+                      <div class="col-5">
+                        {{ form_label(form.discount.discount, null,
+                          {'label': 'Discount: ',}) }}
+                      </div>
+                      <div class="ml-2 col-6">
+                        <div class="input-group">
+                          <span class="input-group-text">%</span>
+                          {{ form_widget(form.discount.discount,
+                            {'attr':
+                              {'class': 'form-inline w-50',
+                               'title': 'Add discount to all its products'}}) }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Discount start date -->
+                  <div class="col">
+                    <div class="row">
+                      <div class="col-2 d-flex align-items-end">
+                        {{ form_label(form.discount.startDate, null,
+                          {'label': 'From: ',
+                           'label_attr': {'title': 'Discount starts from: '}}) }}
+                      </div>
+                      <div class="col">
+                        <div class="input-group">
+                          <span class="input-group-text">
+                             <span class="far fa-calendar-alt"></span>
+                          </span>
+                          <!-- Aeon datepicker -->
+                          <aeon-datepicker
+                             id="aeon-datepicker"
+                             title="Discount starts from: "
+                             locale="en-fr"
+                             default-date="{{app.current_route  == 'admin_product_edit' ? product.startDate ? product.startDate|date("Y-m-d") : "now"|date("Y-m-d") : "now"|date("Y-m-d")}}"
+                             default-time="{{app.current_route  == 'admin_product_edit' ? product.startDate ? product.startDate|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false)}}"
+                             data-target="product_form_discount_startDate">
+
+                            <input id="date-start"
+                                   name="date-start"
+                                   type="date"
+                                   value="{{app.current_route  == 'admin_product_edit' ? product.startDate ? product.startDate|date("Y-m-d") }}"
+                                   placeholder="Discount starts">
+
+                            <input id="time-start"
+                                   name="time-start"
+                                   type="time"
+                                   value="{{app.current_route  == 'admin_product_edit' ? product.startDate ? product.startDate|format_datetime('none', 'short', locale='fr', timezone: false) }}">
+                          </aeon-datepicker>
+                          {{ form_widget(form.discount.startDate,
+                            {'attr': { 'hidden': ''}}) }}
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Discount end date -->
+                  <div class="col">
+                    <div class="row">
+                      <div class="col-1 d-flex align-items-end">
+                        {{ form_label(form.discount.endDate, null,
+                          {'label': 'To: ',
+                           'label_attr': {'title': 'Discount ends on: '}
+                           }) }}
+                      </div>
+                      <div class="col">
+                        <div class="input-group">
+                          <span class="input-group-text">
+                             <span class="far fa-calendar-alt"></span>
+                          </span>
+                          <!-- Aeon datepicker -->
+                          <aeon-datepicker
+                             id="aeon-datepicker"
+                             title="Discount ends on: "
+                             locale="en-fr"
+                             default-date="{{app.current_route  == 'admin_product_edit' ? product.endDate ? product.endDate|date("Y-m-d") : "now"|date("Y-m-d") : "now"|date("Y-m-d")}}"
+                             default-time="{{app.current_route  == 'admin_product_edit' ? product.endDate ? product.endDate|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false)}}"
+                             data-target="product_form_discount_endDate">
+
+                            <input id="date-start"
+                                   name="date-start"
+                                   type="date"
+                                   value="{{app.current_route  == 'admin_product_edit' ? product.endDate ? product.endDate|date("Y-m-d") }}"
+                                   placeholder="Discount ends">
+
+                            <input id="time-start"
+                                   name="time-start"
+                                   type="time"
+                                   value="{{app.current_route  == 'admin_product_edit' ? product.endDate ? product.endDate|format_datetime('none', 'short', locale='fr', timezone: false) }}">
+                          </aeon-datepicker>
+                          {{ form_widget(form.discount.endDate,
+                            {'attr': { 'hidden': ''}}) }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-xl-3 col-lg-6 col-12">
+                    <!-- Refundable checkbox -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-6">
+                          {{ form_label(form.pricing.refundable, null,
+                            {'label': 'Refundable: ',}) }}
+                        </div>
+                        <div class="col-2">
+                          {{ form_widget(form.pricing.refundable,
+                            {'attr':
+                              {'class': 'p-3 form-check-input',}}) }}
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Exchangeable checkbox -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-6">
+                          {{ form_label(form.pricing.exchangeable, null,
+                            {'label': 'Exchangeable: ',}) }}
+                        </div>
+                        <div class="col-2">
+                          {{ form_widget(form.pricing.exchangeable,
+                            {'attr':
+                              {'class': 'p-3 form-check-input',}}) }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <!-- Downgrade price Date datepicker -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.pricing.dateDowngradePrice, null,
+                            {'label': 'Downgrade price: ',}) }}
+                        </div>
+                        <div class="col-7">
+                          <div class="input-group">
+                            <span class="input-group-text">
+                               <span class="far fa-calendar-alt"></span>
+                            </span>
+                            <!-- Aeon datepicker -->
+                            <aeon-datepicker
+                               id="aeon-datepicker"
+                               locale="en-fr"
+                               default-date="{{app.current_route  == 'admin_product_edit' ? product.dateDowngradePrice ? product.dateDowngradePrice|date("Y-m-d") : "now"|date("Y-m-d") : "now"|date("Y-m-d")}}"
+                               default-time="{{app.current_route  == 'admin_product_edit' ? product.dateDowngradePrice ? product.dateDowngradePrice|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false)}}"
+                               data-target="product_form_pricing_dateDowngradePrice">
+
+                              <input id="date-start"
+                                     name="date-start"
+                                     type="date"
+                                     value="{{app.current_route  == 'admin_product_edit' ? product.dateDowngradePrice ? product.dateDowngradePrice|date("Y-m-d") }}"
+                                     placeholder="Downgrade starts">
+
+                              <input id="time-start"
+                                     name="time-start"
+                                     type="time"
+                                     value="{{app.current_route  == 'admin_product_edit' ? product.dateDowngradePrice ? product.dateDowngradePrice|format_datetime('none', 'short', locale='fr', timezone: false) }}">
+                            </aeon-datepicker>
+                            {{ form_widget(form.pricing.dateDowngradePrice,
+                              {'attr': { 'hidden': ''}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Discontinued checkbox -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.discontinued.discontinued, null,
+                            {'label': 'Discontinued: ',}) }}
+                        </div>
+                        <div class="col-xl-1 col-lg-1 col-md-2 col-3">
+                          {{ form_widget(form.discontinued.discontinued,
+                            {'attr':
+                              {'class': 'p-3 form-check-input'}}) }}
+                        </div>
+                        <!-- Date discontinued datepicker -->
+                        <div class="col">
+                          <div class="input-group">
+                            <span class="input-group-text">
+                               <span class="far fa-calendar-alt"></span>
+                            </span>
+                            <!-- Aeon datepicker -->
+                            <aeon-datepicker
+                               id="aeon-datepicker"
+                               locale="en-fr"
+                               default-date="{{app.current_route  == 'admin_product_edit' ? product.dateDiscontinued ? product.dateDiscontinued|date("Y-m-d") : "now"|date("Y-m-d") : "now"|date("Y-m-d")}}"
+                               default-time="{{app.current_route  == 'admin_product_edit' ? product.dateDiscontinued ? product.dateDiscontinued|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false) : "now"|format_datetime('none', 'short', locale='fr', timezone: false)}}"
+                               data-target="product_form_discontinued_dateDiscontinued">
+
+                              <input id="date-start"
+                                     name="date-start"
+                                     type="date"
+                                     value="{{app.current_route  == 'admin_product_edit' ? product.dateDiscontinued ? product.dateDiscontinued|date("Y-m-d") }}"
+                                     placeholder="Discontinued starts">
+
+                              <input id="time-start"
+                                     name="time-start"
+                                     type="time"
+                                     value="{{app.current_route  == 'admin_product_edit' ? product.dateDiscontinued ? product.dateDiscontinued|format_datetime('none', 'short', locale='fr', timezone: false) }}">
+                            </aeon-datepicker>
+                            {{ form_widget(form.discontinued.dateDiscontinued,
+                              {'attr': { 'hidden': ''}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <!-- Duplicate colors error message -->
+              <div class="row justify-content-center">
+                <div class="col-sm-12 col-md-12  col-lg-11 col-xl-10">
+                  <p class="text-center text-white bg-danger p-3 my-5 hide" id="duplicate-colors-msg">Duplicate colors detected. All selected colors should be unique.</p>
+                </div>
+              </div>
+
+              {% if form_errors(form) is not empty %}
+              <!-- All form error messages -->
+              <div class="row justify-content-center">
+                <div class="col-sm-12 col-md-12  col-lg-11 col-xl-10">
+                  <div class="text-white bg-danger p-3 my-5" id="form-error-msg">{{ form_errors(form) }}
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
+              <!-- CSRF token -->
+              {{form_widget(form._token)}}
+
+              <!-- Submit button -->
+              <div class="row justify-content-end mt-3">
+                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3 text-right">
+                  {% if app.current_route  == 'admin_product_edit' %}
+                    <a href="{{ path('admin_product_data_new', {'product': product.id, }) }}"><button title="Create new product detail." type="button" class="btn btn-lg btn-info py-2 px-5">New detail</button></a>
+                    <button title="Update product" id="product_form_submit" class="btn btn-lg btn-success py-2 px-5">Update</button>
+                  {% else %}
+                    {% if app.current_route  == 'admin_product_new'  %}
+                      <button title="Save new product" id="product_form_submit" class="btn btn-lg btn-info py-2 px-5">Save</button>
+                    {% endif %}
+                  {% endif %}
+                </div>
+              </div>
+
+              {{ form_end(form, {render_rest: false}) }}
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Product form row ends -->
+  {% include 'admin/_partials/footer.html.twig' %}
+</main>
+<!-- Main panel ends -->

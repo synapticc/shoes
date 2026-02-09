@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+  {% block meta %}{% include 'admin/_partials/meta.html.twig' %}{% endblock %}
+
+  {% block title %}
+  {% if app.current_route  == 'forgot_reset_password_request' %}
+  Forget your password
+  {% elseif app.current_route  == 'forgot_password_check_email' %}
+  Confirm email address
+  {% elseif app.current_route  == 'forgot_reset_password' %}
+  New password
+{% else %}
+  Profile
+  {% endif %}{% endblock %}
+
+  {% block stylesheets %}{{ encore_entry_link_tags('admin') }}{% endblock %}
+
+{% block body %}
+  <div class="bg-soft">
+    {% for flash_error in app.flashes('verify_email_error') %}
+    <div class="row justify-content-center">
+      <div class="col-9 mt-4">
+        <div class="alert alert-danger text-white text-center" role="alert">{{ flash_error }}</div>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% for flash_error in app.flashes('reset_password_error') %}
+    <div class="row justify-content-center">
+      <div class="col-9 mt-4">
+        <div class="alert alert-danger text-white text-center" role="alert">{{ flash_error }}</div>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% if app.current_route  == 'forgot_reset_password_request' %}
+
+        {% include 'security/login/partials/forgot-password/request-form.html.twig' %}
+
+    {% elseif app.current_route  == 'forgot_password_check_email' %}
+
+        {% include 'security/login/partials/forgot-password/body-check.html.twig' %}
+
+    {% elseif app.current_route  == 'forgot_reset_password' %}
+
+        {% include 'security/login/partials/forgot-password/form.html.twig' %}
+
+    {% endif %}
+  </div>
+  {% block javascripts %}{{ encore_entry_script_tags('admin') }}{% endblock %}
+{% endblock %}

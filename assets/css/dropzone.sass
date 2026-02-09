@@ -1,0 +1,94 @@
+
+@import "./variable.sass"
+
+.dropzone-container
+  border: 2px dashed #bbb
+  align-items: center
+  justify-content: center
+  min-height: 275px
+  padding: 20px 10px
+  display: flex
+  position: relative
+  &:hover,
+  &.highlight
+    border: 2px dashed $main-color
+    background-color: #e9e9e9
+
+
+.dropzone-input
+  opacity: 0
+  cursor: pointer
+  z-index: 1
+  width: 100%
+  height: 100%
+  display: block
+  position: absolute
+  top: 0
+  left: 0
+
+.dropzone-preview
+  align-items: center
+  justify-content: center
+  max-width: 100%
+  display: flex
+  flex-direction: column
+
+  flex-flow: column
+  &-image
+    background-position: 50%
+    background-repeat: no-repeat
+    background-size: contain
+    // flex-basis: 0
+    min-width: 250px
+    max-width: 255px
+    width: auto
+    min-height: 250px
+    max-height: 275px
+    // margin-right: 10px
+
+  &-filename
+    word-wrap: anywhere
+    color: #999
+
+  &-button
+    font-size: 18px
+    // color: #960707
+    z-index: 1
+    width: auto
+    -webkit-font-smoothing: inherit
+    -moz-osx-font-smoothing: inherit
+    -webkit-appearance: none
+    background: 0 0
+    border: none
+    margin: 4px
+    padding: 1px 3px
+    line-height: normal
+    position: absolute
+    top: 0
+    right: -10px
+    overflow: visible
+    &:before
+      content: "\274C"
+      cursor: pointer
+      padding: 3px 7px
+
+.dropzone-placeholder
+  text-align: center
+  color: #999
+  flex-grow: 1
+
+
+#slider-square
+  height: 50px
+  border-radius: 0
+  .noUi-handle
+    border-radius: 0
+    background: rgba(5,169,234,.84)
+    height: 24px
+    width: 24px
+    top: -3px
+    right: -13px
+    &::after
+      content: none
+    &::before
+      content: none

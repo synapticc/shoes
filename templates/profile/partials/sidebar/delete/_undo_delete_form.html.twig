@@ -1,0 +1,10 @@
+<form
+      id="app_undo_delete_account"
+      method="post"
+      class="inline-block"
+      action="{{ path('app_undo_delete_account') }}">
+    <input type="hidden" name="_target_path" value="{{ app.request.requestUri }}">
+    <input type="hidden" name="_undo_delete_account_token" value="{{ csrf_token('undo_delete' ~ app.user.id) }}">Your account will be deleted in {{app.user.userDelete.dateOfDeletion|ago(locale='en')}}
+
+    <button class="ps-btn ps-btn--yellow">Undo delete</button>
+</form>

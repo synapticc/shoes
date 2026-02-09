@@ -1,0 +1,765 @@
+
+$grey-border: #bdbdbd
+
+main
+	min-height: 100vh
+/* Vertically center all table cells */
+table
+	thead tr th,
+	tbody tr td
+		vertical-align: middle
+	tbody tr td#empty-cell
+		height: 140px
+		font-size: 29px
+		text-align: left
+		padding-left: 200px
+		color: #e2e2e2
+		font-weight: bold
+
+#product_data_search_form_brand_div
+	width: 287px
+
+.table
+	thead
+		th
+			form
+				display: inline
+			span
+				border: none
+
+.table
+	tbody
+		tr
+			td
+				.table-brand-img
+					img
+						max-width: 90px
+						max-height: 60px
+						border: solid 1px rgba(#9a9a9a, 0.65)
+						border-radius: 3px
+						&:hover
+							border-color: rgba(#000000, 0.69)
+							border-width: 1px
+							box-shadow: 1px 1px 7px 0px rgba(0,0,0,0.27)
+
+#product-table
+	table
+		width: 800px
+		overflow-x: scroll
+	thead
+		tr
+			border: none
+	tbody
+		border: 1.5px solid #bdbdbd4a
+	th
+		border: 1.5px solid #bdbdbd4a
+		padding: 10px
+		background: #f5f8fb
+		form
+			display: inline
+		span
+			border: none
+	tr
+		border-right: 1.5px solid #bdbdbd4a
+	td
+		padding: 10px
+
+#sizes-table
+	table
+		width: 800px
+		overflow-x: scroll
+		thead
+			tr
+				border-left: 1.5px solid #bdbdbd4a
+				th
+					border-bottom: 1.5px solid #bdbdbd4a
+					&:last-child
+						border-right: 1.5px solid #bdbdbd4a
+		tbody
+			border: 1.5px solid #bdbdbd4a
+			border-right: none
+			border-top: none
+			th
+				border: 1.5px solid #bdbdbd4a
+				padding: 10px
+				background: #f5f8fb
+				form
+					display: inline
+				span
+					border: none
+			tr:not(tr:nth-last-child(2))
+				td:nth-last-child(1)
+					border-right: 1.5px solid #bdbdbd4a
+
+			tr:nth-last-child(2)
+				td:nth-last-child(1)
+					border-left: 1.5px solid #bdbdbd4a
+
+			tr:nth-last-child(1)
+				border-top: 1.5px solid #bdbdbd4a
+				td
+					font-weight: bolder
+			td
+				padding: 10px
+
+			td.available-cell
+				background: #258616
+				color: #fff
+
+			td.total-cell
+				font-weight: bolder
+
+#revenue-table
+	table
+		width: 800px
+		overflow-x: scroll
+		thead
+			tr
+				border-left: 1.5px solid #bdbdbd4a
+				th
+					border-bottom: 1.5px solid #bdbdbd4a
+					&:last-child
+						border-right: 1.5px solid #bdbdbd4a
+		tbody
+			border: 1.5px solid #bdbdbd4a
+			border-top: none
+			th
+				border: 1.5px solid #bdbdbd4a
+				padding: 10px
+				background: #f5f8fb
+				form
+					display: inline
+				span
+					border: none
+
+			tr:nth-last-child(1)
+				border-top: 1.5px solid #bdbdbd4a
+				td
+					font-weight: bolder
+
+			td
+				padding: 10px
+
+			td.available-cell
+				background: #258616
+				color: #fff
+
+			td.total-cell
+				font-weight: bolder
+
+#images-table
+	tbody
+		td
+			padding: 10px 10px
+		td.total-cell
+			font-size: 13px
+		td, span, th, button
+			font-size: 12px
+		td.thumbnail-cell
+			img
+				width: 100px
+		td.qty-cell
+			border: 1px solid #ececec
+		tr.color-row
+			border-left: 1px solid #ececec
+			th
+				padding-left: 15px
+				padding-right: 25px
+		td.total-qty-cell
+			border: 1.5px solid #c1bbbb
+			font-weight: 600
+		// Before last child
+		tr:nth-last-child(2)
+			border-bottom: 1px solid #ececec
+		td.available-cell
+			background: #258616
+			color: #fff
+		tr:nth-last-child(1)
+			th
+				padding-right: 15px
+				padding-top: 15px
+				padding-bottom: 15px
+				font-weight: bolder
+			td
+				font-size: 13px
+	thead
+		tr
+			border-right: 1px solid #ececec
+			border-left: 1px solid #ececec
+		th
+			background-color: #f5f8fb
+			color: #262B40
+			font-size: 0.75rem
+			font-weight: 700
+			border-bottom: 1px solid #dfdfdf
+			border-right: none
+			border-left: none
+			border-top: 1px solid #ececec
+		th.qty-head
+			padding-right: 10px
+			padding-left: 10px
+
+#purchases-table,
+#cart-table
+	thead
+		tr
+			border-right: 1px solid #ececec
+			border-left: 1px solid #ececec
+		th
+			background-color: #f5f8fb
+			color: #262B40
+			font-size: 0.75rem
+			font-weight: 700
+			border-bottom: 1px solid #dfdfdf
+			border-right: none
+			border-left: none
+			border-top: 1px solid #ececec
+			padding: 15px 7px 15px 7px
+	tbody
+		td, span, th, button
+			font-size: 12px
+		tr
+			border-left: 1px solid #ececec
+			&:nth-last-child(1)
+				border-bottom: 1px solid #ececec
+			td
+				padding: 5px 10px 5px 10px
+			td.qty-cell
+				border: 1px solid #ececec
+
+#user-table
+	table
+		width: 650px
+		overflow-x: scroll
+	thead
+		tr
+			border: none
+	tbody
+		border: 1.5px solid #bdbdbd4a
+	th
+		border: 1.5px solid #bdbdbd4a
+		padding: 10px
+		background: #f5f8fb
+		form
+			display: inline
+		span
+			border: none
+	tr
+		border-right: 1.5px solid #bdbdbd4a
+	td
+		padding: 10px
+
+#products-table
+	a
+		transition: all 0.05s ease
+	table
+		width: 230%
+		overflow-x: scroll
+	thead
+		.table-header
+			border-top: solid #eaedf2 0.0625rem
+			border-bottom: solid #eaedf2 0.0625rem
+	tbody
+		td
+			white-space: normal
+		li, p, span, a
+			font-size: 0.875rem
+	th
+		border: none
+		form
+			display: inline
+	th
+		span
+			border: none
+
+	th.table-id, td.id
+		width: 2px
+
+	th.table-cell, td.table-cell
+		width: 8%
+
+	th.table-type, td.table-type
+		width: 15%
+
+	th.table-pack, td.table-pack
+		width: 8%
+
+	th.table-video, td.table-video
+		width: 8%
+
+	th.table-display, td.table-display
+		width: 3%
+
+	th.table-date, td.table-date
+		width: 8%
+
+	th.table-description,
+	td.table-description
+		width: 30%
+
+	th.table-features,
+	td.table-features
+		width: 35%
+
+	.card
+		width: 160px
+
+#transactions-table
+	table
+		width: 100%
+		overflow-x: visible
+		tbody
+			td
+				img
+					min-width: 80px
+					max-width: 80px
+					height: auto
+
+.table-avatar
+	min-width: 80px
+	max-width: 80px
+	height: auto
+
+.remaining-img
+	width: 80px
+	height: 60px
+	border: solid 0.9px grey
+	border-radius: 4px
+	&:first-child
+		font-size: 18px
+		font-weight: bold
+
+#show-items-table
+	table
+		width: 100%
+		overflow-x: visible
+
+#items-table
+	table
+		width: 110%
+		overflow-x: visible
+
+#transactions-table,
+#items-table,
+#show-items-table
+	thead
+		th.price,
+		th.qty,
+		th.total
+			padding: 0 0.75em .75em 0
+	tbody
+		td, a, span, button
+			font-size: 12px
+		td
+			padding: 5px 5px 5px 5px
+
+#invoices-table
+	tbody
+		td
+			height: 100%
+			vertical-align: middle
+			.pdf-item
+				img
+					width: 120px
+					max-width: 180px
+					height: auto
+			.pdf-buttons
+				width: 50px
+				margin-bottom: 3px
+			.pdf-view,
+			.pdf-view-dark
+				height: 100px
+				width: 210px
+				background-position: 46.6% 30.1%
+				background-size: 147%
+				border-radius: 7px
+				border: 6px solid #d2d2d2
+			.pdf-view
+				border: 3px solid #d2d2d2
+			.pdf-view-dark
+				border: 3px solid #4b4a4a
+			.btn-download
+				font-size: 11px
+				display: inline-block
+				line-height: 1.5
+				color: #fff
+				text-align: center
+				vertical-align: middle
+				cursor: pointer
+				user-select: none
+				background-color: #262B40
+				border: 0.0625rem solid transparent
+				padding: 0.55rem 0.75rem
+				border-radius: 4px
+				transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out
+			.pdf-wrapper
+				display: grid
+				grid-template-columns: 205px 0px
+
+.detail-not-thumbnnail,
+.detail-thumbnnail
+	img
+		border-radius: 5px
+		max-width: max-content
+		height: 70px
+		margin-left: 5px
+
+.detail-thumbnnail
+	img
+		border: solid 5px #9cc500
+
+.detail-not-thumbnnail
+	img
+		border: solid 1px #dadada
+
+#details-result
+	margin-top: 15px
+	.single-result
+		padding: 20px
+		border: #e3e3e3 1px solid
+		margin-bottom: 18px
+#details-table
+	table
+		td
+			&.table-thumbnail
+				padding: 12px 12px 12px 12px
+				img
+					min-width: 150px
+					max-width: 150px
+					height: auto
+				img.three-circles,
+				img.two-circles
+					height: 20px
+					min-width: auto
+				img.three-dots
+					height: 13px
+					min-width: auto
+				p
+					&.thumbnail-text
+						font-size: 12px
+				.row
+					width: max-content
+	& > table
+		// width: 2731px
+		overflow-x: scroll
+	.thumbnail-body
+		padding-left: 10px
+
+
+#suppliers-table
+	table
+		width: 200%
+		overflow-x: scroll
+
+	th.table-detail,
+	td.table-detail
+		width: 25%
+
+	th.table-phone,
+	td.table-phone
+		width: 275px
+
+	tbody
+		td
+			white-space: normal
+		li, p, span, a
+			font-size: 0.875rem
+	th
+		border: none
+		form
+			display: inline
+	th
+		span
+			border: none
+
+#reviews-table
+	a
+		transition: none
+	table
+		width: 330%
+		overflow-x: scroll
+		thead
+			.table-header
+				border-top: solid #eaedf2 0.0625rem
+				border-bottom: solid #eaedf2 0.0625rem
+		tbody
+			td
+				white-space: normal
+			li, p, span, a
+				font-size: 0.875rem
+			// a:hover
+			// 	font-weight: bold
+			// 	color: #262626
+		th
+			border: none
+			form
+				display: inline
+			span
+				border: none
+
+			&.fit-header,
+			&.width-header,
+			&.comfort-header
+				width: 12%
+
+			&.thumbnail-header
+				width: 10%
+
+			&.uploaded-header
+				width: 4%
+
+			&.rating-header
+				width: 5%
+
+		th.table-id,
+		td.id
+			width: 2px
+
+		th.table-cell,
+		td.table-cell
+			width: 8%
+
+#supplier_form_phone
+	.form-line,
+	.form-line:focus,
+	.form-line:focus-within
+		border-top: none
+		border-left: none
+		border-right: none
+		margin-left: 10px
+		padding: 2px 2px 2px 12px
+		color: #66799e
+
+	.form-line
+		border-bottom: solid 0.8px rgba(144, 144, 144, 0.4)
+	.form-line:focus
+		border-bottom: solid 0.8px rgba(144, 144, 144, 0.64)
+
+#users-table
+	td, a, span
+		font-size: 0.875rem
+	th
+		font-size: 0.75rem
+		span
+			font-size: 0.75rem
+
+/* Page visits */
+#page-visit-table
+	td
+		vertical-align: middle
+	.table-thumbnail, .table-thumbnail-hidden
+		border-radius: 13px
+		& > table
+			border-left: 5px solid rgb(45 51 1 / 6%)
+		table
+			td
+				padding: 0 0 0 0
+		.thumbnail
+			width: 110px
+			height: auto
+	.table-thumbnail-hidden
+		opacity: 0.1
+		transition: all 0.02s ease-in
+		&:hover
+			opacity: 1
+	.table-thumbnail
+		padding: 12px 0px 12px 24px
+	.thumbnail-inner-table
+		.border-hover
+			padding: 3px .5px 3px .5px
+
+	table th.query-params,
+	table td.query-params
+		max-width: 250px
+	table td.query-params
+		overflow-x: overlay
+
+	table th.url,
+	table td.url
+		max-width: 250px
+	table td.url
+		overflow-x: overlay
+
+	table th.referer,
+	table td.referer
+		max-width: 250px
+	table td.referer
+		overflow-x: overlay
+
+	table th.thumbnail,
+	table td.thumbnail
+		width: 100px
+		text-align: center
+		img
+			max-width: none
+
+.table-top-info
+	font-style: italic
+	font-size: 12px
+	color: #8c8c8c
+
+// #anonymous-visit-table
+// 	table
+// 		width: 1200px
+// 		overflow-x: scroll
+
+#cart-total
+	background: #48abe0
+	box-shadow: 0 10px 20px rgba(0, 0, 0, .1),0 3px 6px rgba(0, 0, 0, .05)
+	color: white
+	border-radius: 10px
+	border: 0.1px solid #ffffff8a
+	padding: 6px 2px 6px 2px
+	border-collapse: separate
+	border-spacing: 0
+	margin-top: 10px
+	margin-bottom: 15px
+	tr
+		th
+			min-width: 90px
+
+.border-hover
+	padding: 3px 8px 3px 8px
+	border-color: transparent
+	border-style: solid
+	border-width: 1px
+	transition: all 0.02s ease-in
+	border-radius: 4px
+	&:hover
+		border-color: #000
+.img-border-hover
+	padding: 0
+	border-color: transparent
+	border-style: solid
+	border-width: 1px
+	transition: all 0.02s ease-in
+	border-radius: 4px
+	&:hover
+		border-color: #000
+
+.shadow-hover
+	box-shadow: 1px 1px 7px 0px rgba(0,0,0,0)
+	&:hover
+		box-shadow: 1px 1px 7px 0px rgba(0,0,0,0.67)
+
+@for $i from 1 through 9
+	.opacity-hover-#{$i}
+		transition: all 0.05s ease
+		opacity: calc(#{$i} * 0.1)
+		&:hover
+			opacity: 1
+
+.brightness-hover
+	backdrop-filter: brightness(100%)
+	opacity: 0.95
+	&:hover
+		filter: brightness(115%)
+		opacity: 1
+
+.underline-hover
+	border-bottom: 1px solid #fff
+	&:hover
+		border-bottom: 1px solid #000
+
+.bg-hover
+	background: inherit
+	padding: 10px 5px 10px 5px
+	&:hover
+		background: #bababa
+
+.pd-img-filter
+	margin-right: 4px
+	margin-bottom: 4px
+	border: solid 0.7px grey
+	border-radius: 5px
+
+.color-img-filter
+	padding: 1px 1px
+	border: 1px solid #ffffff
+	max-width: 25px
+	height: 25px
+
+.brand-img-filter
+	margin-right: 4px
+	display: inline-block
+	max-width: max-content
+	height: 70px
+	max-height: 100px
+	padding: 0px 0px 0px 0px
+	border: solid 0.7px grey
+	border-radius: 5px
+	box-shadow: -1px 0px 8px -2px rgba(0,0,0,0.28)
+
+.filter-unit
+	display: inline-block
+	text-align: center
+	box-shadow: -1px 0px 8px -2px rgba(0,0,0,0.38)
+	padding: 4px 7px 5px 7px
+	background: #242d2d
+	color: #ffffff
+	border-radius: 3px
+	margin: 0px 5px 0px 5px
+
+.item-0
+	top: -4px
+	position: relative
+	text-transform: uppercase
+	font-weight: 700
+
+.input-is-valid
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2305A677' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e")
+	background-repeat: no-repeat
+	background-position: right calc(0.375em + 0.275rem) center
+	background-size: calc(0.75em + 0.55rem) calc(0.75em + 0.55rem)
+
+.pdfobject-container
+	// height: 800px
+	border: 1px solid #ccc
+	border-radius: 6px
+
+.invoices-arrow
+	fill: #262B40
+	&:hover
+		fill: #2c303d
+
+.pdf-row,
+.pdf-row td
+	border: none
+
+.row-hover
+	.border-hover
+		transition: none
+		border-color: transparent
+	&:hover
+		background-color: rgba(46, 54, 80, 0.075)
+		color: #4A5073
+		.border-hover
+			border-color: inherit
+			&:hover
+				border-color: #000
+				border-radius: 4px
+
+.btn-status-cart
+	color: #262B40
+	background-color: #eaedf2
+	border-color: #eaedf2
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(46, 54, 80, 0.075)
+	&:hover
+		color: #262B40
+		background-color: #f3a735
+		border-color: #f2a229
+
+.btn-status-paid
+	color: #262B40
+	background-color: #eaedf2
+	border-color: #eaedf2
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(46, 54, 80, 0.075)
+	&:hover
+		color: #ffffff
+		background-color: #04815c
+		border-color: #047454
+
+/* Order items table */
+.items-btn-row
+	border-left: 9px solid #efd700
+	margin-left: 9px

@@ -1,0 +1,27 @@
+<!-- Main starts -->
+<main class="ps-main">
+  <div class="profile-container">
+    <div class="row">
+      <!-- Sidebar menu -->
+      <div class="col-md-3">
+        {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+      </div>
+      <!-- Middle section form -->
+      <div class="col-md-7 ml-30 mr-20  border-right">
+        <!-- Main heading -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+           <h4 class="text-right">Reset your password</h4>
+        </div>
+        <!-- Main message -->
+        <p>
+            If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
+            This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+        </p>
+        <p>If you don't receive an email please check your spam folder or
+        <!-- Reset password link --><a href="{{ path('reset_password_request') }}">try again</a>.</p>
+      </div>
+    </div>
+  </div>
+  {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>
+<!-- Main ends -->

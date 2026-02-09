@@ -1,0 +1,115 @@
+<!-- Main starts -->
+<main>
+  <section class="vh-lg-100 d-flex align-items-center">
+    <div class="container">
+      <div class="row justify-content-center form-bg-image" data-background-lg="{{asset('build/images/admin/illustrations/signin.svg') }}">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+          <div class="signin-inner my-3 my-lg-0 bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+            <!-- Main heading -->
+            <div class="text-center text-md-center mb-4 mt-md-0">
+              <h1 class="mb-0 h3">Create an account</h1>
+            </div>
+            <!-- Form starts -->
+            {{ form_start(signUpForm,
+              {'attr':
+                {'data-turbo': false}}) }}
+              <!-- Email -->
+              <div class="form-group mb-4">
+                {{ form_label(signUpForm.email, null,
+                    {'label': 'Your Email: ',}) }}
+                <div class="input-group">
+                  <span class="input-group-text" id="basic-addon3">
+                  <span class="fas fa-envelope"></span></span>
+                  {{ form_widget(signUpForm.email,
+                    {'attr':
+                      {'class': 'form-control',
+                       'placeholder': 'Enter your email',
+                       'autofocus': ''}}) }}
+                </div>
+                <span>{{ form_errors(signUpForm.email) }}</span>
+                <small>{{ form_help(signUpForm.email) }}</small>
+              </div>
+              <!-- Password -->
+              <div class="form-group">
+                <!-- Plain password -->
+                <div class="form-group mb-4">
+                  {{ form_label(signUpForm.plainPassword, null,
+                    {'label': 'Your Password: ',}) }}
+                  <div class="input-group">
+                    <span class="input-group-text" id="basic-addon5">
+                      <span class="fas fa-unlock-alt"></span>
+                    </span>
+                    {{ form_widget(signUpForm.plainPassword,
+                      {'attr':
+                        {'class': 'form-control',
+                         'placeholder': 'Enter a strong password',
+                         'title':  'Passwords must be
+  - At least 6 characters long, max length anything
+  - Include at least 1 lowercase letter
+  - 1 capital letter
+  - 1 number
+  - 1 special character => ~!@#$%^&*()-_=+,.<>;:"/|'}}) }}
+                    <span class="input-group-text">
+                      <span class="far fa-eye-slash" id="password-eye-icon"></span>
+                    </span>
+                  </div>
+                  <!-- password check icon -->
+                  <span id="password-check-icon">{% include '__icons/a-d/_check-icon.html.twig' %}</span>
+                  <span>{{ form_errors(signUpForm.plainPassword) }}</span>
+                </div>
+                <!-- Confirm password -->
+                <div class="form-group mb-4">
+                  {{ form_label( signUpForm.confirmPassword, null,
+                    {'label': 'Confirm Your Password: ',}) }}
+                  <div class="input-group">
+                    <span class="input-group-text" id="basic-addon5">
+                      <span class="fas fa-lock"></span>
+                    </span>
+                    {{ form_widget(signUpForm.confirmPassword,
+                      {'attr':
+                        {'class': 'form-control',
+                         'placeholder': 'Enter the password again',
+                         'title':  'Passwords must be
+  - At least 6 characters long, max length anything
+  - Include at least 1 lowercase letter
+  - 1 capital letter
+  - 1 number
+  - 1 special character => ~!@#$%^&*()-_=+,.<>;:"/|'}}) }}
+                    <span class="input-group-text">
+                      <span class="far fa-eye-slash" id="confirm-password-eye-icon"></span>
+                    </span>
+                  </div>
+                  <!-- confirm password check icon -->
+                  <span id="confirm-password-check-icon">{% include '__icons/a-d/_check-icon.html.twig' %}</span>
+                  <!-- wrong password cross icon -->
+                  <span id="wrong-password-cross-icon">{% include '__icons/q-t/_red-cross-icon.html.twig' %}</span>
+                  <span>{{ form_errors(signUpForm.confirmPassword) }}</span>
+                  <small>{{ form_help(signUpForm.confirmPassword) }}</small>
+                </div>
+                <div class="form-check mb-4">
+                  {{ form_widget(  signUpForm.agreeTerms,
+                    {'attr':
+                      {'class': 'form-check-input'}}) }}
+                  <label class="form-check-label required" for="registration_form_agreeTerms">
+                    I agree to the <a href="#">terms and conditions.</a>
+                  </label>
+                  <span>{{ form_errors(signUpForm.agreeTerms) }}</span>
+                  <small>{{ form_help(signUpForm.agreeTerms) }}</small>
+                </div>
+              </div>
+              {{ form_widget(signUpForm._token) }}
+              <button type="submit" class="btn btn-block btn-primary" id="registration_form_sign_up" disabled>Sign up</button>
+            {{ form_end(signUpForm) }}
+            <!-- Form ends -->
+            <div class="d-flex justify-content-center align-items-center mt-4">
+              <span class="font-weight-normal">Already have an account?
+                <a href="{{ path('app_login') }}" class="font-weight-bold">Login here</a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<!-- Main ends -->

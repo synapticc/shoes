@@ -1,0 +1,315 @@
+<!-- Main starts -->
+<main class="ps-main">
+  <div class="ps-checkout pt-80 pb-80">
+    <div class="ps-container">
+      <!-- Form starts -->
+      {{ form_start(billingForm, {'attr':
+        {'class': 'ps-checkout__form',
+          'id': 'billing-form',
+          'novalidate':'',
+          'data-form': 'store',
+          'autocomplete': 'on'}}) }}
+        <div class="row">
+          <!-- Form column -->
+          <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 ">
+            <div class="ps-checkout__billing">
+              <!-- Main heading -->
+              <h3>Billing Detail</h3>
+              <!-- First Name -->
+              <div class="form-group form-group--inline">
+                <label>First Name<span>*</span></label>
+                <input class="form-control" placeholder="{{app.user.firstName}}" disabled>
+              </div>
+              <!-- Last Name -->
+              <div class="form-group form-group--inline">
+                <label>Last Name<span>*</span></label>
+                <input class="form-control" placeholder="{{app.user.lastName}}" disabled>
+              </div>
+              <!-- Email Address -->
+              <div class="form-group form-group--inline">
+                <label>Email Address<span>*</span></label>
+                <input class="form-control" placeholder="{{app.user.username}}" disabled>
+              </div>
+
+              <!-- Sub Heading -->
+              <h4 class="mt-30 mb-20 ">Delivery Details</h4>
+
+              <!-- Mobile -->
+              <div class="form-group form-group--inline" error-parent>
+                {{ form_label(billingForm.mobile, 'Mobile*: ',
+                    {'label_attr': {'class': ''}}) }}
+
+                <div class="row mb-4 flex-column flex-sm-row" data-phone data-phone-type="mobile">
+                  <div class="col-5 m-0 pr-0">
+                    {{ form_widget(billingForm.mobile.country, {'attr':
+                        {'class': 'form-style',
+                         'data-country-code':'',
+                         'data-target': 'billing_form_mobile_number',
+                         'data-selected': app.user.userAddress ? app.user.userAddress.country ? app.user.userAddress.country}}) }}
+                  </div>
+                  <div class="col-5 m-0 p-0">
+                    {{ form_widget(billingForm.mobile.number, {'attr':
+                        {'class': 'form-style',
+                         'data-phone-number':'',
+                         'data-phone-type': 'mobile',
+                         'data-target': 'billing_form_mobile_country',
+                         'value': app.user.userPhone ? app.user.userPhone.mobile ? app.user.userPhone.mobile|phone_number_format('NATIONAL')}}) }}
+
+                    <div class="row justify-content-end mt-1">
+                      <div class="col text-right">
+                        <span class="phone-format phone-format-color" id="phone-format"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Smartphone icon -->
+                  <div class="col">
+                     <span class="mobile-validation-icon">
+                       <img src="{{asset('build/images/admin/smartphone.png')}}"
+                            class="mobile-{{ app.user.userPhone ?  app.user.userPhone.mobile ? 'valid' : 'invalid' : 'invalid'}}"
+                            id="smartphone-icon"
+                            title="Valid mobile number">
+                     </span>
+                  </div>
+                </div>
+
+                {# {{ form_widget(billingForm.phone,
+                  {'attr': {
+                    'class': 'form-control',
+                    'value': app.user.userPhone ? app.user.userPhone.phone ? app.user.userPhone.phone.countryCode ? app.user.userPhone.phone|phone_number_format('NATIONAL')
+                    }})
+                }} #}
+                {{ form_errors(billingForm.mobile.number) }}
+              </div>
+
+              <!-- Landline -->
+              <div class="form-group form-group--inline" error-parent>
+                {{ form_label(billingForm.landline) }}
+                <div class="row mb-4 flex-column flex-sm-row" data-phone data-phone-type="landline">
+                  <div class="col-5 m-0 pr-0">
+                    {{ form_widget(billingForm.landline.country,
+                      {'attr':
+                        {'class': 'form-style',
+                         'data-country-code':'',
+                         'data-target': 'billing_form_landline_number',
+                         'data-selected': app.user.userAddress ? app.user.userAddress.country ? app.user.userAddress.country}}) }}
+                  </div>
+                  <div class="col-5 m-0 p-0">
+                    {{ form_widget(billingForm.landline.number,
+                      {'attr':
+                        {'class': 'form-style',
+                         'data-phone-number':'',
+                         'data-phone-type':'landline',
+                         'data-target': 'billing_form_landline_country',
+                         'value': app.user.userPhone ?  app.user.userPhone.landline ? app.user.userPhone.landline|phone_number_format('NATIONAL')}}) }}
+                  </div>
+                  <!-- Old phone icon -->
+                  <div class="col m-1">
+                    <span class="phone-validation-icon">
+                      <img src="{{asset('build/images/admin/old-phone.png')}}"
+                           class="phone-{{ app.user.userPhone ?  app.user.userPhone.landline ? 'valid' : 'invalid' : 'invalid'}}"
+                           id="old-phone-icon"
+                           title="Valid fixed line number">
+                    </span>
+                  </div>
+                </div>
+                {{ form_errors(billingForm.landline) }}
+              </div>
+
+              <!-- Street -->
+              <div class="form-group form-group--inline" error-parent>
+                {{ form_label(billingForm.street) }}
+                {{ form_widget(billingForm.street, {'attr': {'class': 'form-control','value': app.user.userAddress.street ?? ''}}) }}
+                {{ form_errors(billingForm.street) }}
+              </div>
+
+              <!-- City -->
+              <div class="form-group form-group--inline" error-parent>
+                {{ form_label(billingForm.city) }}
+                {{ form_widget(billingForm.city,
+                {
+                  'attr': {'class': 'form-style',
+                  'data-selected': app.user.userAddress ? app.user.userAddress.city ? app.user.userAddress.city}}) }}
+                  {{ form_errors(billingForm.city) }}
+              </div>
+
+              <!-- ZIP -->
+              <div class="form-group form-group--inline" error-parent>
+                {{ form_label(billingForm.zip) }}
+                {{ form_widget(billingForm.zip,{'attr': {
+                  'class': 'form-control',
+                  'value': app.user.userAddress.zip ?? ''}}) }}
+                {{ form_errors(billingForm.zip) }}
+              </div>
+
+              <!-- Country -->
+              <div class="form-group form-group--inline" error-parent>
+                {{ form_label(billingForm.country) }}
+                {{ form_widget(billingForm.country,
+                  {'attr': {
+                    'class': 'form-style',
+                    'data-selected': app.user.userAddress ? app.user.userAddress.country ? app.user.userAddress.country}}) }}
+                {{ form_errors(billingForm.country) }}
+              </div>
+
+              <!-- Sub Heading -->
+              <h3 class="mt-40">Additional information</h3>
+
+              <!-- Delivery Notes -->
+              <div class="form-group form-group--inline textarea">
+                {{ form_label(billingForm.billingDelivery.deliveryNotes) }}
+                {{ form_widget(billingForm.billingDelivery.deliveryNotes,{'attr': {'class': 'form-control','placeholder': 'Notes about your delivery...','rows': 5,}}) }}
+                {{ form_errors(billingForm.billingDelivery.deliveryNotes) }}
+              </div>
+            </div>
+          </div>
+          <!-- Total & Card  column -->
+          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 ">
+            <div class="ps-checkout__order">
+              <header>
+                <h3>Your Order</h3>
+              </header>
+              <div class="content">
+                <table class="table ps-checkout__products">
+                  <thead>
+                    <tr>
+                      <th colspan=2 class="text-uppercase">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Total number of items -->
+                    <tr>
+                      <td>No. of items</td>
+                      {% set totalQty = 0 %}
+                      <td>{% for item in billing.items %}
+                          {% set totalQty = totalQty +  item.quantity %}
+                        {% if loop.last %}{{totalQty}} pcs{% endif %}
+                      {% endfor %}</td>
+                    </tr>
+                    <!-- Sum of all items -->
+                    <tr>
+                      <td>Products sum</td>
+                      {% set totalPrice = 0 %}
+                      <td>{% for item in billing.items %}
+                          {% set totalPrice = totalPrice + (item.productData.sellingPrice * item.quantity) %}
+                        {% if loop.last %}Rs {{totalPrice|format_number({fraction_digit: 2})}}{% endif %}
+                      {% endfor %}</td>
+                    </tr>
+                    <!-- Total price -->
+                    <tr>
+                      <td>Total price</td>
+                      <td>Rs {{totalPrice|format_number({fraction_digit: 2})}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <footer>
+            <!-- Banking details heading -->
+            <div class="dpf-title">
+                Banking details*
+                <div class="accepted-cards-logo"></div>
+            </div>
+            <!-- Card placeholder -->
+            <div class="dpf-card-placeholder"></div>
+
+            <div class="dpf-input-container text-center">
+              <!-- Card Number -->
+              <div class="dpf-input-row" error-parent>
+                {{ form_label(billingForm.cardNumber,null,
+                  { 'label': 'Card number:',
+                    'label_attr': { 'class': 'dpf-input-label'}  })}}
+                <div class="dpf-input-container with-icon">
+                  <!-- Card icon -->
+                  <span class="dpf-input-icon"><i class="fa fa-credit-card" aria-hidden="true"></i></span>
+                  {{ form_widget(billingForm.cardNumber, {'attr':
+                      {'class': 'dpf-input',
+                      'type': 'number',
+                      'data-type': 'number',
+                      'required' : '',
+                      'size' : 20,
+                      'pattern' : 'd*',}}) }}
+                  {{ form_errors(billingForm.cardNumber) }}
+                </div>
+              </div>
+
+              <div class="dpf-input-row" error-parent>
+                <!-- Card Expiry Date -->
+                <div class="dpf-input-column">
+                  <input type="hidden" size="2" data-type="exp_month" placeholder="MM">
+                  <input type="hidden" size="2" data-type="exp_year" placeholder="YY">
+
+                  {{ form_label(billingForm.expiryDate, null,
+                    {'label': 'Expiry date:',
+                     'label_attr': {'class': 'dpf-input-label'}
+                  }) }}
+
+                  <div class="dpf-input-container">
+                    <input type="text" class="dpf-input" data-type="expiry">
+                  </div>
+
+                  {{ form_widget(billingForm.expiryDate,
+                    {'attr': { 'hidden': 'hidden'}}) }}
+                </div>
+
+                <!-- Card CVC -->
+                <div class="dpf-input-column" error-parent>
+                  {{ form_label(billingForm.cvc,null,
+                    { 'label': 'Security code:',
+                      'label_attr': { 'class': 'dpf-input-label'}  })}}
+                  <div class="dpf-input-container">
+                    {{ form_widget(billingForm.cvc, {'attr':
+                      { 'class': 'dpf-input',
+                        'data-type': 'cvc',
+                        'required' : '',
+                        'size' : 4,
+                        'pattern' : 'd*'}}) }}
+                    {{ form_errors(billingForm.cvc) }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card Holder -->
+              <div class="dpf-input-row" error-parent>
+                {{ form_label(billingForm.cardHolder,null,
+                  { 'label': 'Card holder:',
+                    'label_attr': { 'class': 'dpf-input-label'}  })}}
+                <div class="dpf-input-container">
+                  {{ form_widget(billingForm.cardHolder, {'attr':
+                    {'class': 'dpf-input',
+                    'type': 'text',
+                    'data-type': 'name',
+                    'required' : '',
+                    'size' : 50,}}) }}
+                  {{ form_errors(billingForm.cardHolder) }}
+                </div>
+              </div>
+
+              <!-- CSRF token -->
+              {{form_widget(billingForm._token)}}
+
+              <!-- Save button -->
+              <button type="submit" class="ps-btn ps-btn--width-75 dpf-submit mt-50 mb-30">Place Order<i class="ps-icon-next"></i></button>
+              <h4 class="validation"></h4>
+            </div>
+            </footer>
+          </div>
+
+          <!-- Sample card numbers -->
+          <div class="ps-shipping">
+            <h3>FREE CREDIT CARD</h3>
+            <p>USE ANY OF THE CREDIT CARDS BELOW</p>
+<pre>NUMBER              BRAND
+_____________________________________
+4242424242424242	Visa
+5555555555554444	Mastercard
+378282246310005    American Express
+6011111111111117	Discover</pre>
+          </div>
+        </div>
+        </div>
+      {{ form_end(billingForm, {render_rest: false}) }}
+      <!-- Form ends -->
+    </div>
+  </div>
+  {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>
+<!-- Main ends -->

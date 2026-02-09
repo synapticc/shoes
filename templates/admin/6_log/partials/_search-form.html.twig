@@ -1,0 +1,42 @@
+
+<div class="col-6 d-flex align-items-center">
+  <div class="row justify-content-start">
+    {{ form_start(searchForm,
+      {'attr': {
+        'class': 'd-flex justify-content-start',
+        'data-turbo':'false'}}) }}
+
+      <!-- search input -->
+      <div class="col-10">
+        <div class="input-group">
+          <span class="input-group-text" id="topbar-addon"><span class="fas fa-search"></span></span>
+          {{ form_widget(searchForm.q, {'attr':
+            {'class': 'form-control',
+             'placeholder': 'Search first name, last name or email',
+             'aria-label': 'Search',
+             'aria-describedby': 'search',
+             'title': 'Search suppliers',}}) }}
+        </div>
+        <div class="form-check">
+          {{ form_label(
+              searchForm._id, null,
+              { 'label': 'ID',
+                'label_attr':
+                  {'title': 'Search product by ID',
+                   'class': app.user.theme == 'dark' ? 'form-check-label text-gray-500'}
+                }) }}
+
+          {{ form_widget(searchForm._id, {'attr':
+            {'class': 'form-check-input',
+             'aria-label': 'Check exact search',
+             'aria-describedby': 'checkbox',
+             'title': 'Search product by ID'}}) }}
+        </div>
+      </div>
+      <div class="col">
+        <!-- search button -->
+        <button title="Search first name, last name or email" type="submit" class="btn btn-{{ app.user.theme == 'light' ? 'white' : 'gray' }} ml-2 px-2">Search</button>
+      </div>
+    {{ form_end(searchForm, {render_rest: false}) }}
+  </div>
+</div>

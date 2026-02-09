@@ -1,0 +1,198 @@
+<!-- Main content -->
+<main class="content">
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  {% include 'admin/_partials/navbar-breadcrumbs.html.twig'
+     with { 'item' : 'user',   'route': 'app_login',
+            'route_index': 'admin_users_index' } %}
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Display a detailed table of user activity, cart and purchases  ',
+          'Edit or delete the user'] %}
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <h1 class="h4 pb-3">Edit User</h1>
+      <!-- Features -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/5_user/partials/_search-form.html.twig' %}
+  </div>
+  <!-- 'Back to products' & 'Edit' buttons -->
+  <div class="row mt-1 mb-2">
+    <div class="col-6 d-flex justify-content-end">
+      <a title="Back to products table" href="{{ path('admin_users_index') }}" class="">
+        <button type="button" class="btn btn-secondary">Back to Users</button>
+      </a>
+      <a title="Edit product" href="{{ path('admin_users_edit', {'user': user.id}) }}" class="mx-3">
+        <button type="button" class="btn btn-warning">Edit</button>
+      </a>
+      <!-- Delete button -->
+      {% include 'admin/5_user/partials/_delete_form.html.twig' %}
+    </div>
+  </div>
+
+  <div class="row mt-1">
+    <div class="col-6 mb-4">
+      <div class="card border-light shadow-sm components-section">
+        <div class="card-body">
+          <div class="row mb-4">
+            <div class="col">
+              <h4>User details</h4>
+              <div class="table-responsive" id="user-table">
+                <table class="">
+                  <tbody>
+                    <tr>
+                      <th>ID</th>
+                      <td>
+                        <div class="row justify-content-between align-items-center">
+                          <div class="col-2">{{user.id}}</div>
+                          <div class="col text-right">
+                            <a href="{{ path('admin_user_visits_index', {'customer': user.id, 'customer_url': user.userImage ? user.userImage.image ? user.userImage.image : 'build/images/admin/man.png' : 'build/images/admin/man.png', 'customer_email': user.email }) }}">
+                              <button title="List all visits of {{user.firstName}} {{user.lastName}}" type="button" class="btn btn-primary">
+                              <i class="fas fa-poll mr-1"></i>logs</button>
+                            </a>
+                            <!-- Cart button -->
+                            <a href="{{ path('admin_items', {'customer': user.id, 'customer_url': user.userImage ? user.userImage.image ? user.userImage.image : 'build/images/admin/man.png' : 'build/images/admin/man.png', 'customer_email': user.email,'status': 'cart'}) }}"><button title="List all cart items of {{user.firstName}} {{user.lastName}}" type="button" class="btn btn-light"><i class="fas fa-shopping-cart mr-1"></i>Cart</button></a>
+                            <!-- Purchases button -->
+                            <a href="{{ path('admin_items', {'customer': user.id, 'customer_url': user.userImage ? user.userImage.image ? user.userImage.image : 'build/images/admin/man.png' : 'build/images/admin/man.png', 'customer_email': user.email,'status': 'paid'}) }}"><button title="List all purchased items of {{user.firstName}} {{user.lastName}}" type="button" class="btn btn-light"><i class="fas fa-file-invoice-dollar mr-1"></i>Purchases</button></a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                      <tr>
+                        <th>Email</th>
+                        <td>{{user.email}}</td>
+                      </tr>
+                      <tr>
+                        <th>Pic</th>
+                        <td>
+                          <img
+                              src="{% if user.userImage %}
+                                  {% if user.userImage.image %}
+                                    {{asset(user.userImage.image)}}
+                                  {% else %}
+                                      {{asset('build/images/admin/team/profile-picture-3.jpg')}}
+                                  {% endif %}
+                                {% else %}
+                                    {{asset('build/images/admin/team/profile-picture-3.jpg')}}
+                                {% endif %}"
+                              class="user-avatar lg-avatar rounded-circle"
+                              itemprop="thumbnail" alt="..." >
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Roles</th>
+                        <td >{% for role in user.roles %}
+                        {% if role is same as('ROLE_USER')  %}USER{% elseif role is same as('ROLE_ADMIN') %}ADMIN{% elseif role is same as('ROLE_MODERATOR') %}MODERATOR{% endif %}{% if loop.last %}{% else %}, {% endif %}{% endfor %}</td>
+                      </tr>
+                      <tr>
+                        <th>Verified</th>
+                        <td>{{user.isVerified ? 'Yes' : 'No' }}</td>
+                      </tr>
+                      <tr>
+                        <th>Title</th>
+                        <td>{{user.title}}</td>
+                      </tr>
+                      <tr>
+                        <th>First Name</th>
+                        <td>{{user.firstName}}</td>
+                      </tr>
+                      <tr>
+                        <th>Last Name</th>
+                        <td>{{user.lastName}}</td>
+                      </tr>
+                      <tr>
+                        <th>Middle Name</th>
+                        <td>{{user.middleName}}</td>
+                      </tr>
+                      <tr>
+                        <th>Status</th>
+                        <td>
+                          {% if user.userDeactivate and user.userDeactivate.deactivate %}
+                            {% include '__icons/a-d/_cancel-icon.html.twig' with {'label': 'Deactivated', 'dataset': '', 'width': 28, 'height': 28} only %}
+                            <span class="text-gray-500 pl-2">({{ user.updated|format_datetime('short', 'short', locale='en')}})</span>
+                          {% else %}
+                            {% include '__icons/a-d/_check-icon.html.twig' %}
+                          {% endif %}</td>
+                      </tr>
+                      <tr>
+                        <th>Created</th>
+                        <td>{{ user.created|format_datetime('full', 'short', locale='en')
+                              ~ ' (' ~ user.created|ago ~ ')' }}</td>
+                      </tr>
+                      <tr>
+                        <th>Updated</th>
+                        <td>{{user.updated ? user.updated|format_datetime('full', 'short', locale='en')
+                             ~ ' (' ~ user.updated|ago ~ ')' }}</td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <h4>Page visits</h4>
+    <div class="col-12 mb-4">
+      <div class="card border-light shadow-sm mb-4">
+        <div class="card-body">
+          <div class="table-responsive" id="page-visit-table">
+            <table class="table table-centered table-nowrap mb-0 rounded">
+              <thead class="thead-light">
+                <tr>
+                  <th class="border-0">Id</th>
+                  <th class="border-0">Visited</th>
+                  <th class="border-0 thumbnail">Thumbnail</th>
+                  <th class="border-0 product">Product</th>
+                  <th class="border-0">Route</th>
+                  <th class="border-0 query-params">Query parameters</th>
+                  <th class="border-0 referer">Referer Product</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tbody>
+                  {% for pageView in pageViews %}
+                  <tr>
+                    <td>{{pageView.id}}</td>
+                    <td>{{pageView.created|format_datetime('full', 'short', locale='en')}}</td>
+                    <td class="thumbnail">{% if pageView.imageSmall %}
+                      <img src="{% if pageView.imageSmall %}{{asset(pageView.imageSmall) }}{% endif %}"></span>
+                    {% endif %}
+                    </td>
+                    <td class="product">{{pageView.name}}
+                    </td>
+                    <td>{{pageView.route}}</td>
+                    <td class="query-params">{% if pageView.queryParameters %}
+                      {% for key,parameters in pageView.queryParameters %}
+                        {% for parameter in parameters %}
+                          {{key}}={{parameter}},
+                        {% endfor %}
+                      {% endfor %}
+                    {% endif %}</td>
+                    <td class="thumbnail">{% if pageView.imageSmallRef %}
+                  <img src="{% if pageView.imageSmallRef %}{{asset(pageView.imageSmallRef) }}{% endif %}"></span>
+                    {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Pagination -->
+    <div class="d-flex justify-content-end">
+      {{ knp_pagination_render(pageViews) }}
+    </div>
+  </div>
+  {% include 'admin/_partials/footer.html.twig' %}
+ </main>

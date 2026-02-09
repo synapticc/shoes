@@ -1,0 +1,137 @@
+<main class="content">
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Transactions</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        <a href="{{ path('admin_purchases') }}">Purchases</a>
+      </li>
+    </ol>
+  </nav>
+  <div class="row justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Display all purchases',
+         'Access each purchase'] %}
+    <div class="col-2 mb-3 mb-lg-0">
+      <h1 class="h4 pb-3">Purchases</h1>
+      <!-- Features -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/7_transactions/partials/_search-form.html.twig' %}
+  </div>
+  <!-- No. of items per page> -->
+  {% include 'admin/_partials/select-items.html.twig'
+     with { 'items' : purchases, 'item' : 'purchase', 'route_index': 'admin_purchases', 'route': '' } %}
+
+  <!-- Table -->
+  <div class="row mt-1">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card {{ app.user.theme == 'dark' ? 'bg-gray-300' }} border-light shadow-sm components-section">
+        <div class="card-body">
+          <div class="table-responsive" id="transactions-table">
+            <table class="table table-nowrap mb-0 rounded text-center">
+              <thead class="{{ app.user.theme == 'light' ? 'thead-light' : 'thead bg-gray-500' }}">
+                <tr>
+                  <!-- Invoice ID -->
+                  <th class="id">
+                    <span>Invoice Ref.</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : purchases, 'sort_param': 'id', 'label': 'ID'} %}</span>
+                  </th>
+                  <!-- Customer picture -->
+                  <th>Pic</th>
+                  <!-- Customer -->
+                  <th class="text-left">
+                    <span>Customer</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : purchases, 'sort_param': 'u.email', 'label': 'name'} %}</span>
+                  </th>
+                  <!-- Action -->
+                  <th>Action</th>
+                  <!-- Thumbnails -->
+                  <th class="text-left">
+                    <span>Thumbnails</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : purchases, 'sort_param': 'pc.color', 'label': 'color'} %}</span>
+                  </th>
+                  <!-- Date of purchase -->
+                  <th>
+                    <span>Date of purchase</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : purchases, 'sort_param': 'o.purchaseDate', 'label': 'date of purchase'} %}</span>
+                  </th>
+                  <!-- Items -->
+                  <th class="items">
+                    <span>Items</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : purchases, 'sort_param': 'items', 'label': 'number of items'} %}</span>
+                  </th>
+                  <!-- Total -->
+                  <th>
+                    <span>Total (Rs)</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : purchases, 'sort_param': ' o.invoiceTotal', 'label': 'total sum'} %}</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for purchase in purchases %}
+                <!-- Item -->
+                <tr class="row-hover">
+                  <!-- Invoice ID -->
+                  <td class="text-center font-weight-bold">
+                    <a href="{{ path('user_profile_purchase_list', {'order': nzo_encrypt(purchase.id)}) }}">{{purchase.id|pad(6)}}</a>
+                  </td>
+                  <!-- Customer picture -->
+                  <td title="Search all {{purchase.firstName}} {{purchase.lastName}} invoices" class="text-center">
+                    <a href="{{ path('admin_purchases', {'customer': purchase.userId, 'customer_url': purchase.pic, 'customer_email': purchase.email}) }}">
+                      <img src="{% if purchase.pic %}{{asset(purchase.pic)}}{% else %}{% if purchase.title is same as 'Mr' %}{{asset('build/images/admin/man.png')}}{% else %}{% if purchase.title is same as 'Mrs' %}{{asset('build/images/admin/woman.png')}}{% else %}{{asset('build/images/admin/man.png')}}{% endif %}{% endif %}{% endif %}" class="border-radius-5 m-auto" alt="..." >
+                    </a>
+                  </td>
+                  <!-- Customer -->
+                  <td title="Search all {{purchase.firstName}} {{purchase.lastName}} purchases." class="text-left"><a  class="border-hover" {% if search %} data-search-terms="{{search}}"
+                      data-text="{{purchase.email}}"
+                      id="text-highlight" {% endif %} href="{{ path('admin_purchases', {'customer': purchase.userId, 'customer_url': purchase.pic, 'customer_email': purchase.email}) }}">{{purchase.email}}</a></td>
+                  <td><a title="Display Purchase." href="{{ path('admin_transactions_show',
+                  {'order': purchase.id}) }}"><button type="submit" class="btn btn-light">show</button> </a></td>
+                  <td>
+                    <div class="d-flex flex-row justify-content-start">
+                    {% for item in purchase.items|slice(0, 4) %}
+                    <div class="purchases-img mr-1" title="{{item.name ~ ' ' ~ item.type_full ~ ' | ' ~ item.colors_full ~ ' (' ~ item.quantity ~ ' pcs)'}}">
+                      <img class="img-fluid"
+                          src="{{asset(item.imageSmall)}}"
+                          alt="image: {{item.name}}">
+                    </div>
+                    {% endfor %}
+                    {% if purchase.items|length > 4 %}
+                      {% set remaining = purchase.items|length - 4 %}
+                      <div class="remaining-img d-flex flex-column justify-content-center text-center" title="{{remaining}} more items">
+                        <span class="font-weight-bold"> + {{remaining}}</span>
+                        <span>more</span>
+                        <span>items</span>
+                      </div>
+                    {% endif %}
+                    </div>
+                  </td>
+                  <td title="{{ purchase.purchaseDate|ago }}"><span class="font-weight-normal">{{ purchase.purchaseDate|date("jS F Y \\a\\t g:ia") }}</span></td>
+                  <td title="{{purchase.items|length}} items | {{purchase.totalQty}} pcs"><span class="font-weight-normal text-center">{{purchase.items|length}}</span></td>
+                  <td title="{{purchase.invoiceTotal|format_number({fraction_digit: 2})}}"><span class="font-weight-bold">{{purchase.invoiceTotal|number_format(2, '.', ',')}}</span></td>
+                </tr>
+              {% else %}
+                <tr><td colspan="16" id="empty-cell" class="{{app.user.theme == 'dark' ? 'text-gray'}}">No purchase found</td></tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Pagination -->
+  {% include 'admin/_partials/pagination.html.twig' with { 'items' : purchases } %}
+  <!-- Footer -->
+  {% include 'admin/_partials/footer.html.twig' %}
+</main>

@@ -1,0 +1,62 @@
+{# templates/store/partials/filters/filter-occasions.html.twig #}
+{% set resetIcon = include('__icons/q-t/_square-reset.html.twig', {filter: 'occasion'}, with_context=false) %}
+{% set plusIcon = include('__icons/m-p/_plus-square.html.twig', {filter: 'occasion'}, with_context=false) %}
+{% set minusIcon = include('__icons/m-p/_minus-square.html.twig', {filter: 'occasion'}, with_context=false) %}
+{% set hasActiveOccasions = activeOccasions|length > 0 %}
+{% set showToggler = hasActiveOccasions ? minusIcon : plusIcon %}
+
+<aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+    <div class="ps-widget__header">
+        <h3 class="d-flex justify-content-between">
+            <span>
+                Occasion
+                {% if hasActiveOccasions %}{{ resetIcon|raw }}{% endif %}
+            </span>
+            <span
+                class="sidebar-toggler"
+                data-toggler="#sidebar-occasion"
+                id="data-toggler"
+                data-toggler-title="occasions">
+                {{ showToggler|raw }}
+            </span>
+        </h3>
+        {% if hasActiveOccasions %}
+            <p class="pt-10 pb-10">
+                Selected({{ activeOccasions|length }}):
+                {% for occasion in activeOccasions %}
+                    <span class="selected-item">{{ occasionPair[occasion] }}</span>
+                    {%- if not loop.last %}, {% else %}.{% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="ps-widget__content">
+        <section
+            data-toggle-show="#sidebar-occasion"
+            id="sidebar-occasion"
+            class="{% if hasActiveOccasions %}sidebar-reveal{% else %}sidebar-hide{% endif %}">
+
+            {% for occasion in occasions %}
+                {% set isChecked = occasion.name in activeOccasions %}
+                {% set hasCountValue = occasion.name in occasionCounts|keys %}
+                {% set countValue = hasCountValue ? occasionCounts[occasion.name] : 0 %}
+
+                <label for="occasion-{{ occasion.name }}" class="checkbox">
+                    <input
+                        filter=""
+                        type="checkbox"
+                        id="occasion-{{ occasion.name }}"
+                        name="occasion[]"
+                        value="{{ occasion.name }}"
+                        {% if isChecked %}checked{% endif %}>
+
+                    <span class="{% if hasCountValue %}text-bold{% endif %}">
+                        {{ occasion.fullName }}
+                        {% if hasCountValue %}({{ countValue }}){% endif %}
+                    </span>
+                </label>
+            {% endfor %}
+        </section>
+    </div>
+</aside>

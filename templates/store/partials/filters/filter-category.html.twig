@@ -1,0 +1,62 @@
+{# templates/store/partials/filters/filter-category.html.twig #}
+{% set resetIcon = include('__icons/q-t/_square-reset.html.twig', {filter: 'category'}, with_context=false) %}
+{% set plusIcon = include('__icons/m-p/_plus-square.html.twig', {filter: 'category'}, with_context=false) %}
+{% set minusIcon = include('__icons/m-p/_minus-square.html.twig', {filter: 'category'}, with_context=false) %}
+{% set hasActiveCategories = activeCategories|length > 0 %}
+{% set showToggler = hasActiveCategories ? minusIcon : plusIcon %}
+
+<aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+    <div class="ps-widget__header">
+        <h3 class="d-flex justify-content-between">
+            <span>
+                Category
+                {% if hasActiveCategories %}{{ resetIcon|raw }}{% endif %}
+            </span>
+            <span
+                class="sidebar-toggler"
+                data-toggler="#sidebar-category"
+                id="data-toggler"
+                data-toggler-title="category">
+                {{ showToggler|raw }}
+            </span>
+        </h3>
+        {% if hasActiveCategories %}
+            <p class="pt-10 pb-10">
+                Selected({{ activeCategories|length }}):
+                {% for category in activeCategories %}
+                    <span class="selected-item">{{ categoryPair[category] }}</span>
+                    {%- if not loop.last %}, {% else %}.{% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="ps-widget__content">
+        <section
+            data-toggle-show="#sidebar-category"
+            id="sidebar-category"
+            class="{% if hasActiveCategories %}sidebar-reveal{% else %}sidebar-hide{% endif %}">
+
+            {% for category in categories %}
+                {% set isChecked = category.name in activeCategories %}
+                {% set hasCountValue = category.name in categoryCounts|keys %}
+                {% set countValue = hasCountValue ? categoryCounts[category.name] : 0 %}
+
+                <label for="category-{{ category.name }}" class="checkbox">
+                    <input
+                        filter=""
+                        type="checkbox"
+                        id="category-{{ category.name }}"
+                        name="category[]"
+                        value="{{ category.name }}"
+                        {% if isChecked %}checked{% endif %}>
+
+                    <span class="{% if hasCountValue %}text-bold{% endif %}">
+                        {{ category.fullName }}
+                        {% if hasCountValue %}({{ countValue }}){% endif %}
+                    </span>
+                </label>
+            {% endfor %}
+        </section>
+    </div>
+</aside>

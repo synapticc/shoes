@@ -1,0 +1,669 @@
+<!-- Main content  -->
+<main class="content">
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  {% include 'admin/_partials/navbar-breadcrumbs.html.twig'
+     with { 'item' : 'product',   'route': 'admin_product_new', 'route_index': 'admin_product_index' } %}
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Display a complete list of products',
+         'Edit specific product',
+         'Access its detailed report',
+         'Create new detail of the product'] %}
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <h1 class="h4 pb-3">Products</h1>
+      <!-- Features -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/1_product/partials/form/_search-form.html.twig' %}
+  </div>
+
+  <!-- 'Back to products' & 'Edit' buttons -->
+  <div class="row mt-1 mb-2">
+    <div class="col-7 d-flex justify-content-end m-0 p-0">
+      <a title="Back to products table" href="{{ path('admin_product_index') }}" class="">
+        <button type="button" class="btn btn-secondary">Back to products</button>
+      </a>
+      <a title="Edit product" href="{{ path('admin_product_edit', {'id': product.id}) }}" class="mx-3">
+        <button type="button" class="btn btn-warning">Edit</button>
+      </a>
+    </div>
+  </div>
+  <!-- Product details summary table -->
+  <div class="row mt-1">
+    <div class="col-7 mb-4">
+      <div class="card border-light shadow-sm components-section">
+        <div class="card-body">
+          <div class="row mb-4">
+            <div class="col">
+              <h4>Product details</h4>
+              <div class="table-responsive" id="product-table">
+                <table class="">
+                  <tbody>
+                    <tr>
+                      <th>Id</th>
+                      <td>
+                        <div class="row justify-content-between align-items-center">
+                          <div class="col-2 font-weight-bold">{{ product.id }}</div>
+                          <div class="col text-right">
+                            <a href="{{ path('admin_product_data_new', {'product': product.id, }) }}">
+                              <button title="Create a new {{product.brand_full}} {{product.name}} {{product.type_full}}" type="button" class="btn btn-info">new</button>
+                            </a>
+                            <a href="{{ path('admin_product_data_index', {'product': product.id, 'product_name': product.category_full ~ ' ' ~ product.name ~ ' ' ~ product.type_full }) }}">
+                              <button title="List all {{product.brand_full}} {{product.name}} {{product.type_full}} items" type="button" class="btn btn-lighten">list</button>
+                            </a>
+                            <a href="{{ path('admin_user_visits_index', {'product': product.id, 'product_name': product.brand_full ~ ' ' ~ product.name}) }}">
+                              <button title="List all visits for {{product.brand_full}} {{product.name}} {{product.type_full}}" type="button" class="btn btn-primary">
+                              <i class="fas fa-poll mr-1"></i>logs</button>
+                            </a>
+                            <!-- Cart button -->
+                            <a href="{{ path('admin_items', {'product': product.id,  'product_name': product.brand_full ~ ' ' ~ product.name, 'status': 'cart' }) }}"><button title="List all cart items of {{product.brand_full}} {{product.name}} {{product.type_full}}" type="button" class="btn btn-light"><i class="fas fa-shopping-cart mr-1"></i>Cart</button></a>
+                            <!-- Purchases button -->
+                            <a href="{{ path('admin_items', {'product': product.id,  'product_name': product.brand_full ~ ' ' ~ product.name, 'status': 'paid' }) }}"><button title="List all paid items of {{product.brand_full}} {{product.name}} {{product.type_full}}" type="button" class="btn btn-light"><i class="fas fa-file-invoice-dollar mr-1"></i>Purchases</button></a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                      <tr>
+                        <th>Name</th>
+                        <td>{{ product.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Description</th>
+                        <td>{{ product.description|nl2br }}</td>
+                      </tr>
+                      <tr>
+                        <th rowspan="{% if product.features %}{{product.features|length + 1}}
+                                     {% else %}1{% endif %}">Features</th>
+                        {% for feature in product.features %}
+                        <tr>
+                          <td><li>{{ feature }}</li></td>
+                        </tr>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                        <th>Category</th>
+                        <td>{{ product.category_full }}</td>
+                      </tr>
+                      <tr>
+                        <th>Occasion</th>
+                        <td>
+                        {% for occasion in product.occasion_full %}
+                          {{occasion}}{% if loop.last %}.{% else %},{% endif %}
+                        {% endfor %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Type</th>
+                        <td>{{ product.type_full }}</td>
+                      </tr>
+                      <tr>
+                        <th>Displayed</th>
+                        <td>
+                        {% if product.displayed %}
+                          {% include '__icons/a-d/_check-icon.html.twig' %}
+                        {% else %}
+                            {% include '__icons/a-d/_cancel-icon.html.twig' with {'label': 'No display', 'dataset': '', 'width': 28, 'height': 28} only %}
+                        {% endif %}</td>
+                      </tr>
+                      <tr>
+                        <th>Created</th>
+                        <td>{{ product.created|format_datetime('full', 'short', locale='en')
+                              ~ ' (' ~ product.created|ago ~ ')' }}</td>
+                      </tr>
+                      <tr>
+                        <th>Updated</th>
+                        <td>{{ product.updated  ? product.updated|format_datetime('full', 'short', locale='en')
+                             ~ ' (' ~ product.updated|ago ~ ')' : 'not yet updated'}}</td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Colors table -->
+  <div class="row mt-1">
+    <div class="col-11 mb-4">
+      <div class="card border-light shadow-sm components-section">
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <h4>Colors</h4>
+              <div class="table-responsive text-center" id="images-table">
+                <table class="">
+                  <thead>
+                    <th>#</th>
+                    <th>ID</th>
+                    <th>Color</th>
+                    <th>Fabric</th>
+                    <th>List</th>
+                    <th>Images</th>
+                    <th class="qty-head">Cart</th>
+                    <th class="qty-head">Sold</th>
+                    <th class="qty-head">Available</th>
+                    <th class="qty-head">Total</th>
+                  </thead>
+                  <tbody class="">
+                    {% set totalColor = 0 %}
+                    {% set totalCart = 0 %}
+                    {% set totalPaid = 0 %}
+                    {% for color in colorSet.colors %}
+                      <tr class="color-row"  rowspan="2">
+                        <th>Color {{loop.index}}</th>
+                        <td>{{color.colorId}}</td>
+                        <td>
+                          <span class="card-title"
+                            data-copy="{{ color.colorId }}"
+                            data-copy-status="active"
+                            title="Click to copy color code">
+                            {{color.color}}</span>
+                        </td>
+                        <td>{{color.fabric}}</td>
+                        <td data-turbo=false>
+                          <a href="{{ path('admin_product_edit', {'id': product.id}) ~ '#' ~ color.colorId }}"><button  title="Edit '{{color.color}}' color" type="button" class="btn btn-warning">edit</button></a>
+                          <a href="{{ path('admin_product_data_color',{'pc': color.colorId}) }}">
+                          <button title="List '{{color.color}}' products" type="button" class="btn btn-light">list</button></a>
+                        </td>
+                        <td class="thumbnail-cell">
+                          <div class="d-flex justify-content-start">
+                            <div class="card  mx-1 my-3">
+                              <!-- Medium image set -->
+                              <img title="Image 1"
+                                  class="img-fluid rounded-start"
+                                  src="{% if color.image %}{{asset(color.image) }}{% endif %}"
+                                  alt="image: {{product.name}}">
+                            </div>
+                            {% if color.image2 %}
+                            <div class="card  mx-1 my-3">
+                              <!-- Medium image set -->
+                              <img title="Click to see other sizes."
+                                  class="img-fluid rounded-start"
+                                  src="{{asset(color.image2) }}"
+                                  alt="image: {{product.name}}">
+                            </div>
+                            {% endif %}
+                            {% if color.image3 %}
+                            <div class="card  mx-1 my-3">
+                              <!-- Medium image set -->
+                              <img title="Click to see other sizes."
+                                  class="img-fluid rounded-start"
+                                  src="{{asset(color.image3) }}"
+                                  alt="image: {{product.name}}">
+                            </div>
+                            {% endif %}
+                            {% if color.image4 %}
+                            <div class="card  mx-1 my-3">
+                              <!-- Medium image set -->
+                              <img title="Click to see other sizes."
+                                  class="img-fluid rounded-start"
+                                  src="{{asset(color.image4) }}"
+                                  alt="image: {{product.name}}">
+                            </div>
+                            {% endif %}
+                            {% if color.image5 %}
+                            <div class="card  mx-1 my-3">
+                              <!-- Medium image set -->
+                              <img title="Click to see other sizes."
+                                  class="img-fluid rounded-start"
+                                  src="{{asset(color.image5) }}"
+                                  alt="image: {{product.name}}">
+                            </div>
+                            {% endif %}
+                          </div>
+                        </td>
+                        {# Cart #}
+                        <td class="qty-cell">
+                          {% set qtyCart = colorCart[color.colorId] is defined ? colorCart[color.colorId].totalQty : 0 %}
+                          {% set totalCart = totalCart + qtyCart %}
+                          {{qtyCart is not same as(0) ? qtyCart ~ ' pcs' : '-'}}</td>
+                        {# Sold #}
+                        <td class="qty-cell">
+                          {% set qtyPaid = colorPaid[color.colorId] is defined ? colorPaid[color.colorId].totalQty : 0 %}
+                          {% set totalPaid = totalPaid + qtyPaid %}
+                          {{qtyPaid is not same as(0) ? qtyPaid ~ ' pcs' : '-'}}</td>
+                        {# Available #}
+                      <td class="qty-cell">{{color.qty ? color.qty : 0}} pcs</td>
+                        {# Total #}
+                        <td class="qty-cell">
+                        {% set totalRow = qtyPaid + qtyCart + color.qty %}
+                        {% set totalColor = totalColor + totalRow %}
+                        {{ qtyPaid + qtyCart + color.qty }} pcs</td>
+                      </tr>
+                    {% endfor %}
+                      <tr>
+                        <th colspan='6' class="text-right total-cell">Total (pcs)</th>
+                        <td class="total-qty-cell">{{totalCart}}</td>
+                        <td class="total-qty-cell">{{totalPaid}}</td>
+                        <td class="total-qty-cell available-cell">{{colorSet.totalQty}}</td>
+                        <td class="total-qty-cell">{{totalColor}}</td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sizes table -->
+  <div class="row mt-1">
+    <div class="col-7 mb-4">
+      <div class="card border-light shadow-sm components-section mt-5">
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <h4>Sizes</h4>
+              <div class="table-responsive" id="sizes-table">
+                <table class="text-center">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      {% for size, pack in sizeSet %}
+                      <th>{{size}}</th>
+                      {% else %}
+                        <th colspan="4">No size</th>
+                      {% endfor %}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th class="text-left">Cost price (Rs)</th>
+                      {% for sizes in sizeSet %}
+                      <td>{{sizes.costPrice|format_number({fraction_digit: 2})}}</td>
+                      {% else %}
+                        <td colspan="4">0.00</td>
+                      {% endfor %}
+                    </tr>
+                    <tr>
+                      <th class="text-left">Profit (%)</th>
+                      {% for sizes in sizeSet %}
+                      <td>{{((sizes.sellingPrice / sizes.costPrice) * 100)|format_number({fraction_digit: 2})}}</td>
+                      {% else %}
+                        <td colspan="4">0.00</td>
+                      {% endfor %}
+                    </tr>
+                    <tr>
+                      <th class="text-left">Selling price (Rs)</th>
+                      {% for sizes in sizeSet %}
+                      <td>{{sizes.sellingPrice|format_number({fraction_digit: 2})}}</td>
+                      {% else %}
+                        <td colspan="4">0.00</td>
+                      {% endfor %}
+                      <td class="total-cell">TOTAL (pcs)</td>
+                    </tr>
+                    <tr>
+                      <th class="text-left">Quantity</th>
+                      {% for sizes in sizeSet %}
+                      <td>{{sizes.qty}}</td>
+                      {% else %}
+                        <td colspan="4">0 pcs</td>
+                      {% endfor %}
+                      <td class="total-qty-cell available-cell">{{colorSet.totalQty}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revenue table -->
+  <div class="row mt-1">
+    <div class="col-7 mb-4">
+      <div class="card border-light shadow-sm components-section mt-5">
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <h4>Revenue</h4>
+              <div class="table-responsive" id="revenue-table">
+                <table class="text-center">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Cart</th>
+                      <th>Paid</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th class="text-left">Total quantity (pcs)</th>
+                      <td>{{total.totalCart.totalQty ? total.totalCart.totalQty : 0}}</td>
+                      <td>{{total.totalPaid.totalQty ? total.totalPaid.totalQty : 0}}</td>
+                      <td>{{total.total.totalQty ? total.total.totalQty : 0}}</td>
+                    </tr>
+                    <tr>
+                      <th class="text-left">Number of items (pcs)</th>
+                      <td>{{total.totalCart.totalItems}}</td>
+                      <td>{{total.totalPaid.totalItems}}</td>
+                      <td>{{total.total.totalItems}}</td>
+                    </tr>
+                    <tr>
+                      <th class="text-left">Total sum (Rs)</th>
+                      <td>{{total.totalCart.total ? total.totalCart.total|format_number({fraction_digit: 2}) :'0.00'}}</td>
+                      <td class="available-cell">{{total.totalPaid.total ? total.totalPaid.total|format_number({fraction_digit: 2}) : '0.00'}}</td>
+                      <td >{{total.total.total ? total.total.total|format_number({fraction_digit: 2}) : '0.00' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 'More paid items' button -->
+  <div class="row mt-1">
+    <div class="col-10 d-flex justify-content-end mb-2">
+      <a  title="More paid items" href="{{ path('admin_items', {'product': product.id, 'product_name': product.name ~ ' ' ~ product.type_full ~ ' ('~ product.category_full ~ ')', 'status': 'paid'}) }}">
+        <button type="button" class="btn btn-success"><i class="fas fa-file-invoice-dollar mr-1"></i>more</button>
+      </a>
+    </div>
+  </div>
+  <!-- Purchases table -->
+  <div class="row">
+    <div class="col-10 mb-4">
+      <div class="card border-light shadow-sm components-section">
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <div class="row justify-content-between">
+                <div class="col"><h4>Purchases</h4></div>
+                <div class="col-3 text-right"><span class="table-top-info">{% if purchases %}(latest {{purchases|length == 5 ? 5}} paid items)
+                {% else %}(no purchase yet){% endif %}
+                </span></div>
+              </div>
+              <div class="table-responsive" id="purchases-table">
+                <table class="">
+                  <thead>
+                    <th>#</th>
+                    <th>Order ID</th>
+                    <th>Pic</th>
+                    <th>User</th>
+                    <th>List</th>
+                    <th>Thumbnail</th>
+                    <th>Purchase date</th>
+                    <th>Unit price (Rs)</th>
+                    <th>Quantity</th>
+                    <th>Price (Rs)</th>
+                  </thead>
+                  <tbody>
+                    {% for purchase in purchases %}
+                      <tr class="text-center">
+                        <th>{{loop.index}}</th>
+                        <td>{{purchase.order_id}}</td>
+                        <td>
+                        <img src="{% if purchase.pic %}
+                        {{asset(purchase.pic)}}
+                        {% else %}{% if purchase.title is same as 'Mr' %}{{asset('build/images/admin/man.png')}}{% else %}{% if purchase.title is same as 'Mrs' %}{{asset('build/images/admin/woman.png')}}{% else %}{{asset('build/images/admin/man.png')}}{% endif %}{% endif %}{% endif %}"
+                            class="user-avatar lg-avatar rounded-circle" alt="..." >
+                        </td>
+                        <td class="text-left">
+                        <a class="border-hover"  href="{{ path('admin_items', {'customer': purchase.userId, 'customer_url': purchase.pic, 'customer_email': purchase.email}) }}">{{purchase.email}}<a></td>
+                        <td>
+                          <a title="Display Order" href="{{ path('admin_transactions_show', {'order': purchase.order_id}) }}">
+                            <button type="button" class="btn btn-light">show</button>
+                          </a>
+                        </td>
+                        <td class="thumbnail-cell">
+                          <div class="d-flex justify-content-start">
+                            <div class="card text-center mx-1 my-3">
+                              <!-- Medium image set -->
+                              <img title="{{purchase.colors_full}} ({{purchase.fabrics_full}})"
+                                  class="img-fluid rounded-start"
+                                  src="{% if purchase.image %}{{asset(purchase.image)}}{% endif %}"
+                                  alt="image: {{purchase.name}}">
+                            </div>
+                          </div>
+
+                        </td>
+                        <td class="text-left">{{ purchase.created|format_datetime('full', 'short', locale='en')
+                              ~ ' (' ~ purchase.created|ago ~ ')' }}</td>
+                        <td>{{purchase.sellingPrice|format_number({fraction_digit: 2})}}</td>
+                        <td class="qty-cell">{{purchase.quantity}} pcs</td>
+                        <td class="qty-cell">{{purchase.subtotal|format_number({fraction_digit: 2})}}</td>
+                      </tr>
+                    {% else %}
+                      <tr><td colspan="9" id="empty-cell" class="{{app.user.theme == 'dark' ? 'text-gray'}}">No paid item found</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 'More paid items' button -->
+  <div class="row mt-1">
+    <div class="col-10 d-flex justify-content-end mb-2">
+      <a  title="More cart items" href="{{ path('admin_items', {'product': product.id, 'product_name': product.name ~ ' ' ~ product.type_full ~ ' ('~ product.category_full ~ ')', 'status': 'cart'}) }}">
+        <button type="button" class="btn btn-success"><i class="fas fa-shopping-cart mr-1"></i>more</button>
+      </a>
+    </div>
+  </div>
+  <!-- Cart table -->
+  <div class="row">
+    <div class="col-10 mb-4">
+      <div class="card border-light shadow-sm components-section">
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <div class="row justify-content-between">
+                <div class="col"><h4>Cart</h4></div>
+              <div class="col-3 text-right"><span class="table-top-info">{% if cart %}(latest {{cart|length == 5 ? 5}} cart items){% else %}(no cart yet){% endif %}</span></div>
+              </div>
+              <div class="table-responsive" id="cart-table">
+                <table class="">
+                  <thead>
+                    <th>#</th>
+                    <th>Order ID</th>
+                    <th>Pic</th>
+                    <th>User</th>
+                    <th>List</th>
+                    <th>Thumbnail</th>
+                    <th>Purchase date</th>
+                    <th>Unit price (Rs)</th>
+                    <th>Quantity</th>
+                    <th>Price (Rs)</th>
+                  </thead>
+                  <tbody>
+                    {% for cart in cart %}
+                      <tr class="text-center">
+                        <th>{{loop.index}}</th>
+                        <td>{{cart.order_id}}</td>
+                        <td>
+                        <img src="{% if cart.pic %}
+                        {{asset(cart.pic)}}
+                        {% else %}{% if cart.title is same as 'Mr' %}{{asset('build/images/admin/man.png')}}{% else %}{% if cart.title is same as 'Mrs' %}{{asset('build/images/admin/woman.png')}}{% else %}{{asset('build/images/admin/man.png')}}{% endif %}{% endif %}{% endif %}"
+                            class="user-avatar lg-avatar rounded-circle" alt="..." >
+                        </td>
+                        <td class="text-left">{{cart.email}}</td>
+                        <td>
+                          <a title="Display Order" href="{{ path('admin_transactions_show', {'order': cart.order_id}) }}">
+                            <button type="button" class="btn btn-light">show</button>
+                          </a>
+                        </td>
+                        <td class="thumbnail-cell">
+                          <div class="d-flex justify-content-start">
+                            <div class="card text-center mx-1 my-3">
+                              <!-- Medium image set -->
+                              <img title="{{cart.colors_full}} ({{cart.fabrics_full}})"
+                                  class="img-fluid rounded-start"
+                                  src="{% if cart.image %}{{asset(cart.image)}}{% endif %}"
+                                  alt="image: {{cart.name}}">
+                            </div>
+                          </div>
+
+                        </td>
+                        <td class="text-left">{{ cart.created|format_datetime('full', 'short', locale='en')
+                              ~ ' (' ~ cart.created|ago ~ ')' }}</td>
+                        <td>{{cart.sellingPrice|format_number({fraction_digit: 2})}}</td>
+                        <td class="qty-cell">{{cart.quantity}} pcs</td>
+                        <td class="qty-cell">{{cart.subtotal|format_number({fraction_digit: 2})}}</td>
+                      </tr>
+                    {% else %}
+                      <tr><td colspan="9" id="empty-cell" class="{{app.user.theme == 'dark' ? 'text-gray'}}">No cart item found</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 'More paid items' button -->
+  <div class="row mt-1">
+    <div class="col-12 d-flex justify-content-end mb-2">
+      <a href="{{ path('admin_user_visits_index', {'product': product.id, 'product_name': product.brand_full ~ ' ' ~ product.name}) }}">
+        <button title="List all visits of [{{product.brand_full}} {{product.name}} {{product.type_full}}]" type="button" class="btn btn-primary">
+        <i class="fas fa-poll mr-1"></i>more</button>
+      </a>
+    </div>
+  </div>
+  <!-- User activity table -->
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-light shadow-sm components-section">
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <div class="row justify-content-between">
+                <div class="col"><h4>User activity</h4></div>
+              <div class="col-3 text-right"><span class="table-top-info">{% if pageViews %}(latest {{pageViews|length == 15 ? 15}} user visits){% else %}(no activity yet){% endif %}</span></div>
+              </div>
+              <div class="table-responsive" id="page-visit-table">
+                <table class="table table-centered table-nowrap mb-0 rounded">
+                  <thead class="thead-light text-center">
+                    <tr>
+                      <!-- ID -->
+                      <th class="border-0">
+                        <span>ID</span>
+                      </th>
+                      <!-- Pic -->
+                      <th class="border-0">
+                        <span>Pic</span>
+                      </th>
+                      <!-- User -->
+                      <th class="border-0">
+                        <span>User</span>
+                      </th>
+                      <!-- Product -->
+                      <th class="border-0 product">
+                        <span>Product</span>
+                      </th>
+                      <!-- Visited on -->
+                      <th class="border-0">
+                        <span>Visited On</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for pageView in pageViews %}
+                    <tr>
+                      <td>{{pageView.id}}</td>
+                      <td>
+                      <img src="{% if pageView.pic %}
+                      {{asset(pageView.pic)}}
+                      {% else %}
+                        {% if pageView.title is same as 'Mr' %}
+                          {{asset('build/images/admin/man.png')}}
+                        {% else %}
+                          {% if pageView.title is same as 'Mrs' %}
+                            {{asset('build/images/admin/woman.png')}}
+                          {% else %}
+                            {{asset('build/images/admin/man.png')}}
+                          {% endif %}
+                        {% endif %}
+                      {% endif %}"
+                          class="user-avatar lg-avatar rounded-circle" alt="..." >
+                      </td>
+                      <td title="Search all {{pageView.email}}" class="text-left">
+                        <a class="border-hover" {% if search %} data-search-terms="{{search}}" data-text="{{ pageView.email }}" data-exact="{{(app.request.get('_exact')) ? true : false}}" id="text-highlight" {% endif %} href="{{ path('admin_user_visits_index', {'customer': pageView.userId, 'customer_url': pageView.pic, 'customer_email': pageView.email}) }}">{{pageView.email}}<a>
+                      </td>
+                      <td class="table-thumbnail">
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td class="">
+                                <div class="thumbnail">
+                                  <a href="{{ path('admin_user_visits_index', {'pc': pageView.colorId, 'pc_url': pageView.imageSmall, 'pc_name': pageView.colors_full ~ ' (' ~ pageView.name ~ ')'}) }}">
+                                    <img class="img-border-hover" src="{{pageView.imageSmall ? asset(pageView.imageSmall)}}" class="img-fluid rounded-start" alt="...">
+                                  </a>
+                                </div>
+                              </td>
+                              <td>
+                                <table class="thumbnail-inner-table">
+                                  <tbody>
+                                    <tr>
+                                      <td class="">
+                                        <h6 class="thumbnail-title">
+                                          <a {% if search %} data-search-terms="{{search}}" data-text="{{ pageView.brand_full}}" id="text-highlight" {% endif %}
+                                          href="{{ path('admin_user_visits_index', {'brand': pageView.brand}) }}">
+                                            <span class="border-hover">{{pageView.brand_full}}</span>
+                                          </a>
+                                          <a {% if search %} data-search-terms="{{search}}" data-text="{{ item.name}}" id="text-highlight" {% endif %}
+                                          href="{{ path('admin_user_visits_index', {'product': pageView.product, 'product_name': pageView.name ~ ' ('~  pageView.brand_full ~ ')'}) }}">
+                                            <span class="border-hover">{{pageView.name}}</span>
+                                          </a>
+                                        </h6>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td class="">
+                                        <p class="thumbnail-text">
+                                        <a {% if search %} data-search-terms="{{search}}" data-text="{{ pageView.colors_full }}" id="text-highlight" {% endif %} href="{{ path('admin_user_visits_index', {'colors': pageView.color, 'color_name': pageView.colors_full ~  ' (' ~ pageView.name ~ ')'}) }}">
+                                            <span class="border-hover"> {{pageView.colors_full}}</span>
+                                          </a>
+                                          <a href="{{ path('admin_user_visits_index', {'size': pageView.size}) }}">
+                                           <span class="border-hover">({{pageView.size}})</span>
+                                          </a>
+                                        </p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                      <td title="{{pageView.created|ago}}">{{pageView.created|format_datetime('full', 'short', locale='en')}}</td>
+                    </tr>
+                  {% else %}
+                    <tr><td colspan="6" id="empty-cell" class="{{app.user.theme == 'dark' ? 'text-gray'}}">No user visit found</td></tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include 'admin/_partials/footer.html.twig' %}
+ </main>

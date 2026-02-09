@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+  {% block meta %}{% include 'admin/_partials/meta.html.twig' %}{% endblock %}
+
+{% block title %} {{user.email}} | Admin{% endblock %}
+
+  {% block stylesheets %}{{ encore_entry_link_tags('admin') }}{% endblock %}
+
+{% block body %}
+
+  <div class="bg-soft">
+
+    <!-- top navigation -->
+    {% include 'admin/_partials/navbar.html.twig' %}
+
+    <div class="container-fluid bg-{{ app.user.theme == 'light' ? 'soft' : 'dark' }}">
+       <div class="row">
+          <div class="col-12">
+          <!-- Left sidebar  -->
+          {% include 'admin/_partials/left-sidebar.html.twig' %}
+          <!-- Main content  -->
+          {% include 'admin/5_user/partials/_show.hmtl.twig' %}
+          </div>
+       </div>
+    </div>
+  </div>
+
+  {% block javascripts %}{{ encore_entry_script_tags('admin') }}{% endblock %}
+
+{% endblock %}
+
+
+
+
+
+{# {% extends 'base.html.twig' %}
+
+{% block title %}User{% endblock %}
+
+{% block body %}
+    <h1>User</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>IsVerified</th>
+                <td>{{ user.isVerified ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ user.title }}</td>
+            </tr>
+            <tr>
+                <th>FirstName</th>
+                <td>{{ user.firstName }}</td>
+            </tr>
+            <tr>
+                <th>LastName</th>
+                <td>{{ user.lastName }}</td>
+            </tr>
+            <tr>
+                <th>MiddleName</th>
+                <td>{{ user.middleName }}</td>
+            </tr>
+            <tr>
+                <th>Created</th>
+                <td>{{ user.created ? user.created|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Updated</th>
+                <td>{{ user.updated ? user.updated|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_users_index') }}">back to list</a>
+
+    <a href="{{ path('admin_users_edit', {'id': user.id}) }}">edit</a>
+
+    {% include 'admin/5_user/partials/_delete_form.html.twig'  %}
+{% endblock %} #}

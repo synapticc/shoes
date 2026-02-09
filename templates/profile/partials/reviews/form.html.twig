@@ -1,0 +1,363 @@
+<!-- main starts -->
+<main class="ps-main">
+  <div class="profile-container rounded bg-white mt-5 mb-5">
+    <div class="row">
+      <!-- Sidebar menu -->
+      <div class="col-md-3">
+        {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+      </div>
+      <!-- Middle section form -->
+      <div class="col-6">
+        <div class="d-flex justify-content-between align-items-center mb-30 mt-30">
+          <h3 class="text-left">Review ({{thumbnails.brand_full}} {{thumbnails.name}} {{thumbnails.type_full}})</h3>
+        </div>
+        <div class="ps-cart-listing">
+          {{ form_start(reviewForm, {'attr': {
+              'class': 'ps-product__review',
+              'novalidate':'',
+              'data-turbo':"false"}}) }}
+            <!-- Headline -->
+            <div class="form-group">
+              {{ form_label(reviewForm.headline, null, {
+                  'label': 'Headline*:'}) }}
+              {{ form_widget(
+                  reviewForm.headline,
+                    {'attr':
+                      {'class': 'form-control',
+                       'placeholder': 'Headline (max. 35 char.) ',
+                       'autocomplete': 'on',
+                       }}) }}
+            </div>
+            <!-- Comments -->
+            <div class="form-group">
+              {{ form_label(reviewForm.comment, null,
+              { 'label': 'Your review:' }) }}
+
+              {{ form_widget(reviewForm.comment,
+                {'attr':
+                  {'class': 'form-control',
+                   'placeholder': 'Type in your comments. Please use courteous language. Avoid swearing. ',
+                   'rows': '10',}}) }}
+            </div>
+            <!-- Rating -->
+            <div class="row py-3">
+              <div class="col-5">
+                {{ form_label(reviewForm.rating, null, {
+                    'label': 'Rating*:'}) }}
+              </div>
+              <div class="col-3">
+                {{ form_widget(
+                      reviewForm.rating,
+                          {'attr':
+                            {'class': 'ps-rating'}}) }}
+              </div>
+            </div>
+            <!-- Like -->
+            <div class="row py-3">
+              <div class="col-5">
+                {{ form_label(reviewForm.reviewLike, null, {
+                    'label': 'Did you like our product?:'
+                }) }}
+              </div>
+              <div class="col-2">
+                {{ form_widget(
+                    reviewForm.reviewLike.like,
+                      {'attr':
+                        {'class': 'form-check',
+                         'hidden': 'hidden'}}) }}
+                {% include '__icons/i-l/_love.html.twig' with {  'class': 'fill-main', 'label': 'Like the product', 'id':'like-icon' ,'width': 25, 'height': 25} only %}
+                {% include '__icons/i-l/_love_not.html.twig' with { 'class': 'fill-yellow',  'label': 'Dislike the product', 'id':'dislike-icon' ,'width': 25, 'height': 25} only %}
+              </div>
+            </div>
+            <!-- Delivery -->
+            <div class="row py-3">
+              <div class="col-5">
+                {{ form_label(reviewForm.reviewDelivery, null,
+                  {'label': 'Was the delivery satisfactory?:'}) }}
+
+              </div>
+              <div class="col-2">
+                {{ form_widget(
+                    reviewForm.reviewDelivery.delivery,
+                      {'attr':
+                        {'class': 'form-group',
+                        'hidden': 'hidden'}}) }}
+                {% include '__icons/q-t/_thumbs-up.html.twig' with { 'class': 'fill-main',  'label': 'Like the product', 'id':'helpful-icon' ,'width': 25, 'height': 25} only %}
+                {% include '__icons/q-t/_thumbs-down.html.twig' with { 'class': 'fill-yellow', 'label': 'Dislike the product', 'id':'not-helpful-icon' ,'width': 25, 'height': 25} only %}
+              </div>
+            </div>
+            <!-- recommend -->
+            <div class="row py-3">
+              <div class="col-5">
+                {{ form_label(reviewForm.reviewRecommend.recommend, null, {
+                    'label': 'Would you recommend this product?:'
+                }) }}
+              </div>
+              <div class="col-2">
+                {{ form_widget(
+                    reviewForm.reviewRecommend.recommend,
+                      {'attr':
+                        {'class': 'form-check',
+                        'hidden': 'hidden'}}) }}
+                {% include '__icons/m-p/_others.html.twig' with { 'label': 'Would recommend to others', 'id':'recommend-icon' ,'width': 25, 'height': 25} only %}
+                {% include '__icons/m-p/_others_not.html.twig' with { 'label': 'Would not recommend to others', 'id':'not-recommend-icon' ,'width': 25, 'height': 25} only %}
+              </div>
+            </div>
+
+            {% if app.current_route == 'review_edit' %}
+
+            <!-- Image 1 -->
+            <div class="row justify-content-start align-items-center mb-4">
+              <div class="col-5 dropzone" id="dropzone">
+              {{ form_widget(reviewForm.image,
+                  {'attr':
+                    {'class': '',
+                      'accept' : '.png, .jpg, .jpeg'}}) }}
+
+              {# {{ form_label(reviewForm.image, null, {
+                  'label': 'Choose Or Drop Photo',
+                  'label_attr': {'title': 'Upload purchased photo'}}) }} #}
+
+                <div id="error"></div>
+              </div>
+
+              {% if review.reviewImage and review.reviewImage.image %}
+              <div class="col-5 review-upload" id="review-image">
+                <button class="delete-review-image-btn" data-delete-review-image data-input="delete-image" data-parent="review-image" type="button">
+
+                  {% include '__icons/q-t/_square-delete.html.twig' with {'label': 'Remove image', 'dataset': 'data-delete-review-image data-input=delete-image data-parent=review-image', 'width': 32, 'height': 32, 'color': 'fill-red'} only %}
+                </button>
+                <img src="{{asset(review.reviewImage.image)}}" class="" alt="Uploaded by {{app.user.firstName}} {{app.user.lastName}} on {{review.reviewImage.updated ? review.reviewImage.updated|format_datetime('full', 'short', locale='en') :
+                review.reviewImage.created|format_datetime('full', 'short', locale='en')}}" zoombox>
+                <p class="text-center">Uploaded on {{review.reviewImage.updated ? review.reviewImage.updated|format_datetime('full', 'short', locale='en') :
+                review.reviewImage.created|format_datetime('full', 'short', locale='en')}}</p>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Image 2 -->
+            <div class="row justify-content-start align-items-center mb-4">
+              <div class="col-5 dropzone" id="dropzone">
+              {{ form_widget(reviewForm.image2,
+                  {'attr':
+                    {'class': '',
+                      'accept' : '.png, .jpg, .jpeg'}}) }}
+
+              {# {{ form_label(reviewForm.image2, null, {
+                  'label': 'Choose Or Drop Photo',
+                  'label_attr': {'title': 'Upload purchased photo'}}) }} #}
+
+                <div id="error"></div>
+              </div>
+
+              {% if review.reviewImage2 and review.reviewImage2.image %}
+              <div class="col-5 review-upload" id="review-image2">
+                <button class="delete-review-image-btn" data-delete-review-image data-input="delete-image2" data-parent="review-image2" type="button">
+
+                  {% include '__icons/q-t/_square-delete.html.twig' with {'label': 'Remove image', 'dataset': 'data-delete-review-image data-input=delete-image2 data-parent=review-image2', 'width': 32, 'height': 32, 'color': 'fill-red'} only %}
+                </button>
+                <img src="{{asset(review.reviewImage2.image)}}" class="" alt="Uploaded by {{app.user.firstName}} {{app.user.lastName}} on {{review.reviewImage2.updated ? review.reviewImage2.updated|format_datetime('full', 'short', locale='en') :
+                review.reviewImage2.created|format_datetime('full', 'short', locale='en')}}" zoombox>
+                <p class="text-center">Uploaded on {{review.reviewImage2.updated ? review.reviewImage2.updated|format_datetime('full', 'short', locale='en') :
+                review.reviewImage2.created|format_datetime('full', 'short', locale='en')}}</p>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Image 3 -->
+            <div class="row justify-content-start align-items-center mb-4">
+              <div class="col-5 dropzone" id="dropzone">
+              {{ form_widget(reviewForm.image3,
+                  {'attr':
+                    {'class': '',
+                      'accept' : '.png, .jpg, .jpeg'}}) }}
+
+              {# {{ form_label(reviewForm.image3, null, {
+                  'label': 'Choose Or Drop Photo',
+                  'label_attr': {'title': 'Upload purchased photo'}}) }} #}
+
+                <div id="error"></div>
+              </div>
+
+              {% if review.reviewImage3 and review.reviewImage3.image %}
+              <div class="col-5 review-upload" id="review-image3">
+                <button class="delete-review-image-btn" data-delete-review-image data-input="delete-image3" data-parent="review-image3" type="button">
+
+                  {% include '__icons/q-t/_square-delete.html.twig' with {'label': 'Remove image', 'dataset': 'data-delete-review-image data-input=delete-image3 data-parent=review-image3', 'width': 32, 'height': 32, 'color': 'fill-red'} only %}
+                </button>
+                <img src="{{asset(review.reviewImage3.image)}}" class="" alt="Uploaded by {{app.user.firstName}} {{app.user.lastName}} on {{review.reviewImage3.updated ? review.reviewImage3.updated|format_datetime('full', 'short', locale='en') :
+                review.reviewImage3.created|format_datetime('full', 'short', locale='en')}}" zoombox>
+                <p class="text-center">Uploaded on {{review.reviewImage3.updated ? review.reviewImage3.updated|format_datetime('full', 'short', locale='en') :
+                review.reviewImage3.created|format_datetime('full', 'short', locale='en')}}</p>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Image 4 -->
+            <div class="row justify-content-start align-items-center mb-4">
+
+              <div class="col-5 dropzone" id="dropzone">
+              {{ form_widget(reviewForm.image4,
+                  {'attr':
+                    {'class': '',
+                      'accept' : '.png, .jpg, .jpeg'}}) }}
+
+              {# {{ form_label(reviewForm.image4, null, {
+                  'label': 'Choose Or Drop Photo',
+                  'label_attr': {'title': 'Upload purchased photo'}}) }} #}
+
+                <div id="error"></div>
+              </div>
+
+              {% if review.reviewImage4 and review.reviewImage4.image %}
+              <div class="col-5 review-upload" id="review-image4">
+              <button class="delete-review-image-btn" data-delete-review-image data-input="delete-image4" data-parent="review-image4" type="button">
+                  {% include '__icons/q-t/_square-delete.html.twig' with {'label': 'Remove image', 'dataset': 'data-delete-review-image data-input=delete-image4 data-parent=review-image4', 'width': 32, 'height': 32, 'color': 'fill-red'} only %}
+                </button>
+                <img src="{{asset(review.reviewImage4.image)}}" class="" alt="Uploaded by {{app.user.firstName}} {{app.user.lastName}} on {{review.reviewImage4.created|format_datetime('full', 'short', locale='en')}}" zoombox>
+                <p class="text-center">Uploaded on {{review.reviewImage4.updated ? review.reviewImage4.updated|format_datetime('full', 'short', locale='en') :
+                review.reviewImage4.created|format_datetime('full', 'short', locale='en')}}</p>
+              </div>
+              {% endif %}
+            </div>
+
+            {% else %}
+            <!-- Image 1 & Image 2 -->
+            <div class="row justify-content-center mb-3">
+              <!-- Image 1 -->
+              <div class="col-5 dropzone" id="dropzone">
+              {{ form_widget(reviewForm.image,
+                  {'attr':
+                    {'class': '',
+                      'accept' : '.png, .jpg, .jpeg'}}) }}
+
+              {# {{ form_label(reviewForm.image, null, {
+                  'label': 'Choose Or Drop Photo',
+                  'label_attr': {'title': 'Upload purchased photo'}}) }} #}
+
+                <div id="error"></div>
+              </div>
+
+              <!-- Image 2 -->
+              <div class="col-5 dropzone" id="dropzone">
+              {{ form_widget(reviewForm.image2,
+                  {'attr':
+                    {'class': '',
+                      'accept' : '.png, .jpg, .jpeg'}}) }}
+
+              {# {{ form_label(reviewForm.image2, null, {
+                  'label': 'Choose Or Drop Photo',
+                  'label_attr': {'title': 'Upload purchased photo'}}) }} #}
+
+                <div id="error"></div>
+              </div>
+            </div>
+
+            <!-- Image 3 & Image 4 -->
+            <div class="row justify-content-center">
+              <!-- Image 3 -->
+              <div class="col-5 dropzone" id="dropzone">
+              {{ form_widget(reviewForm.image3,
+                  {'attr':
+                    {'class': '',
+                      'accept' : '.png, .jpg, .jpeg'}}) }}
+
+              {# {{ form_label(reviewForm.image3, null, {
+                  'label': 'Choose Or Drop Photo',
+                  'label_attr': {'title': 'Upload purchased photo'}}) }} #}
+
+                <div id="error"></div>
+              </div>
+
+              <!-- Image 4-->
+              <div class="col-5 dropzone" id="dropzone">
+              {{ form_widget(reviewForm.image4,
+                  {'attr':
+                    {'class': '',
+                      'accept' : '.png, .jpg, .jpeg'}}) }}
+
+              {# {{ form_label(reviewForm.image4, null, {
+                  'label': 'Choose Or Drop Photo',
+                  'label_attr': {'title': 'Upload purchased photo'}}) }} #}
+
+                <div id="error"></div>
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Fit -->
+            <div class="py-3">
+              {{ form_label(reviewForm.fit, null, {
+                  'label': 'Fit* :'}) }}
+              <div class="p-3 mb-4">
+                {{ form_widget(reviewForm.fit,
+                  {'attr':
+                    {'class': '', 'hidden': 'hidden'}}) }}
+                <div class="row justify-content-center" id="slider-square">
+                  <div class="col-11">
+                    <div class="slider-square" id="review_form_slider_fit" data-fit="{{ sliderFit ? sliderFit|json_encode()}}"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Width -->
+            <div class="py-3">
+              {{ form_label(reviewForm.width, null, {
+                    'label': 'Width*:'}) }}
+              <div class="p-3 mb-3">
+                {{ form_widget(reviewForm.width,
+                          {'attr':
+                            {'class': '', 'hidden': 'hidden'}}) }}
+                <div class="row justify-content-center" id="slider-square">
+                  <div class="col-11">
+                    <div class="" id="review_form_slider_width" data-width="{{sliderWidth ? sliderWidth|json_encode()}}"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Comfort -->
+            <div class="py-3">
+              {{ form_label(reviewForm.comfort, null, {
+                  'label': 'Comfort*:'}) }}
+              <div class="p-3 mb-4">
+                {{ form_widget(reviewForm.comfort,
+                   {'attr':
+                     {'class': '', 'hidden': 'hidden'}}) }}
+                <div class="row justify-content-center" id="slider-square">
+                  <div class="col-11">
+                    <div class="" id="review_form_slider_comfort" data-comfort="{{sliderComfort ? sliderComfort|json_encode()}}"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <input name="delete-image" id="delete-image" type="hidden" value=0>
+            <input name="delete-image2" id="delete-image2" type="hidden" value=0>
+            <input name="delete-image3" id="delete-image3" type="hidden" value=0>
+            <input name="delete-image4" id="delete-image4" type="hidden" value=0>
+
+            <!-- Submit -->
+            <div class="form-group pt-5 text-right">
+              <button class="ps-btn ps-btn--sm">Save<i class="ps-icon-next"></i></button>
+            </div>
+          {{ form_end(reviewForm) }}
+        </div>
+      </div>
+      <div class="col-3 d-flex flex-column justify-content-start text-center align-items-center">
+        {% if app.current_route  == 'review_edit' %}
+        {% include 'profile/partials/reviews/_delete_form.html.twig' with {'review': review} %}{% endif %}
+          {% for thumbnail in thumbnails.thumbnails %}
+            <div class="card text-center mx-1 my-3 review-thumbnail-form">
+              <img src="{{asset(thumbnail.imageMedium)}}" class="card-img-top" alt="">
+              <div class="card-body text-center">
+                <p class="card-text"><span class="text-bold">{{thumbnail.colors_full}}</span><br> ({{thumbnail.fabrics_full}})</p>
+                <p class="card-text">{{thumbnail.qty}}pcs : Rs {{thumbnail.total|number_format(2, '.', ',')}} </p>
+              </div>
+            </div>
+          {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>
+<!-- main ends -->

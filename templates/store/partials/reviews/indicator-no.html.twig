@@ -1,0 +1,36 @@
+
+
+<section class="review-indicator">
+  <section class="hover-tooltip">
+
+    <button type="button"
+      title="Review is poor"
+      class="btn-transparent"
+      hx-get="/review-unhelpful/{{review.id}}"
+      hx-trigger="click"
+      hx-target="#review-indicators-{{review.id}}"
+      hx-swap="innerHTML">
+      {% include '__icons/e-h/_hand-stop.html.twig' with {'width': 25, 'height': 25, 'class': review.notHelpful ? 'cursor-pointer fill-danger' : 'cursor-pointer fill-danger-hover', 'label': '', 'dataset':'' } only %}
+    </button>
+
+    <span class="totality-stop" id="review-unhelpful-{{review.id}}">{{review.notHelpful ? review.notHelpful : ''}}</span>
+    <div class="top"><p>{{review.notHelpful ? review.notHelpful ~ ' found this review poor.' : 'Be the first to find this review poor.'}}</p><i></i></div>
+  </section>
+</section>
+
+
+<section class="ml-10 review-indicator">
+  <section class="hover-tooltip ">
+    <button type="button"
+      title="Review is helpful"
+      class="btn-transparent"
+      hx-get="/review-helpful/{{review.id}}"
+      hx-trigger="click"
+      hx-target="#review-helpful-{{review.id}}"
+      hx-swap="innerHTML">
+      {% include '__icons/a-d/_check-certificate.html.twig' with {'width': 28, 'height': 28, 'class': review.helpful ? 'cursor-pointer fill-success' : 'cursor-pointer fill-success-hover' , 'label': '' } only %}
+    </button>
+    <span class="totality-check" id="review-helpful-{{review.id}}">{{review.helpful ? review.helpful : ''}}</span>
+    <div class="top"><p>{{review.helpful ? review.helpful ~ ' found this review helpful.' : 'Be the first to find this review helpful.'}}</p><i></i></div>
+  </section>
+</section>

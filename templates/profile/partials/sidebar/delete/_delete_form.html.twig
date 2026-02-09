@@ -1,0 +1,11 @@
+<form
+      id="app_delete_account"
+      method="post"
+      class="menu-item app_delete_account"
+      action="{{ path('app_delete_account') }}">
+
+    <!-- hidden fields -->
+    <input type="hidden" name="_delete_account_token" value="{{ csrf_token('delete' ~ app.user.id) }}">
+
+    <button class="btn btn-danger">Delete account</button>
+</form>

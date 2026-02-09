@@ -1,0 +1,612 @@
+{% include 'store/partials/footer/banner-services.html.twig' %}
+{% include 'store/partials/cart/cart-exist.html.twig' %}
+  <!-- Main starts -->
+  <main class="ps-main">
+    <!-- Sidebar starts -->
+    <div class="products-wrap pt-80 pb-80">
+      {# <div ps-products-wrap> #}
+      {# <div class="ps-sidebar" data-mh="product-listing"> #}
+      <!-- <div class="ps-products" data-mh="product-listing"> -->
+      {# <div class="products-sidebar" ps-sidebar> #}
+        {# <div class="products-sidebar__inner"> #}
+      <!-- Filter form starts -->
+      <form class="products-sidebar" ps-sidebar method="get" id="filter">
+       {% if get %}{% if get.q is defined %}
+        <input name="q" value="{{get["q"]}}" hidden=hidden>
+       {% endif %}{% endif %}
+
+        <!-- filter: brand -->
+        <aside class="ps-widget--sidebar ps-widget--category" parent-widget>
+          <!-- reset all filters -->
+          {% if app.request.query.all %}
+            <div class="ps-widget__header mt-40">
+              <h4><button title="Reset all filters" class="btn btn-warning" id="filter-reset-all" type="button">Reset all</button></h4>
+            </div>
+          {% endif %}
+          <div class="ps-widget__header">
+            <h3>Brand {% if get.brand is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'brand'} only %}{% endif %}</h3>
+            {% if get.brand is defined %}<p class="pt-10 pb-10">Selected({{get.brand|length}}): {% for brand in get.brand %}
+            <span class="selected-item">{{brandPair[brand]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+          </div>
+          <div class="ps-widget__content">
+            <!-- Visible checkboxes -->
+            <section>
+              {% for brand in brandShow %}
+              <label for="{{brand.name}}" class="checkbox" id="checkbox">
+                {% if get.brand is defined %}
+                  {% if brand.name in get.brand %}
+                    <input filter="" type="checkbox" id="{{brand.name}}" name="brand[]" value="{{brand.name}}" checked>
+                  {% else %}
+                    <input filter="" type="checkbox" id="{{brand.name}}" name="brand[]" value="{{brand.name}}">
+                  {% endif %}
+                {% else %}
+                  <input filter="" type="checkbox" id="{{brand.name}}" name="brand[]" value="{{brand.name}}">
+                {% endif %}
+              <span class="{{ brand.name in count.brand|keys  ? 'text-bold'}}">
+                <a class="img-tooltip {{ brand.name in count.brand|keys  ? 'text-bold'}}">{{brand.fullName}}<span><img src="{{asset('build/images/store/color-patches/' ~ brand.name  ~ '.webp')}}"></span></a>{{ brand.name in count.brand|keys  ? ' (' ~ count.brand[brand.name] ~ ')'}}
+              </span>
+              </label>
+              {% endfor %}
+            </section>
+            <!-- Hidden checkboxes -->
+            <section data-toggle-show="#sidebar-brand" id="sidebar-brand" class="{% if get.brand is defined %}sidebar-reveal
+            {% else %}sidebar-hide{% endif %}">
+                {% for brand in brandHidden %}
+                  <label for="{{brand.name}}" class="checkbox" id="checkbox">
+                    {% if get.brand is defined %}
+                      {% if brand.name in get.brand %}
+                        <input filter="" type="checkbox" id="{{brand.name}}" name="brand[]" value="{{brand.name}}" checked>
+                      {% else %}
+                        <input filter="" type="checkbox" id="{{brand.name}}" name="brand[]" value="{{brand.name}}">
+                      {% endif %}
+                    {% else %}
+                      <input filter="" type="checkbox" id="{{brand.name}}" name="brand[]" value="{{brand.name}}">
+                    {% endif %}
+
+                  <span class="{{ brand.name in count.brand|keys ? 'text-bold'}}">
+                    <a class="img-tooltip {{ brand.name in count.brand|keys  ? 'text-bold'}}">{{brand.fullName}}<span><img src="{{asset('build/images/store/color-patches/' ~ brand.name  ~ '.webp')}}"></span></a>{{ brand.name in count.brand|keys  ? ' (' ~ count.brand[brand.name] ~ ')'}}
+                  </span>
+                  </label>
+                {% endfor %}
+            </section>
+            <span class="sidebar-toggler" data-toggler="#sidebar-brand" id="data-toggler"  data-toggler-title='brand'>{% if get.brand is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'brand'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'brand'} %}{% endif %}</span>
+          </div>
+        </aside>
+        <!-- filter: color -->
+        <aside class="ps-widget--sidebar" parent-widget>
+          <div class="ps-widget__header">
+            <h3>Color {% if get.color is defined or get.color_exclude is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'color'} only %}{% endif %}</h3>
+            {% if get.color is defined %}<p class="pt-10 pb-10">Selected({{get.color|length}}): {% for color in get.color %}
+            <span class="selected-item">{{colorPair[color]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+          </div>
+          <div class="ps-widget__content">
+            <!-- Visible checkboxes -->
+            <section>
+              <ul class="ps-list--color pl-10 m-0" id="list-color">
+              {% for color in colors|slice(0, 20) %}
+                {# The following can be used to highlight the selected color
+                with a square border for more visibility.
+                {% if get.color is defined %}{% if color.name in get.color %}<span class="highlight-color"></span>{% endif %}{% endif %} #}
+              <section class="hover-tooltip {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}hover-disabled{% endif %}{% endfor %}{% endif %}">
+                {# Strike colors which have been exluded.
+                Ex. If 'Grey' is excluded, 'Grey', 'Light Grey' & 'Dark Grey'
+                will all be striked out #}
+                {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}<span class="strike"></span>{% endif %}{% endfor %}{% endif %}
+                <li id="{{color.name}}"><input filter="" type="checkbox" name="color[]" value="{{color.name}}" hidden {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}disabled{% endif %}{% endfor %}{% endif %}>
+                <span class="color-count">{% if color.name in count.color|keys %}({{count.color[color.name]}}){% endif %}</span></li>
+
+                <div class="top {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}top-disabled{% endif %}{% endfor %}{% endif %}"><p>{{color.fullName}}{% if color.name in count.color|keys %} ({{count.color[color.name]}}){% endif %}</p><i></i></div>
+              </section>
+              {% endfor %}
+              </ul>
+            </section>
+            <!-- Hidden checkboxes -->
+            <section data-toggle-show="#sidebar-color" id="sidebar-color" class="{% if get.color is defined or get.color_exclude is defined %}sidebar-reveal
+            {% else %}sidebar-hide{% endif %}">
+              <ul class="ps-list--color pl-10" id="list-color">
+              {% for color in colors|slice(20, colors|length) %}
+                <section class="hover-tooltip {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}hover-disabled{% endif %}{% endfor %}{% endif %}">
+                  {# Strike colors which have been exluded.
+                  Ex. If 'Grey' is excluded, 'Grey', 'Light Grey' & 'Dark Grey'
+                  will all be striked out #}
+                  {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}<span class="strike"></span>{% endif %}{% endfor %}{% endif %}
+                  <li id="{{color.name}}"><input filter="" type="checkbox" name="color[]" value="{{color.name}}" hidden {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}disabled{% endif %}{% endfor %}{% endif %}><span class="color-count">{% if color.name in count.color|keys %}({{count.color[color.name]}}){% endif %}</span> </li>
+                <div class="top {% if get.color_exclude is defined %}{% for exclude in get.color_exclude %}{% if exclude in color.name %}top-disabled{% endif %}{% endfor %}{% endif %}"><p>{{color.fullName}}{% if color.name in count.color|keys %} ({{count.color[color.name]}}){% endif %}</p><i></i></div></section>
+              {% endfor %}
+              </ul>
+              <!-- Exclude colors -->
+              <div class="mb-10">
+                <label for="filter_form_color_exclude">Exclude colors:</label>
+                <select id="filter_form_color_exclude" name="color_exclude[]" aria-label="Color" aria-describedby="Color" multiple="multiple">
+                  {% for color in colors %}
+                    {% if get.color is defined %}
+                      {% if color.name not in get.color %}
+                        <option value="{{color.name}}"
+                        {{get.color_exclude is defined ? color.name in get.color_exclude ? 'selected' }}>{{color.fullName}}</option>
+                      {% endif %}
+                    {% else %}
+                        <option value="{{color.name}}"
+                        {{get.color_exclude is defined ? color.name in get.color_exclude ? 'selected' }}>{{color.fullName}}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+            </section>
+          <span class="sidebar-toggler" data-toggler="#sidebar-color" id="data-toggler" data-toggler-title='color'>{% if get.color is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'color'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'color'} %}{% endif %}</span>
+          </div>
+        </aside>
+        <!-- filter: size -->
+        <aside class="ps-widget--sidebar" parent-widget>
+          <div class="ps-widget__header">
+            <h3>Size {% if get.size is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'size'} only %}{% endif %}</h3>
+            {% if get.size is defined %}<p class="pt-10 pb-10">Selected({{get.size|length}}): {% for size in get.size %}
+              <span class="selected-item">{{sizePair[size]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+
+          </div>
+          <div class="ps-widget__content">
+            <table class="table ps-table--size">
+              <tbody>
+                <p class="mb-20">Kids' sizes</p>
+                <tr>
+                  {% for size in kidSizes %}
+                  <td title="Size: {{size.name}}">{{size.name}}<input filter="" type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.fullName}}" hidden></td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>
+            <table class="table ps-table--size">
+              <tbody>
+                <p class="mb-20">Adults' sizes</p>
+                <!-- 1st adult size row -->
+                <tr>
+                  {% for size in adultSizes %}
+                {% if loop.index < 6 %}<td title="Size: {{size.name}}">{{size.name}}<input filter="" type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.fullName}}" hidden></td>{% endif %}
+                  {% endfor %}
+                </tr>
+
+                <!-- 2nd adult size row -->
+                <tr>
+                  {% for size in adultSizes %}
+                {% if loop.index > 5 and loop.index < 11 %}<td title="Size: {{size.name}}">{{size.name}}<input filter="" type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.fullName}}" hidden></td>{% endif %}
+                  {% endfor %}
+                </tr>
+
+                <!-- 3rd adult size row -->
+                <tr>
+                  {% for size in adultSizes %}
+                {% if loop.index > 10 %}<td title="Size: {{size.name}}">{{size.name}}<input filter="" type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.fullName}}" hidden></td>{% endif %}
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>
+            <table class="table ps-table--size">
+              <tbody>
+                <p class="mb-20">Socks' sizes</p>
+                <!-- 1st  sock size row -->
+                <tr>
+                  {% for size in sockSizes %}
+                      {% if loop.index > 0 and loop.index < 4 %}
+                      <td title="Size: {{size.fullName}}">{{size.fullName}}<input filter="" type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.name}}" hidden></td>
+                    {% endif %}
+                  {% endfor %}
+                </tr>
+                <!-- 2nd  sock size row -->
+                <tr>
+                  {% for size in sockSizes %}
+                      {% if loop.index > 3 %}
+                      <td title="Size: {{size.fullName}}">{{size.fullName}}<input filter="" type="checkbox" id="size-{{size.name|replace({'.': '-'})}}" name="size[]" value="{{size.name}}" hidden></td>
+                    {% endif %}
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </aside>
+        <!-- filter: price range -->
+        <aside class="ps-widget--sidebar ps-widget--filter" parent-widget>
+          <div class="ps-widget__header">
+          <h3>Price range {% if get %}{% if get.price.min != 500 or get.price.max != 25000  %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'price'} only %}{% endif %}{% endif %}</h3>
+          </div>
+          <div class="ps-widget__content" id='pricing-div'>
+            <div class="p-4">
+              <div class="price text-price">
+                From <span id="from">Rs{% if get %}{% if get.price.min %}
+                    {{get.price.min}}{% endif %}{% else %}  500{% endif %}
+                      </span>
+                     <span> to </span>
+                     <span id="to">Rs{% if get %}{% if get.price.max %}
+                       {{get.price.max}}{% endif %}{% else %}25000{% endif %}
+                     </span>
+               </div>
+              <div class="multi-range">
+                <!--- min slider -->
+                {% if get.price.min %}
+                    <input name="price[min]" class="styled-slider slider-progress"
+                           type="range" min="500" max="24000" value="{{get.price.min}}"
+                            title="Min price: Rs {{get.price.min}}"
+                            step="50"
+                            id="min-slider">
+                {% else %}
+                    <input name="price[min]" class="styled-slider slider-progress" type="range" min="500" max="24000" value="500" title="500" step="50" id="min-slider">
+                {% endif %}
+
+                <!--- max slider -->
+                {% if get %}
+                    {% if get.price.max %}
+                        <input name="price[max]"
+                                class="styled-slider slider-progress"
+                                type="range"
+                                min="1000"
+                                max="25000"
+                                value="{{get.price.max}}"
+                                title="Max price: Rs {{get.price.max}}"
+                                step="50"
+                                id="max-slider">
+                    {% else %}
+                        <input name="price[max]" class="styled-slider slider-progress" type="range" min="1000" max="25000" value="25000" title="25000" step="50" id="max-slider">
+                    {% endif %}
+                {% else %}
+                    <input name="price[max]" class="styled-slider slider-progress" type="range" min="1000" max="25000" value="25000" title="25000" step="50" id="max-slider">
+                {% endif %}
+
+                <input name="price[order]" value="{% if get %}{% if get.price.order %}{{get.price.order}}{% else %}nameAsc{% endif %}{% else %}nameAsc{% endif %}" id="filter-order" hidden=hidden>
+              </div>
+              <!-- Visible checkboxes -->
+              <section>
+                {% for range in price_range|keys %}
+                <label for="{{range}}" class="checkbox" id="checkbox">
+                <input filter=""
+                       type="checkbox"
+                       id="{{range}}"
+                       name="price_range[]"
+                       value="{{price_range[range].value}}"
+                       {% if get.price_range is defined %}{% if price_range[range].value in get.price_range %}checked{% endif %}{% endif %}
+                       >
+                 <span title="Price range : {{price_range[range].label}}" class="{% if get.price_range is defined %}{% if price_range[range].value in get.price_range %}text-bold{% endif %}{% endif %}">{{price_range[range].label}}</span>
+                </label>
+                {% endfor %}
+              </section>
+            </div>
+          </div>
+        </aside>
+        <!-- filter: category -->
+        <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+          <div class="ps-widget__header">
+            <h3 class="d-flex justify-content-between">
+              <span>Category{% if get.category is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'category'} only %}{% endif %}</span>
+              <span class="sidebar-toggler" data-toggler="#sidebar-category" id="data-toggler" data-toggler-title='category'>{% if get.category is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'category'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'category'} %}{% endif %}</span>
+            </h3>
+          {% if get.category is defined %}<p class="pt-10 pb-10">Selected({{get.category|length}}): {% for category in get.category %}
+          <span class="selected-item">{{categoryPair[category]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+          </div>
+          <div class="ps-widget__content">
+            <!-- Hidden checkboxes -->
+            <section data-toggle-show="#sidebar-category" id="sidebar-category"
+            class="{% if get.category is defined %}sidebar-reveal
+            {% else %}sidebar-hide{% endif %}">
+            {% for category in categories %}
+              <label for="{{category.name}}" class="checkbox" id="checkbox">
+                {% if get.category is defined %}
+                    {% if category.name in get.category %}
+                        <input filter="" type="checkbox" id="{{category.name}}" name="category[]" value="{{category.name}}" checked>
+                    {% else %}
+                        <input filter="" type="checkbox" id="{{category.name}}" name="category[]" value="{{category.name}}">
+                    {% endif %}
+                {% else %}
+                  <input filter="" type="checkbox" id="{{category.name}}" name="category[]" value="{{category.name}}">
+                {% endif %}
+              <span class="{% if category.name in count.category|keys %}text-bold{% endif %}">{{category.fullName}}{% if category.name in count.category|keys %} ({{count.category[category.name]}}){% endif %}</span>
+               </label>
+            {% endfor %}
+            </section>
+          </div>
+        </aside>
+        <!-- filter: fabrics -->
+        <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+          <div class="ps-widget__header">
+          <h3 class="d-flex justify-content-between">
+            <span>Fabrics{% if get.fabrics is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'fabric'} only %}{% endif %}</span>
+            <span class="sidebar-toggler" data-toggler="#sidebar-fabrics" id="data-toggler" data-toggler-title='fabrics'>{% if get.fabrics is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'fabrics'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'fabrics'} %}{% endif %}</span>
+          </h3>
+            {% if get.fabrics is defined %}<p class="pt-10 pb-10">Selected({{get.fabrics|length}}): {% for fabrics in get.fabrics %}
+            <span class="selected-item">{{fabricPair[fabrics]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+          </div>
+          <div class="ps-widget__content">
+            <!-- Hidden checkboxes -->
+            <section data-toggle-show="#sidebar-fabrics" id="sidebar-fabrics"
+            class="{% if get.fabrics is defined %}sidebar-reveal
+            {% else %}sidebar-hide{% endif %}">
+            {% for fabric in fabrics %}
+              <label for="{{fabric.name}}" class="checkbox" id="checkbox">
+                  {% if get.fabrics is defined %}
+                      {% if fabric.name in get.fabrics %}
+                          <input filter="" type="checkbox" id="{{fabric.name}}" name="fabrics[]" value="{{fabric.name}}" checked>
+                      {% else %}
+                          <input filter="" type="checkbox" id="{{fabric.name}}" name="fabrics[]" value="{{fabric.name}}">
+                      {% endif %}
+                  {% else %}
+                    <input filter="" type="checkbox" id="{{fabric.name}}" name="fabrics[]" value="{{fabric.name}}">
+                  {% endif %}
+                <span class="{% if fabric.name in count.fabrics|keys %}text-bold{% endif %}">{{fabric.fullName}} {% if fabric.name in count.fabrics|keys %} ({{count.fabrics[fabric.name]}}){% endif %}</span>
+               </label>
+            {% endfor %}
+            </section>
+          </div>
+        </aside>
+        <!-- filter: textures -->
+        <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+          <div class="ps-widget__header">
+            <h3 class="d-flex justify-content-between">
+            <span>Textures{% if get.textures is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'textures'} only %}{% endif %}</span>
+            <span class="sidebar-toggler" data-toggler="#sidebar-textures" id="data-toggler" data-toggler-title='textures'>{% if get.textures is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'textures'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'textures'} %}{% endif %}</span>
+            </h3>
+            {% if get.textures is defined %}<p class="pt-10 pb-10">Selected({{get.textures|length}}): {% for texture in get.textures %}
+            <span class="selected-item">{{texturePair[texture]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+          </div>
+          <div class="ps-widget__content">
+          <!-- Hidden checkboxes -->
+          <section data-toggle-show="#sidebar-textures" id="sidebar-textures"
+        class="{% if get.textures is defined %}sidebar-reveal{% else %}sidebar-hide{% endif %}">
+              {% for texture in textures %}
+                <label for="{{texture.name}}" class="checkbox" id="checkbox">
+                    {% if get.textures is defined %}
+                        {% if texture.name in get.textures %}
+                            <input filter="" type="checkbox" id="{{texture.name}}" name="textures[]" value="{{texture.name}}" checked>
+                        {% else %}
+                            <input filter="" type="checkbox" id="{{texture.name}}" name="textures[]" value="{{texture.name}}">
+                        {% endif %}
+                    {% else %}
+                      <input filter="" type="checkbox" id="{{texture.name}}" name="textures[]" value="{{texture.name}}">
+                    {% endif %}
+                  <span class="{% if texture.name in count.textures|keys %}text-bold{% endif %}">{{texture.fullName}}{% if texture.name in count.textures|keys %} ({{count.textures[texture.name]}}){% endif %}</span>
+                 </label>
+              {% endfor %}
+            </section>
+          </div>
+        </aside>
+        <!-- filter: occasion -->
+        <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+          <div class="ps-widget__header">
+            <h3 class="d-flex justify-content-between">
+              <span>Occasion{% if get.occasion is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'occasion'} only %}{% endif %}</span>
+              <!-- Show/Hide toggler -->
+              <span class="sidebar-toggler" data-toggler="#sidebar-occasion" id="data-toggler" data-toggler-title='occasions'>{% if get.occasion is defined %}{% include '__icons/m-p/_minus-square.html.twig' with {filter:'occasion'} %}{% else %}{% include '__icons/m-p/_plus-square.html.twig' with {filter:'occasion'} %}{% endif %}</span>
+            </h3>
+            {% if get.occasion is defined %}<p class="pt-10 pb-10">Selected({{get.occasion|length}}): {% for occasion in get.occasion %}
+            <span class="selected-item">{{occasionPair[occasion]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+          </div>
+          <div class="ps-widget__content">
+            <!-- Hidden checkboxes -->
+            <section data-toggle-show="#sidebar-occasion" id="sidebar-occasion"
+            class="{% if get.occasion is defined %}sidebar-reveal{% else %}sidebar-hide{% endif %}">
+            {% for occasion in occasions %}
+              <label for="{{occasion.name}}" class="checkbox" id="checkbox">
+                  {% if get.occasion is defined %}
+                    {% if occasion.name in get.occasion %}
+                        <input filter="" type="checkbox" id="{{occasion.name}}" name="occasion[]" value="{{occasion.name}}" checked>
+                    {% else %}
+                        <input filter="" type="checkbox" id="{{occasion.name}}" name="occasion[]" value="{{occasion.name}}">
+                    {% endif %}
+                  {% else %}
+                    <input filter="" type="checkbox" id="{{occasion.name}}" name="occasion[]" value="{{occasion.name}}">
+                  {% endif %}
+                <span class="{% if occasion.name in count.occasion|keys %}text-bold{% endif %}">{{occasion.fullName}} {% if occasion.name in count.occasion|keys %}({{count.occasion[occasion.name]}}){% endif %}</span>
+
+               </label>
+            {% endfor %}
+            </section>
+          </div>
+        </aside>
+        <!-- filter: type -->
+        <aside class="ps-widget--sidebar ps-widget--hidden" parent-widget>
+          <div class="ps-widget__header">
+            <h3 class="d-flex justify-content-between">
+              <span>Type{% if get.type is defined %}{% include '__icons/q-t/_square-reset.html.twig' with {filter:'type'} only %}{% endif %}</span>
+              <span class="sidebar-toggler" data-toggler="#sidebar-type" data-toggler-title='types' id="data-toggler">
+                {% if get.type is defined %}
+                  {% include '__icons/m-p/_minus-square.html.twig' with {filter:'types'} %}
+                {% else %}
+                  {% include '__icons/m-p/_plus-square.html.twig' with {filter:'types'} %}
+                {% endif %}
+              </span>
+            </h3>
+            {% if get.type is defined %}<p class="pt-10 pb-10">Selected({{get.type|length}}): {% for type in get.type %}
+            <span class="selected-item">{{typePair[type]}}</span>{% if loop.last %}.{% else %},{% endif %} {% endfor %}</p>{% endif %}
+          </div>
+          <div class="ps-widget__content">
+            <!-- Hidden checkboxes -->
+            <section data-toggle-show="#sidebar-type" id="sidebar-type" class="{% if get %}{% if get.type is defined %}sidebar-reveal {% else %}sidebar-hide{% endif %}{% endif %}">
+                {% for type in types %}
+                  <label for="{{type.name}}" class="checkbox" id="checkbox">
+                      {% if get.type is defined %}
+                        {% if type.name in get.type %}
+                            <input filter="" type="checkbox" id="{{type.name}}" name="type[]" value="{{type.name}}" checked>
+                        {% else %}
+                            <input filter="" type="checkbox" id="{{type.name}}" name="type[]" value="{{type.name}}">
+                        {% endif %}
+                      {% else %}
+                        <input filter="" type="checkbox" id="{{type.name}}" name="type[]" value="{{type.name}}">
+                      {% endif %}
+                    <span class="{% if type.name in count.type|keys %}text-bold{% endif %}">{{type.fullName}} {% if type.name in count.type|keys %}({{count.type[type.name]}}){% endif %}</span>
+                   </label>
+                {% endfor %}
+              </section>
+          </div>
+        </aside>
+        <!-- filter: color -->
+        <aside class="ps-widget--sidebar" parent-widget>
+          <div class="ps-widget__header">
+          <h3>Tags</h3>
+          </div>
+          <div class="ps-widget__content">
+            <!-- Color Tags -->
+            <div class="mb-10">
+              <select id="filter_form_tags" name="tags[]" aria-label="Tags" aria-describedby="Tags" multiple="multiple">
+            {% for tagSet in tags %}<option value="{{tagSet.name}}" {{get.tags is defined ? tagSet.name in get.tags ? 'selected' }}>{{tagSet.fullName}}</option>{% endfor %}
+              </select>
+            </div>
+          </div>
+        </aside>
+      </form>
+      <div class="products-contents" ps-products>
+        <div class="ps-product-action">
+          <div class="ps-product__filter">
+            <!-- filter: sort by -->
+            <select class="ps-select selectpicker" name="price[order]" id="sort-by">
+              {% if get.q is defined %}
+                <option value="relevance" selected>Relevance (search)</option>
+                {% for sort in sorting %}
+                <option value="{{sort.name}}">{{sort.fullName}}</option>
+                {% endfor %}
+              {% endif %}
+              {% if get.price.order %}
+                {% for sort in sorting %}
+                  {% if sort.name in get.price.order %}
+                    <option value="{{sort.name}}" selected>{{sort.fullName}}</option>
+                  {% else %}
+                    <option value="{{sort.name}}">{{sort.fullName}}</option>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+        </div>
+        <div class="ps-product-results">
+          <p>Result:{% if productData %} {{ productData.getTotalItemCount }}{% if productData.getTotalItemCount == 1 %} product{% else %} products{% endif %}{% else %} No product found. {% endif %}</p>
+        </div>
+        <div class="ps-product__columns">
+          {% for product in productData %}
+          <div class="ps-product__column">
+            <div class="ps-shoe mb-30">
+              <div class="ps-shoe__thumbnail">
+                <!-- <div class="ps-badge">
+                  <span>New</span>
+                </div>
+                <div class="ps-badge ps-badge--sale ps-badge--2nd">
+                  <span>-35%</span>
+                </div> -->
+                <a class="ps-shoe__favorite" href="#">
+                  <i class="ps-icon-heart"></i>
+                </a>
+                <img src="{% if product.imageMedium %}{{asset(product.imageMedium) }}{% else %}{{asset('build/images/store/shoe/medium_thumb.webp')}}{% endif %}" alt="{{product.name}} (front cover)">
+                <a  title="{{product.colors_full}} ({{product.fabrics_full ?? product.fabrics_full}})"
+                    class="ps-shoe__overlay"
+                    target="_blank"
+                    href="{{get.q is defined ?
+                             path('store_details', {
+                                   'brand': product.brand_full|slug,
+                                   'name': (product.name|title)|slug,
+                                   'id': nzo_encrypt(product.id),
+                                   'q': get.q
+                                   }) :
+                             path('store_details', {
+                                   'brand': product.brand_full|slug,
+                                   'name': (product.name|title)|slug,
+                                   'id': nzo_encrypt(product.id)
+                                   }) }}"
+                                  ></a>
+              </div>
+              <div class="ps-shoe__content">
+                <div class="ps-shoe__variants">
+                   <div class="ps-shoe__variant normal">
+                     <!-- Medium image 1 -->
+                     <img src="{% if product.imageMedium %}{{asset(product.imageMedium) }}{% else %}{{asset('build/images/store/shoe/medium_thumb.webp')}}{% endif %}" alt="{{product.name}} (front cover)">
+                     {% if product.imageMedium2 %}
+                     <!-- Medium image 2 -->
+                     <img src="{{asset(product.imageMedium2) }}" alt="{{product.name}} (front cover)">
+                     {% endif %}
+                     {% if product.imageMedium3 %}
+                     <!-- Medium image 3 -->
+                     <img src="{{asset(product.imageMedium3) }}" alt="{{product.name}} (front cover)">
+                     {% endif %}
+                     {% if product.imageMedium4 %}
+                     <!-- Medium image 4 -->
+                     <img src="{{asset(product.imageMedium4) }}" alt="{{product.name}} (front cover)">
+                     {% endif %}
+                     {% if product.imageMedium5 %}
+                     <!-- Medium image 5 -->
+                     <img src="{{asset(product.imageMedium5) }}" alt="{{product.name}} (front cover)">
+                     {% endif %}
+                  </div>
+                  <!-- <select class="ps-rating ps-shoe__rating">
+                    <option value="1">1</option>
+                    <option value="1">2</option>
+                    <option value="1">3</option>
+                    <option value="1">4</option>
+                    <option value="2">5</option>
+                  </select> -->
+                  <div class="color-patch">
+                  {% for color in product.colors %}
+                    <a target="_blank"
+                        href="{{get.q is defined ?
+                                 path('store_details', {
+                                       'brand': product.brand_full|slug,
+                                       'name': (product.name|title)|slug,
+                                       'id': nzo_encrypt(color.id),
+                                       'q': get.q
+                                       }) :
+                                 path('store_details', {
+                                       'brand': product.brand_full|slug,
+                                       'name': (product.name|title)|slug,
+                                       'id': nzo_encrypt(color.id)
+                                       }) }}"
+                                      >
+                      <span
+                        title="{{color.colors_full}} ({{color.fabrics_full }})"
+                        class="{{color.colors_set.1 is defined ? 'multiple' : 'single'}}-patch {{ (product.colorId ==  color.colorId) ?'selected-patch' }}"
+                        style="background-image: url(
+                          {{asset('build/images/store/color-patches/' ~ color.colors_set.0 ~ '.webp')}} )
+                          {% if color.colors_set.1 is defined %}
+                          , url(
+                          {{asset('build/images/store/color-patches/' ~ color.colors_set.1 ~ '.webp')}})
+                          {% endif %}
+                          ;"></span>
+                    </a>
+                  {% endfor %}
+                  </div>
+                </div>
+                <div class="ps-shoe__detail">
+                  <a title="Visit {{product.name}}" class="ps-shoe__name"
+                     href="{{get.q is defined ?
+                              path('store_details', {
+                                    'brand': product.brand_full|slug,
+                                    'name': (product.name|title)|slug,
+                                    'id': nzo_encrypt(product.id),
+                                    'q': get.q
+                                    }) :
+                              path('store_details', {
+                                    'brand': product.brand_full|slug,
+                                    'name': (product.name|title)|slug,
+                                    'id': nzo_encrypt(product.id)
+                                    }) }}"
+                      target="_blank"
+                      {% if get %}{% if get.q is defined %}
+                      data-search-terms="{{get.q}}" data-text="{{product.name}}" id="text-highlight"
+                      {% endif %}{% endif %}>{{product.name}}</a>
+                    <p class="ps-shoe__categories">
+                      <a title="List all {{product.brand_full}}" href="{{ path('store', { 'brand[]': product.brand}) }}"
+                          target="_self"><img src="{{asset('build/images/store/color-patches/' ~ product.brand ~ '.webp') }}"
+                              alt="image: {{product.brand_full}}"></a>
+                      <a title="List all {{product.type_full}}" href="{{ path('store', { 'type[]': product.type}) }}"
+                          target="_self">{{product.type_full}}</a>,
+                      <a title="List all {{product.fabrics_full}}" href="{{ path('store', { 'fabrics[]': product.fabrics[0]}) }}"
+                          target="_self">{{product.fabrics_full_set|first}}</a>
+                    </p><span class="ps-shoe__price">Rs {{product.sellingPrice|format_number({fraction_digit: 0})}}
+                      </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="ps-product-action">
+          {% if productData %}
+              {{ knp_pagination_render(productData, 'store/partials/pagination/ps-pagination.html.twig') }}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <!-- sidebar ends -->
+    {% include 'store/partials/footer/subscribe.html.twig' %}
+  </main>
+  <!-- main ends -->

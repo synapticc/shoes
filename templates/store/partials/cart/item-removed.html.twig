@@ -1,0 +1,27 @@
+<p class="col-8 m-0 mb-2 item-undo">
+  <span>You have just removed</span>
+  <a class="ps-product__preview"
+   href="{{ path(
+            'store_details',
+            { 'brand': product.brand_full|slug,
+              'name': (product.name|title)|slug,
+              'id': nzo_encrypt(product.id)
+            }) }}"
+  target="_blank">
+      <img src="{% if product.imageSmall %}{{asset(product.imageSmall) }}{% else %}{{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}"
+  alt="{{product.name}}  - (cart preview)">{{product.name}} {{product.type_full}} ({{product.category_full}} {{product.brand_full}})</a>
+  <span>
+    <button
+      type="button" id="cart_item_retrieve"
+      class="btn btn-large btn-info"
+      data-url="/retrieve-item/{{cart.id}}/{{product.id}}/{{cart.quantity}}"
+      data-table="table-{{cart.id}}"
+      data-total="total-{{cart.id}}"
+      data-cart="{{cart.id}}"
+      data-items-count="items-count-{{cart.id}}"
+        >Undo</button>
+    <button
+        type="button" id="cart_item_retrieve_cancel"
+        class="btn btn-large btn-secondary">Cancel</button>
+  </span>
+</p>

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product Details | Admin{% endblock %}
+
+{% block stylesheets %}{{ encore_entry_link_tags('admin') }}{% endblock %}
+
+{% block body %}
+  <div class="bg-soft">
+    <!-- top navigation -->
+    {% include 'admin/_partials/navbar.html.twig' %}
+    <div class="container-fluid bg-{{ app.user.theme == 'light' ? 'soft' : 'dark' }}">
+       <div class="row">
+          <div class="col-12">
+            <!-- Left sidebar  -->
+            {% include 'admin/_partials/left-sidebar.html.twig' %}
+            <!-- Details table  -->
+            {% include 'admin/2_product_data/partials/_details-table.html.twig' %}
+          </div>
+       </div>
+    </div>
+  </div>
+  {% block javascripts %}
+    {{ encore_entry_script_tags('admin') }}
+  {% endblock %}
+{% endblock %}

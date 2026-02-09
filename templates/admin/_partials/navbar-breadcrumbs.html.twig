@@ -1,0 +1,11 @@
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item"><a href="#"><span class="fas fa-home"></span></a></li>
+      <li class="breadcrumb-item">
+        <a href="#">{{item|capitalize}}</a></li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        <a href="{{ path(route_index) }}" data-turbo=false>All {{item}}s</a>
+      </li>
+    </ol>
+</nav>

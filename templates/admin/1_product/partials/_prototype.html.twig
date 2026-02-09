@@ -1,0 +1,432 @@
+
+<div hidden id="pc-prototype">
+  <!-- Color & images area -->
+  <section class="container form-control mt-1 mb-4" pc-field>
+    <div class="row mt-3 mb-4 justify-content-between pc-summary" id="pc-summary">
+      <!-- Label -->
+      <span class="col-4"><label class="color-label">__name__label__</label></span>
+      <div class="col" id="patch">
+        <div class="patch" id="patch-1"></div>
+        <div class="patch" id="patch-2"></div>
+        <div class="patch" id="patch-3"></div>
+      </div>
+      <div class="col-5" id="thumbnail">
+        <div class="thumbnail" id="thumbnail-1"></div>
+        <div class="thumbnail" id="thumbnail-2"></div>
+        <div class="thumbnail" id="thumbnail-3"></div>
+        <div class="thumbnail" id="thumbnail-4"></div>
+        <div class="thumbnail" id="thumbnail-5"></div>
+      </div>
+      <!-- Delete area -->
+      <div class="col-1 d-flex flex-column justify-content-center">
+        <button class="transparent-btn" type="button">
+          {% include '__icons/q-t/_square-delete.html.twig' with {'label': 'Delete all images', 'dataset': 'data-remove-color', 'width': '40', 'height': '40', 'color': 'fill-red'} only %}
+        </button>
+      </div>
+    </div>
+    <div id="product_form_productColor___name__">
+      <!-- Colors separator -->
+      <section>
+        <button
+          type="button"
+          class="transparent-btn section-hide"
+          data-toggle="collapse"
+          data-target="#colors___name__"
+          data-collapse-btn
+          data-collapse-target="[data-colors]"
+          data-turbo=false
+          data-color='fill-grey'
+          data-width=32
+          data-height=32
+          id="arrow-button">{% include '__icons/a-d/_arrow-down.html.twig' with {'width': 32, 'height': 32, 'class': 'fill-grey','dataset': ''} %}</button>
+        <h6 class="text-gray-700">Colors</h6>
+        <hr class="hr">
+      </section>
+      <!-- Colors hidden section -->
+      <section class="collapse form-control mb-3" data-colors id="colors___name__">
+        <div class="row justify-content-between">
+          <!-- Colors selects -->
+          <div class="col-lg-6">
+            <input type="hidden" name="product_form[colors][__name__][colorId]">
+            <!-- Color 1 -->
+            <div class="row align-items-center mb-3" data-mono-color data-color-patch-parent>
+              <!-- Color select -->
+              <div class="col-lg-10">
+                <select id="product_form_productColor___name___color1" name="product_form[colors][__name__][color1]" data-apply-color data-color-select data-color-order=1 data-label="Choose color 1" data-required data-error="The first color is required."><option data-placeholder="true"></option>{% for color in colors %}<option value="{{color.name}}">{{color.fullName}}</option>{% endfor %}</select>
+              </div>
+              <!-- Color patch -->
+              <span title data-color-patch class="col-lg-1" style="background-image: url({{asset('/build/images/empty-image.svg')}} )"></span>
+            </div>
+            <!-- Color 2 -->
+            <div class="row align-items-center mb-3" data-mono-color data-color-patch-parent>
+              <!-- Color select -->
+              <div class="col-lg-10">
+              <select id="product_form_productColor___name___color2" name="product_form[colors][__name__][color2]" data-apply-color data-color-select data-color-order=2 data-label="Choose color 2"><option data-placeholder="true"></option>{% for color in colors %}<option value="{{color.name}}">{{color.fullName}}</option>{% endfor %}</select>
+              </div>
+              <!-- Color patch -->
+              <span title data-color-patch class="col-lg-1" style="background-image: url({{asset('/build/images/empty-image.svg')}} )"></span>
+            </div>
+            <!-- Color 3 -->
+            <div class="row align-items-center mb-3" data-mono-color data-color-patch-parent>
+              <!-- Color select -->
+              <div class="col-lg-10">
+                <select id="product_form_productColor___name___color3" name="product_form[colors][__name__][color3]" data-apply-color data-color-select data-color-order=3 data-label="Choose color 3"><option data-placeholder="true"></option>{% for color in colors %}<option value="{{color.name}}">{{color.fullName}}</option>{% endfor %}</select>
+              </div>
+              <!-- Color patch -->
+              <span title data-color-patch class="col-lg-1" style="background-image: url({{asset('/build/images/empty-image.svg')}} )"></span>
+            </div>
+          </div>
+          <!-- Fabrics & textures -->
+          <div class="col-lg-6 pr-4">
+            <div class="row">
+              <!-- Fabrics -->
+              <div>
+                <label for="product_form_productColor___name___fabrics" title="Fabrics required">Fabrics</label>
+                <select id="product_form_productColor___name___fabrics"
+                  name="product_form[colors][__name__][fabrics][]"
+                  data-fabrics-select multiple
+                  data-label="Choose fabrics"
+                  data-required
+                  data-error="At least one fabric is required."
+                  aria-label="Fabrics"
+                  aria-describedby="Fabrics"
+                  data-placeholder="Choose fabrics"
+                  data-selected="Fabrics"
+                  data-show-search=true
+                  data-search-msg="No record found"
+                  data-allow-deselect=false
+                  data-search-highlight=true>
+                  {% for fabric in fabrics %}<option value="{{fabric.name}}">{{fabric.fullName}}</option>{% endfor %}
+                </select>
+              </div>
+              <!-- Textures -->
+              <div class="texture-parent mt-2">
+                <label for="product_form_productColor___name___textures" title="Textures optional">Textures</label>
+                <select id="product_form_productColor___name___textures" name="product_form[colors][__name__][textures][textures][]" data-textures-select multiple="multiple" data-label="Choose textures">{% for texture in textures %}<option value="{{texture.name}}">{{texture.fullName}}</option>{% endfor %}</select>
+              </div>
+              <!-- Tags -->
+              <div class="tag-parent mt-2">
+                <label for="product_form_productColor___name___tags_tags" title="Tags optional">Tags</label>
+              <select id="product_form_productColor___name___tags_tags" name="product_form[colors][__name__][tags][tags][]" data-tags-select multiple="multiple" data-label="Choose tags">{% for tag in tags %}<option value="{{tag.name}}">{{tag.fullName}}</option>{% endfor %}</select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Video url -->
+        <div id="product_form_productColor___name___video" class="row mb-3 mt-3" video-url>
+          <!-- URL -->
+          <div class="col-6">
+            <label for="product_form_productColor___name___video_videoUrl">Video URL : </label>
+            <input type="text" id="product_form_productColor___name___video_videoUrl" name="product_form[colors][__name__][video][videoUrl]" class="form-control" placeholder="Paste Youtube URL"
+            hx-trigger="input changed, paste changed" hx-target="#embed-video-__name__" hx-swap="innerHTML" hx-get="/video">
+          </div>
+          <!-- Embedded video -->
+          <div class="col-6" id="embed-video-__name__" embed-video></div>
+        </div>
+      </section>
+      <!-- Images separator -->
+      <div>
+        <button
+          type="button"
+          class="transparent-btn section-hide"
+          data-toggle="collapse"
+          data-collapse-btn
+          data-collapse-target="[data-images]"
+          data-target="#images___name__"
+          data-turbo=false
+          data-color='fill-grey'
+          data-width=32
+          data-height=32
+          id="arrow-button">{% include '__icons/a-d/_arrow-down.html.twig' with {'width': 32, 'height': 32, 'class': 'fill-grey','dataset': ''} %}</button>
+        <h6 class="text-gray-700">Images</h6>
+        <hr class="hr">
+      </div>
+      <!-- Images hidden section -->
+      <div class="collapse form-control p-3 mb-3" data-images id="images___name__">
+        <!-- Images 1 -->
+        <div id="image-upload">
+          <span id="upload-dialog">
+            <p>Image 1: </p></span>
+            <label for="product_form_productColor___name___image1" class="btn btn-secondary">Browse </label>
+            <span class="px-5" id="file-chosen">No file chosen</span>
+            <a target="_blank"><img class="" src="" data-src="" alt="" id="preview-image"></a>
+            <input type="file" id="product_form_productColor___name___image1" name="product_form[colors][__name__][image1]" hidden="hidden" data-image-input data-image-order=1 data-required data-error="The first image is required.">
+            <button id="cancel-image">{% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove image', 'dataset': '', 'width': 28, 'height': 28} only %}</button>
+            <button id="delete-image">
+            <input name="product_form[colors][__name__][delete-image][delete-image1]" type="hidden">
+            {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Delete image', 'dataset': '', 'width': 28, 'height': 28} only %}
+          </button>
+        </div>
+        <!-- Images 2 -->
+        <div id="image-upload">
+          <span id="upload-dialog">
+            <p>Image 2: </p></span>
+          <label for="product_form_productColor___name___image2" class="btn btn-secondary">Browse </label>
+          <span class="px-5" id="file-chosen">No file chosen</span>
+          <a target="_blank"><img class="" src="" data-src="" alt="" id="preview-image"></a>
+          <input type="file" id="product_form_productColor___name___image2" name="product_form[colors][__name__][image2]" hidden="hidden" data-image-input data-image-order=2>
+          <button id="cancel-image">{% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove image', 'dataset': '', 'width': 28, 'height': 28} only %}</button>
+          <button id="delete-image">
+            <input name="product_form[colors][__name__][delete-image][delete-image2]" type="hidden">
+            {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Delete image', 'dataset': '', 'width': 28, 'height': 28} only %}
+          </button>
+        </div>
+        <!-- Images 3 -->
+        <div id="image-upload">
+          <span id="upload-dialog">
+            <p>Image 3: </p></span>
+          <label for="product_form_productColor___name___image3" class="btn btn-secondary">Browse </label>
+          <span class="px-5" id="file-chosen">No file chosen</span>
+          <a target="_blank"><img class="" src="" data-src="" alt="" id="preview-image"></a>
+          <input type="file" id="product_form_productColor___name___image3" name="product_form[colors][__name__][image3]" hidden="hidden" data-image-input data-image-order=3>
+          <button id="cancel-image">{% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove image', 'dataset': '', 'width': 28, 'height': 28} only %}</button>
+          <button id="delete-image">
+            <input name="product_form[colors][__name__][delete-image][delete-image3]" type="hidden">
+            {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Delete image', 'dataset': '', 'width': 28, 'height': 28} only %}
+          </button>
+        </div>
+        <!-- Images 4 -->
+        <div id="image-upload">
+          <span id="upload-dialog">
+            <p>Image 4: </p></span>
+          <label for="product_form_productColor___name___image4" class="btn btn-secondary">Browse </label>
+          <span class="px-5" id="file-chosen">No file chosen</span>
+          <a target="_blank"><img class="" src="" data-src="" alt="" id="preview-image"></a>
+          <input type="file" id="product_form_productColor___name___image4" name="product_form[colors][__name__][image4]" hidden="hidden" data-image-input data-image-order=4>
+          <button id="cancel-image">{% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove image', 'dataset': '', 'width': 28, 'height': 28} only %}</button>
+          <button id="delete-image">
+            <input name="product_form[colors][__name__][delete-image][delete-image4]" type="hidden">
+            {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Delete image', 'dataset': '', 'width': 28, 'height': 28} only %}
+          </button>
+        </div>
+        <!-- Images 5 -->
+        <div id="image-upload">
+          <span id="upload-dialog">
+            <p>Image 5: </p></span>
+          <label for="product_form_productColor___name___image5" class="btn btn-secondary">Browse </label>
+          <span class="px-5" id="file-chosen">No file chosen</span>
+          <a target="_blank"><img class="" src="" data-src="" alt="" id="preview-image"></a>
+          <input type="file" id="product_form_productColor___name___image5" name="product_form[colors][__name__][image5]" hidden="hidden" data-image-input data-image-order=5>
+          <button id="cancel-image">{% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove image', 'dataset': '', 'width': 28, 'height': 28} only %}</button>
+          <button id="delete-image">
+            <input name="product_form[colors][__name__][delete-image][delete-image5]" type="hidden">
+            {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Delete image', 'dataset': '', 'width': 28, 'height': 28} only %}
+          </button>
+        </div>
+      </div>
+      <!-- Similar colors separator -->
+      <section>
+        <button
+          type="button"
+          class="transparent-btn section-hide"
+          data-toggle="collapse"
+          data-collapse-btn
+          data-collapse-target="[data-similar]"
+          data-target="#similar-color___name__"
+          data-turbo=false
+          data-color='fill-grey'
+          data-width=32
+          data-height=32
+          id="arrow-button">{% include '__icons/a-d/_arrow-down.html.twig' with {'width': 32, 'height': 32, 'class': 'fill-grey','dataset': ''} %}</button>
+        <h6 class="text-gray-700">Similar Colors</h6>
+        <hr class="hr">
+      </section>
+      <!-- Similar colors hidden section -->
+      <section class="collapse form-control mb-3" id="similar-color___name__" data-similar similar-parent>
+        <div>
+          <div id="product_form_productColor___name___similarProductColor" class="p-2">
+            <div class="row mb-5">
+              <!-- Other colors -->
+              <div class="col-7 p-1">
+                <button title="Add similar color" data-add-other-colors class="transparent-btn" type="button" id="add-other-colors">{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': 'data-add-other-colors'} %}</button>
+                  <label>Similar colors: </label>
+                  <div id="product_form_productColor___name___similarProductColor_otherColors" class="form-control other-colors" data-other-colors></div>
+              </div>
+              <!-- Exclude colors -->
+              <div class="col-5 p-1">
+                <label>Exclude colors: </label>
+                <div id="product_form_productColor___name___similarProductColor_excludeColor" class="form-control exclude-colors" data-exclude-colors>
+                  <div id="product_form_productColor___name___similarProductColor_excludeColor___name__" class="p-2" data-color-patch-parent>
+                    <div class="row mb-2 exclude-color-patch" data-multi-color-patch><div class="patch" data-color></div></div>
+                    <div class="row">
+                    <select id="product_form_productColor___name___similarProductColor_excludeColor_colors" name="product_form[colors][__name__][similarProductColor][excludeColor][colors][]" class="" multiple data-exclude-color-select><option value="" data-placeholder="true"></option>{% for color in colors %}<option value="{{color.name}}">{{color.fullName}}</option>{% endfor %}</select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6 p-1">
+                <button title="Add similar product color" class="transparent-btn" type="button" data-add-product-colors>{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': 'data-add-product-colors'} %}
+                </button>
+                <label>Similar product colors: </label>
+                <div id="product_form_productColor___name___similarProductColor_otherProductColors" class="form-control mb-3" data-product-colors data-id=0></div>
+              </div>
+              <div class="col-6 p-1"><button title="Add product color to be excluded" class="transparent-btn" type="button" data-add-exclude-product-colors>{% include '__icons/m-p/_plus-light.html.twig' with {'dataset': 'data-add-exclude-product-colors'} %}</button>
+                <label>Exclude product colors: </label>
+                <div id="product_form_productColor___name___similarProductColor_excludeProductColors" class="form-control mb-3" data-product-colors></div>
+              </div>
+            </div>
+            <!-- Slider grid -->
+            <div id="grid" class="form-group mt-3">
+              <div class="row justify-content-between align-items-center">
+                <div class="col"><h6>Rearrange slider items</h6></div>
+                <!-- Reset slider -->
+                <div class="col text-right">
+                  <button id="product_form_pc_resetSlider" type="button" class="btn btn-lg btn-secondary">Reset slider</button>
+                </div>
+              </div>
+              <div class="form-control">
+                <div id="gridColor">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+
+<div hidden id="oclr-prototype">
+  <div class="mb-3 m-1" data-new-other-color>
+    <label>__name__label__</label>
+    <div id="product_form_productColor___name___similarProductColor_otherColors___name_name__" class="row align-items-center" data-color-patch-parent>
+      <div class="col-6">
+        <select id="product_form_productColor___name___similarProductColor_otherColors___name_name___color"
+        name="product[colors][__name__][similarProductColor][otherColors][__name_name__][color]"
+        data-required data-error="The color is required." class=""
+        data-other-color-select
+        data-label="Choose color"
+        data-deselect="false"
+        data-apply-color
+        data-remove-grid
+        data-add-grid
+        data-exclude-color
+        data-input="product_form_productColor___name___similarProductColor_otherColors___name_name___qtyColor"
+        data-exclude="product_form_productColor___name___similarProductColor_excludeColor_colors"
+        data-other-colors="product_form_productColor___name___similarProductColor_otherColors"><option value="" data-placeholder="true"></option>{% for color in colors %}<option value="{{color.name}}">{{color.fullName}}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-2 other-color-patch" data-color-patch></div>
+      <div class="col-3">
+        <div class="row flex-row align-items-center justify-content-start">
+          <div class="col-7 pr-1">
+            <input type="number" id="product_form_productColor___name___similarProductColor_otherColors___name_name___qtyColor"
+            name="product[colors][__name__][similarProductColor][otherColors][__name_name__][qtyColor]"
+            class="form-control text-center" placeholder="qty"
+            data-required data-error="required." data-error="required." max="15" value=1 data-color-qty>
+          </div>
+          <div class="col d-flex flex-column m-0 p-0">
+            <button data-input="product_form_productColor___name___similarProductColor_otherColors___name_name___qtyColor" class="transparent-svg" type="button" data-increase-btn>
+              {% include '__icons/a-d/_arrow-up-thin.html.twig' with {'width': 18, 'height': 18, 'class': 'fill-grey','dataset': 'data-increase-btn data-input=product_form_productColor___name___similarProductColor_otherColors___name_name___qtyColor', 'title': 'Increase'} %}
+            </button>
+            <button data-input="product_form_productColor___name___similarProductColor_otherColors___name_name___qtyColor" class="transparent-svg" type="button" data-decrease-btn>
+              {% include '__icons/a-d/_arrow-down-thin.html.twig' with {'width': 18, 'height': 18, 'class': 'fill-grey','dataset': 'data-decrease-btn data-input=product_form_productColor___name___similarProductColor_otherColors___name_name___qtyColor', 'title': 'Decrease'} %}
+            </button>
+          </div>
+        </div>
+      </div>
+      <span class="col-1 p-0">{% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove color', 'dataset': 'data-remove-other-color data-exclude=product_form_productColor___name___similarProductColor_excludeColor_colors data-other-colors=product_form_productColor___name___similarProductColor_otherColors', 'width': 28, 'height': 28} only %}</span>
+    </div>
+  </div>
+</div>
+
+<div hidden id="opc-prototype">
+  <div id="product_form_productColor___name___similarProductColor_otherProductColors___name__" class="form-control p-3 mb-2" data-parent data-pc>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="col">
+        <label>__name__label__</label>
+      </div>
+      <span class="col-1 align-self-center" data-remove-pc>
+        {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove product color',  'width': 30, 'height': 30, 'dataset': 'data-remove-pc'} only %}
+      </span>
+    </div>
+    <div class="row">
+      <div data-search class="input-group"><span class="input-group-text"><span class="fas fa-search"></span></span>
+        <input type="search" id="product_form_productColor___name___similarProductColor_otherProductColors___name_name___colorInput" name="id" class="form-control" placeholder="Search product color" aria-label="Search  color" data-product-color-input hx-get="/colors/__color__" hx-target="#search-product-results-__name____name_name__" hx-swap="innerHTML" hx-trigger="keyup changed delay:100ms, keydown changed, mousedown changed, paste changed, enter, input changed delay:100ms">
+      </div>
+    </div>
+    <div id="search-product-results-__name____name_name__" data-results></div>
+    <div hidden data-pc-select class="card product-color-card mt-1">
+      <div class="row g-0 justify-content-between">
+        <div data-previous-color data-thumbnail class="col-md-5 d-flex align-items-center img-card"></div>
+        <div class="col-md-6">
+          <div class="card-body px-0">
+            <h6 data-color-target class="card-title m-0 px-1"></h6>
+            <p data-fabric-target class="card-text px-1"></p>
+            <p class="card-text"><small data-name-target class="text-muted px-1"></small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div hidden id="expc-prototype">
+  <div id="product_form_productColor___name___similarProductColor_excludeProductColors___name_name__" class="form-control p-3 mb-2" data-parent data-pc>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="col">
+        <label>__name__label__</label>
+      </div>
+      <span class="col-1 align-self-center" data-remove-pc>
+        {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove product color',  'width': 30, 'height': 30, 'dataset': 'data-remove-pc'} only %}
+      </span>
+    </div>
+    <div class="row mt-2">
+      <div data-search class="input-group"><span class="input-group-text"><span class="fas fa-search"></span></span>
+        <input type="search" id="product_form_productColor___name___similarProductColor_excludeProductColors___name_name___colorInput" name="id" class="form-control" placeholder="Search product color" aria-label="Search  color" data-product-color-input hx-get="/color-exclude/__color__" hx-swap="innerHTML" hx-target="#search-exclude-results-__name____name_name__" hx-trigger="keyup changed delay:100ms, keydown changed, mousedown changed, paste changed, enter, input changed delay:100ms">
+      </div>
+    </div>
+    <div id="search-exclude-results-__name____name_name__" data-results></div>
+    <div hidden data-pc-select class="card product-color-card mt-1">
+      <div class="row g-0 justify-content-between">
+        <div data-thumbnail class="col-md-5 d-flex align-items-center img-card"></div>
+        <div class="col img-text">
+          <div class="card-body px-0">
+            <h6 data-color-target class="card-title m-0 px-1"></h6>
+            <p data-fabric-target class="card-text second-head px-1"></p>
+            <p class="card-text"><small data-name-target class="text-muted px-1"></small></p>
+          </div>
+        </div>
+        <div hidden data-select>
+          <select id="product_form_productColor___name___similarProductColor_excludeProductColors___name_name___color" name="product_form[colors][__name__][similarProductColor][excludeProductColors][__name_name__][color]" class="form-control mt-3" data-slim="false" hidden><option selected value=""></option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div hidden id="sm-prototype">
+  <div data-parent class="mt-3 form-control pb-3 pr-3">
+    <div id="product_form_similarProduct_otherProducts___name__" class="row align-items-center" data-product>
+      <div class="col">
+        <div class="row mt-2">
+          <div class="col">
+            <div class="product-color-label align-self-center">
+              <label>__name__label__</label>
+            </div>
+          </div>
+          <div class="col-1 align-self-center" data-remove-similar-product>
+            {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove product', 'dataset': 'data-remove-similar-product', 'width': 34, 'height': 34} only %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <div data-search class="input-group"><span class="input-group-text"><span class="fas fa-search"></span></span>
+              <input type="search" id="product_form_similarProduct_otherProducts___name___input" name="productId" class="form-control" placeholder="Search product" aria-label="Search  color" data-product-color-input hx-get="/products" hx-target="#search-product-results-__name__" hx-swap="innerHTML" hx-trigger="keyup changed delay:100ms, keydown changed, mousedown changed, paste changed, enter, input changed delay:100ms">
+            </div>
+            <div data-results id="search-product-results-__name__"></div>
+          </div>
+          <div class="col-8" data-product-row hidden>
+            <div class="">
+              <h6><a data-anchor-target href target="_blank"><span data-product-target>__name_product__</span></a><button type="button" class="transparent-btn">{% include '__icons/q-t/_refresh-square.html.twig' with {'dataset': 'data-refresh-similar', 'width': 25, 'height': 25, 'label': 'Refresh product', 'class': 'refresh-svg'} only  %}</button></h6>
+            </div>
+            <div class="row text-center justify-content-start figure-row" data-thumbnail class=""></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

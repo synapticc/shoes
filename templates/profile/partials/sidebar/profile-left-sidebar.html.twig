@@ -1,0 +1,52 @@
+<div class="profile-sidebar-wrapper">
+    <h3 class="mb-0">Menu</h3>
+    <div class="profile-sidebar" id="profile-sidebar">
+
+      <!-- Profile Settings item -->
+      <a title="Edit your profile" class="menu-item {{app.current_route == 'user_profile' ? 'active'}}" href="{{ path('user_profile') }}"><span>{% include '__icons/q-t/_settings-icon.html.twig' %}</span>Profile Settings</a>
+
+      <!-- Favourites item -->
+      <a title="List your favourites"  class="menu-item" href="#"><span>{% include '__icons/e-h/_heart.html.twig' %}</span>Favourites</a>
+
+      <!-- Purchases item -->
+      <a title="List your purchases"  class="menu-item {{app.current_route == 'user_profile_purchases' ? 'active'}}" href="{{ path('user_profile_purchases') }}"><span>{% include '__icons/m-p/_payment-card.html.twig' %}</span>Purchases</a>
+
+      <!-- Invoices item -->
+      <a title="List your invoices"  class="menu-item {{app.current_route == 'user_profile_invoices' ? 'active'}}" href="{{ path('user_profile_invoices') }}"><span>{% include '__icons/m-p/_pdf.html.twig' with {'width': 33, 'height': 33, 'class': 'fill-color'} %}</span>Invoices</a>
+
+      <!-- Review item -->
+      <a title="List your reviews"  class="menu-item {{app.current_route == 'review_index' ? 'active'}}" href="{{ path('review_index') }}"><span>{% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-dark-grey', 'label': 'Reviews'} only %}</span>Reviews</a>
+
+      <!-- New Review item -->
+      <a title="Post a review"  class="menu-item {{app.current_route == 'review_new_list' ? 'active'}}" href="{{ path('review_new_list') }}"><span>{% include '/__icons/a-d/_bar-chart.html.twig' with {'label': 'Add a new review',  'width': 24, 'height': 24} only %}</span>Post Review</a>
+
+      {% if app.user %}
+        {% if  app.user.userDelete is null%}
+
+          <!-- Change email item -->
+          <a title="Change your email address"  class="menu-item {{app.current_route == 'app_change_email_request' ? 'active'}}" href="{{ path('app_change_email_request' ) }}"><span>{% include '__icons/e-h/_envelope.html.twig' %}</span>Change email</a>
+
+          <!-- Change password item -->
+          <a title="Change your password"  class="menu-item {{app.current_route == 'reset_password_request' ? 'active'}}" href="{{ path('reset_password_request') }}"><span>{% include '__icons/i-l/_key.html.twig' %}</span>Change password</a>
+
+          {% if 'ROLE_MODERATOR' not in app.user.roles  %}
+          {% include 'profile/partials/sidebar/delete/_delete_form.html.twig' %}
+          {% endif %}
+        {% elseif app.user.userDelete %}
+          {% if app.user.userDelete.toBeDeleted is not same as(true) %}
+
+            <!-- Change email item -->
+            <a title="Change your email address"  class="menu-item {{app.current_route == 'app_change_email_request' ? 'active'}}" href="{{ path('app_change_email_request' ) }}"><span>{% include '__icons/e-h/_envelope.html.twig' %}</span>Change email</a>
+
+            <!-- Change password item -->
+            <a title="Change your password"  class="menu-item {{app.current_route == 'reset_password_request' ? 'active'}}" href="{{ path('reset_password_request') }}"><span>{% include '__icons/i-l/_key.html.twig' %}</span>Change password</a>
+
+            {% if 'ROLE_MODERATOR' not in app.user.roles  %}
+            {% include 'profile/partials/sidebar/delete/_delete_form.html.twig' %}
+            {% endif %}
+
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    </div>
+</div>

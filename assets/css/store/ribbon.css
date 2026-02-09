@@ -1,0 +1,61 @@
+
+
+/* HTML: <div class="ribbon">Your text content</div>
+
+https://css-generators.com/ribbon-shapes/
+*/
+.ribbon-detail {
+  --rd: .8em; /* control the cutout */
+  font-size: 17px;
+  font-weight: bold;
+  color: #fff;
+  margin-left: -28px;
+
+
+  border-block: .5em solid #0000;
+  padding-inline: .5em calc(var(--rd) + .25em);
+  line-height: 1.8;
+  clip-path: polygon(100% 0,0 0,0 100%,100% 100%,calc(100% - var(--rd)) calc(100% - .25em),100% 50%,calc(100% - var(--rd)) .25em);
+  background:
+   radial-gradient(.6em 55% at left,#000a,#0000) border-box,
+   #45ad79 padding-box; /* the color  */
+  width: fit-content;
+}
+
+
+/* HTML: <div class="ribbon">Your text content</div> */
+.ribbon-reviewer {
+    position: relative;
+    left: -29px;
+    width: 50%;
+    height: 70px;
+    top: 4px;
+    color: white;
+    --rr: .7em;
+    --c: #b9b9b9;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1.8;
+    padding: 4px 28px 4px 28px;
+    border-radius: var(--rr) 0 0 var(--rr);
+    background: radial-gradient(100% 50% at left,var(--c) 98%,#0000 101%)
+     100% 0/.5lh calc(100% - 2*var(--rr)),
+    radial-gradient(100% 50% at right,#0005 98%,#0000 101%)
+     0 100%/var(--rr) calc(2*var(--rr)),
+    conic-gradient(from 90deg at var(--rr) calc(100% - 2*var(--rr)),#0000 25%,var(--c) 0)
+     0 0/calc(101% - .5lh) 100%;
+    background-repeat: no-repeat;
+}
+
+/* .ribbon-reviewer:hover
+{
+  --rrh: .7em;
+  --ch: #ffffff;
+  background: radial-gradient(100% 50% at left,var(--ch) 98%,#0000 101%)
+   100% 0/.5lh calc(100% - 2*var(--rrh)),
+  radial-gradient(100% 50% at right,#0005 98%,#0000 101%)
+   0 100%/var(--rrh) calc(2*var(--rrh)),
+  conic-gradient(from 90deg at var(--rrh) calc(100% - 2*var(--rrh)),#0000 25%,var(--ch) 0)
+   0 0/calc(101% - .5lh) 100%;
+} */

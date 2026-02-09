@@ -1,0 +1,15 @@
+{# templates/store/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+  {% block meta %}{% include 'store/partials/meta.html.twig' %}{% endblock %}
+
+  {% block title %}Products list | Store{% endblock %}
+
+  {% block stylesheets %}{{ encore_entry_link_tags('store') }}{% endblock %}
+
+{% block body %}
+  {% include 'store/partials/header/header.html.twig' %}
+  {% include 'store/partials/listing.html.twig' %}
+
+  {% block javascripts %}{{ encore_entry_script_tags('store') }}{% endblock %}
+{% endblock %}

@@ -1,0 +1,77 @@
+
+
+{% set _currentPage = paginator.currentPage %}
+{% set _currentRoute = app.request.attributes.get('_route') %}
+{% set _lastPage = paginator.lastPage %}
+{% set _currentParams = app.request.query.all|merge(app.request.attributes.get('_route_params')) %}
+
+{% if paginator.lastPage > 1 %}
+<nav id="reviews-pagination">
+  <ul class="pagination justify-content-center">
+    <li class="page-item{{ _currentPage <= 1 ? ' disabled' : '' }}">
+      <a class="page-link"
+         title="Previous page"
+         aria-label="Previous"
+         href="#"
+         hx-get="/reviews/{{product}}/{{_currentPage - 1}}"
+         hx-target="#reviews" hx-swap="outerHTML"
+         hx-trigger="click"
+         hx-indicator="#loader-overlay">&laquo; {{ "Previous"|trans }}</a>
+        {# <a class="page-link" href="{{ path(_currentRoute, _currentParams|merge({page: _currentPage - 1})) }}" aria-label="Previous"> #}
+        </a>
+    </li>
+    {% set startPage = max(1, _currentPage - 2) %}
+    {% set endPage = min(_lastPage, startPage + 4) %}
+    {% if startPage > 1 %}
+        <li class="page-item">
+          <a class="page-link"
+             href="#"
+             hx-get="/reviews/{{product}}/{{startPage}}"
+             hx-target="#reviews" hx-swap="outerHTML"
+             hx-trigger="click"
+             hx-indicator="#loader-overlay">1</a>
+        </li>
+        {% if startPage > 2 %}
+            <li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+        {% endif %}
+    {% endif %}
+    {% for i in startPage..endPage %}
+    <li title="Page {{i}}" class="page-item {% if i == _currentPage %}active{% endif %}">
+      {# <a class="page-link" href="{{ path(_currentRoute, _currentParams|merge({page: i})) }}">{{ i }}</a> #}
+      <a class="page-link"
+         href="#"
+         hx-get="/reviews/{{product}}/{{ i }}"
+         hx-target="#reviews" hx-swap="outerHTML"
+         hx-trigger="click"
+         hx-indicator="#loader-overlay">{{ i }}</a>
+    </li>
+    {% endfor %}
+    {% if endPage < _lastPage %}
+        {% if endPage < _lastPage - 1 %}
+            <li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+        {% endif %}
+        <li class="page-item">
+            <a class="page-link" href="{{ path(_currentRoute, _currentParams|merge({page: _lastPage})) }}">{{ _lastPage }}</a>
+        </li>
+    {% endif %}
+    <li class="page-item {{ _currentPage >= paginator.lastPage ? ' disabled' : '' }}">
+        {# <a class="page-link" href="{{ path(_currentRoute, _currentParams|merge({page: _currentPage + 1})) }}" aria-label="Next">
+            {{ "Next"|trans }} &raquo;
+        </a> #}
+      <a class="page-link"
+         href="#"
+         aria-label="Next"
+         title="Next page"
+         hx-get="/reviews/{{product}}/{{ _currentPage + 1 }}"
+         hx-target="#reviews" hx-swap="outerHTML"
+         hx-trigger="click"
+         hx-indicator="#loader-overlay"
+         >{{ "Next"|trans }} &raquo;</a>
+    </li>
+  </ul>
+</nav>
+{% endif %}

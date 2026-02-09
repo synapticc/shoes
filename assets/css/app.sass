@@ -1,0 +1,790 @@
+// @import "./../store/utils/_variable.scss"
+// the ~ allows you to reference things in node_modules
+@import "~bootstrap/scss/bootstrap"
+// @import "~bootstrap/scss/containers"
+// @import "~bootstrap/scss/grid"
+@import "./variable.sass"
+
+a
+	color: inherit
+	text-decoration: none
+	&:hover
+		text-decoration: none
+
+:root
+	--aeon-rgb: 102, 102, 102
+	--aeon-bgRgb: 249, 249, 249
+	--ss-highlight-color: #2b62e3
+
+/* html */
+*
+	font-size: 16px
+
+html
+	font-size: 16px
+
+mark
+	padding: 0.05em
+	background-color: #78d600
+	color: white
+
+.hidden
+	display: none
+
+div
+	&.container-fluid
+		&.page-body-wrapper
+			div
+				&.card
+					padding-right: inherit
+			thead
+				tr
+					form
+						button
+							background: transparent
+							border: none !important
+	&.display-input
+		.toggle
+			isolation: isolate
+			position: relative
+			height: 30px
+			width: 60px
+			border-radius: 15px
+			overflow: hidden
+			box-shadow: -8px -4px 8px 0px #ffffff, 8px 4px 12px 0px #d1d9e6,4px 4px 4px 0px #d1d9e6 inset, -4px -4px 4px 0px #ffffff inset
+		.toggle-state
+			display: none
+			&:checked
+				& ~ .indicator
+					transform: translate3d(25%, 0, 0)
+					background: #1470e9
+		.indicator
+			height: 100%
+			width: 200%
+			background: #ecf0f3
+			border-radius: 15px
+			transform: translate3d(-75%, 0, 0)
+			transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35)
+			box-shadow: -8px -4px 8px 0px #ffffff,8px 4px 12px 0px #d1d9e6
+		.checked-indicator
+			height: 100%
+			width: 200%
+			background: #1470e9
+			border-radius: 15px
+			transform: translate3d(25%, 0, 0)
+			transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35)
+			box-shadow: -8px -4px 8px 0px #ffffff,8px 4px 12px 0px #d1d9e6
+
+.pswp__custom-caption
+	text-align: center
+
+	div
+		&.display-input
+			.label
+				display: inline-flex
+				align-items: center
+				cursor: pointer
+				color: #394a56
+
+.img-tooltip
+	text-decoration: none
+	position: relative
+	span
+		display: none
+		-moz-border-radius: 6px
+		-webkit-border-radius: 6px
+		border-radius: 6px
+		color: black
+		background: white
+		img
+			float: left
+			margin: 0 8px 0 0
+	&:hover
+		span
+			display: block
+			position: absolute
+			top: 0
+			left: 0
+			z-index: 99999999999
+			width: max-content
+			max-width: 190px
+			// height: auto
+			min-height: 50px
+			max-height: 200px
+			// max-width: 300px
+			border: 1px solid black
+			margin-top: 12px
+			margin-left: 32px
+			overflow: hidden
+			padding: 8px
+
+// input[type=number]::-webkit-inner-spin-button,
+// input[type=number]::-webkit-outer-spin-button
+// 	-webkit-appearance: "Always Show Up/Down Arrows"
+
+
+.handle
+	cursor: grab
+
+.navbar-admin
+	list-style: none
+	flex-direction: row
+	display: flex
+
+#preview-container
+	margin: 50px auto
+	padding: 40px
+	border: 1px solid #cccccc
+	border-radius: 2px
+#image-file
+	display: none
+#image-status
+	display: inline-block
+#preview-image
+	display: inline-block
+	vertical-align: middle
+	width: 250px
+	border: 1px solid rgba(0,0,0,0.01)
+	border-radius: 2px
+#image-name
+	display: none
+	vertical-align: middle
+	color: #336699
+	margin: 0 15px
+#upload-button
+	padding: 5px
+	border: 1px solid #336699
+	background-color: #336699
+	color: white
+	font-size: inherit
+	font-family: inherit
+	outline: none
+	display: none
+	vertical-align: middle
+	cursor: pointer
+	border-radius: 2px
+#cancel-image
+	display: none
+	vertical-align: middle
+	padding: 0px
+	border: none
+	color: #777777
+	background-color: white
+	font-size: inherit
+	font-family: inherit
+	outline: none
+	vertical-align: middle
+	cursor: pointer
+	margin: 0 0 0 15px
+#delete-image
+	display: none
+	vertical-align: middle
+	padding: 0px
+	border: none
+	color: #777777
+	background-color: white
+	font-size: inherit
+	font-family: inherit
+	outline: none
+	vertical-align: middle
+	cursor: pointer
+	margin: 0 0 0 15px
+#cancel-options,
+#pause-options,
+#reset-options
+	display: inline-block
+	position: relative
+	top: 40px
+	left: -24px
+	vertical-align: middle
+	padding: 0px
+	border: none
+	color: #777777
+	background-color: white
+	font-size: inherit
+	font-family: inherit
+	outline: none
+	vertical-align: middle
+	cursor: pointer
+	margin: 0 0 0 15px
+
+
+.nice-select
+	float: none
+.nice-deselect
+	float: right
+	svg
+		path
+			fill: none
+			stroke: #999
+			stroke-width: 20
+			stroke-linecap: round
+			stroke-linejoin: round
+		// height: 7px
+		// width: 7px
+
+.nice-select
+	&::after
+		width: 7px
+		height: 7px
+.delete-img-area
+	-webkit-box-shadow: 1px 3px 15px 5px rgba(139,139,139,0.07)
+	box-shadow: 1px 3px 15px 5px rgba(139,139,139,0.07)
+	background-color: #d8d8d80f
+.color-separator
+	text-align: center
+	height: 2px
+	width: 70%
+	margin-bottom: 25px
+	margin-top: 20px
+	opacity: .15
+
+/* Slider on Listing */
+#checkbox
+	display: block
+	cursor: pointer
+	position: relative
+	font-size: 14px
+	color: #313131
+	margin-left: 25px
+	& > span
+		color: #34495E
+		margin-left: 16px
+
+	& > input[type="checkbox"],
+	& > input[type="radio"]
+		height: 20px
+		width: 20px
+		position: relative
+		left: 1px
+		top: 3px
+		-webkit-appearance: none
+		-moz-appearance: none
+		-o-appearance: none
+		appearance: none
+		border: 1px solid #8d8d8d
+		border-radius: 1px
+		background-color: transparent
+		outline: none
+		cursor: pointer
+		-webkit-transition: all 0.1s ease
+		-moz-transition: all 0.1s ease
+		transition: all 0.1s ease
+		&:checked
+			background-color: rgba(5, 169, 234, 0.84)
+			border: none
+			& + span
+				&::before
+					content: '\2714'
+					font-size: 20px
+					display: block
+					text-align: center
+					color: #ffffff
+					position: absolute
+					// left: -1.1rem
+					top: 0.25rem
+		&:hover
+			border: 1px solid #424242
+
+	& > input[type=radio]:checked + span::before
+		left: 3px
+	& > input[type=checkbox]:checked + span::before
+		left: -17px
+
+#display-date
+	opacity: 0
+	transition: all .3s ease-in-out
+.transparent-btn
+	background-color: transparent
+	background-repeat: no-repeat
+	border: none
+	cursor: pointer
+	overflow: hidden
+	outline: none
+#product_form,
+#admin_product_data_new,
+#admin_product_data_edit
+	#arrow-button
+		float: right
+		position: relative
+		top: 21px
+		right: -6px
+#stop-button
+	position: relative
+	top: -19px
+	right: 18px
+.hr
+	opacity: 0.1
+	&:not([size])
+		height: 0.3rem
+.text-justify
+	text-align: justify !important
+
+[data-color-area]
+	.hr
+		opacity: 0.1
+		&:not([size])
+			height: 0.2rem
+
+.input-is-invalid
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23FA5252' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23FA5252' stroke='none'/%3e%3c/svg%3e")
+	background-repeat: no-repeat
+	background-position: right calc(0.375em + 0.275rem) center
+	background-size: calc(0.75em + 0.55rem) calc(0.75em + 0.55rem)
+
+.cart-thumbnail
+	width: 225px
+	height: auto
+
+
+	// position: relative
+	// top: -32px
+	// right: -9px
+	// color: #adadad
+	// cursor: default
+	// background-color: #ffffff
+	// border-color: #c5c5c5
+	// padding: 6px
+	// border-radius: 3px
+
+.thumbnail-cell
+	img
+		width: 160px
+.items-num-select
+	width: 70px
+	padding: 0.5rem .9rem 0.5rem 0.75rem
+	-moz-padding-start: calc(.75rem - 3px)
+	margin-left: 5px
+	font-size: 1rem
+	font-weight: 400
+	line-height: 1.5
+	color: #959595
+	background-color: #fff
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='1' d='M2 5l6 6 6-6'/%3e%3c/svg%3e")
+	background-repeat: no-repeat
+	background-position: right .75rem center
+	background-size: 16px 12px
+	border: 1px solid #ced4da
+	border-radius: .25rem
+	transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+	-webkit-appearance: none
+	-moz-appearance: none
+	appearance: none
+
+.go-to-page
+	input
+		margin: 0px 1px 0px 5px
+		border-radius: 6px
+		padding: 6px 6px 7px 6px
+		border: 1px solid #dee2e6
+		text-align: center
+		color: #7d7d7d
+		vertical-align: middle
+		line-height: 1.6
+	button
+		display: inline-block
+		font-weight: 600
+		line-height: 1.5
+		color: #4A5073
+		text-align: center
+		vertical-align: middle
+		cursor: pointer
+		-webkit-user-select: none
+		-moz-user-select: none
+		user-select: none
+		background-color: transparent
+		border: 0.0625rem solid transparent
+		padding: 7px 9px 5px 10px
+		font-size: 1rem
+		border-radius: 0.5rem
+		transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out
+		color: #ffffff
+		background-color: #262B40
+		border-color: #262B40
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(46, 54, 80, 0.075)
+
+:root
+	--ss-border-radius: 8px
+	--ss-main-height: 45px
+
+div
+	.ss-main
+		padding: 0 10px 0 10px
+
+button:not(:disabled).pointer-normal
+	cursor: auto
+
+span.remove-feature-btn
+	cursor: move
+	margin-top: 31px
+
+[remove-icon]
+	cursor: move
+
+[data-copy-status="active"]
+	cursor: copy
+
+[data-product-color-select]
+	img
+		max-width: 125%
+		padding: 2px
+
+[data-add-color-option]
+	cursor: grabbing
+
+[data-multi-color-patch]
+	.patch
+		background-image: url("./../images/store/color-patches/empty-image.svg")
+		background-size: cover
+		width: 30px
+		height: 30px
+		display: inline-block
+		position: relative
+		border-radius: 2px
+		margin-right: 4px
+
+.pc-summary
+	.patch
+		background-size: cover
+		width: 30px
+		height: 30px
+		display: inline-block
+		position: relative
+		border-radius: 2px
+	.thumbnail
+		background-position: center
+		width: 60px
+		height: 40px
+		background-size: 150%
+		display: inline-block
+		position: relative
+		border-radius: 2px
+		margin-right: 4px
+
+.new-product-color
+	border: 1px solid lightgrey
+	padding: 11px
+	margin: 5px
+	border-radius: 8px
+
+.product-color-label
+	width: 19%
+
+#brand-icon,
+#table-brand-icon
+	background-position: 50% 20%
+	background-repeat: no-repeat
+	background-size: contain
+	border-radius: 2px
+	margin-right: 4px
+	display: inline-block
+	width: 100px
+	max-width: 300px
+	overflow: hidden
+	padding: 8px
+#table-brand-icon
+	height: 40px
+
+
+
+.form-brand
+	height: 70px
+
+[embed-video]
+	iframe
+		width: 100%
+		height: 250px
+		border-radius: 5px
+		box-shadow: 1px 10px 30px 2px rgba(0,0,0,0.10)
+		aspect-ratio: 16/9
+
+[data-color-patch]
+	background-size: contain
+	background-repeat: no-repeat
+	background-image: url("./../images/store/color-patches/empty-image.svg")
+	width: 30px
+	height: 30px
+	border-radius: 2px
+
+
+/* Edit productData */
+.existing-color
+	font-size: 14px
+	span
+		font-size: 12px
+		color: #ffffffd9
+		background: rgba(231, 231, 231, 0.61)
+		padding: 5px 10px
+		border-radius: 4px
+
+.pswp
+	img
+		max-width: none
+		object-fit: contain
+
+.open
+	z-index: 100000
+
+.search-patch-icon
+	width: 50px
+	margin-right: 10px
+
+#search-empty
+	border: none
+	position: absolute
+	z-index: 999999
+	top: 65px
+	right: 83px
+	max-width: 300px
+	width: 300px
+
+#search-content
+	position: absolute
+	color: #737373
+	z-index: 999999
+	background-color: rgba(#ffffff, 1)
+	border-bottom: 2.5px solid rgba(179, 179, 179, 0.51)
+	border-right: 2.5px solid rgba(179, 179, 179, 0.51)
+	border-left: 2.5px solid rgba(179, 179, 179, 0.51)
+	border-radius: 0px 0px 10px 10px
+	top: 65px
+	right: 83px
+	max-width: 300px
+	width: 300px
+	a
+		font-size: 16px
+	img.result-icon-sm
+		max-width: 65px
+		max-height: 35px
+		border-radius: 2px
+	.result-icon-lg
+		display: inline-block
+		height: 35px
+		width: 50px
+		box-shadow: 5px -3px 15px 4px rgba(156,156,156,.05)
+		background-size: 160%
+		background-repeat: no-repeat
+		background-position: 50% 48%
+		border-radius: 4px
+
+.strike
+	height: 2px
+	width: 32px
+	border: 2px solid rgb(179 14 14)
+	rotate: z -45deg
+	display: inline-block
+	position: absolute
+	left: -4px
+	top: 11px
+	cursor: not-allowed
+
+.selected-item
+	border: 1px solid #9a9c9d
+	background: #ebebeb
+	color: #807b7b
+	border-radius: 2px
+	margin-bottom: 4px
+	padding-left: 4px
+	padding-right: 4px
+	font-weight: 800
+
+
+.profile-container
+	width: 90%
+	margin: 0 auto
+	padding: 0 15px
+	.ss-single-selected
+		border: none
+		border-radius: 0px
+		background-color: transparent
+
+.review-thumbnail
+	width: 10em
+
+#reviewer-thumbnail
+	max-width: 100px
+	max-height: fit-content
+	p
+		border-top: 1px solid #8383834f
+	span, p
+		font-size: 9px
+		padding: 3px 3px 3px 3px
+
+.payment-img
+	img
+		width: 44px
+		height: auto
+
+.review-thumbnail-form
+	width: 20em
+
+.purchases-img
+	padding-bottom: 4px
+	display: inline-block
+	img
+		border: solid 0.7px grey
+		border-radius: 5px
+
+.purchase-list-img
+	padding-bottom: 4px
+	display: inline-block
+	img
+		border: solid 0.7px grey
+		border-radius: 5px
+		margin-bottom: 4px
+
+
+
+.ps-product__review
+	label
+		font-weight: normal
+
+
+
+/*	Hide arrows input field Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button
+	margin: 0
+	-webkit-appearance: none
+
+/*	Hide arrows input field Firefox */
+input[type=number]
+	-moz-appearance: textfield
+
+.hide
+	display: none !important
+	height: 0
+
+/* Data toggle Sidebar (Store Listing page) */
+.sidebar-hide
+	display: none
+	height: 0
+
+.sidebar-reveal
+	display: inline
+	height: auto
+
+.sidebar-toggler
+	margin-left: 8px
+	cursor: pointer
+
+// #square-reset-filter
+// 	position: relative
+// 	top: 3px
+
+
+
+
+
+/* Checkout page */
+#card-content
+	display: none
+	padding-top: 40px
+	& > label
+			color: #ececec
+
+	& > input
+			padding: 10px 20px
+
+
+#billing_form_billingPhone_mobile_number,
+#billing_form_billingPhone_landline_number
+	border-top: 0
+	border-left: 0
+	border-right: 0
+	border-bottom: solid #b5b5b5 1px
+	padding-left: 20px
+	margin-left: 10px
+
+#billing_form_billingMethod_expiryDate_month,
+#billing_form_billingMethod_expiryDate_year
+	width: 30%
+	height: 40px
+	background-color: #e4e4e4
+	border-color: #e4e4e4
+	padding: 10px 15px
+
+
+/* Review Icons */
+.svg-light
+	fill: rgba(232, 232, 232)
+.svg-shadow
+	-webkit-box-shadow: 0px -2px 11px 4px #C6C6C6
+	box-shadow: 0px -2px 11px 4px #C6C6C6
+
+.ps-product--detail
+	.ps-product__style
+		ul
+			li
+				.active-thumbnail
+					border: $main-color 3px solid
+					border-radius: 3px
+
+
+
+
+.color-label
+	color: white
+	background: #a4a4a4
+	padding: 5px 20px 5px 20px
+	border-radius: 3px
+
+.texture-parent
+	margin-top: 13px
+
+mark
+	&.highlight
+		background-color: #ff0
+		color: #000
+		font-size: inherit
+		font-weight: inherit
+		font-family: inherit
+		padding: 1px 0.8px 1px 0.8px
+	&.ss-search-highlight
+		padding: 0px 0.3px 0px 0.3px
+		background-color: #2b62e3
+		font-size: inherit
+		font-weight: inherit
+		font-family: inherit
+		color: white
+
+/* Search date range*/
+.start-date,
+.end-date
+	margin-top: 4px
+	margin-left: 4px
+
+.img-grayscale
+	filter: grayscale(90%)
+
+.user-avatar-filter
+	height: 4.5rem
+	width: 4.5rem
+	min-height: 4.5rem
+	min-width: 4.5rem
+	color: #ffffff
+	display: inline-block
+	justify-content: center
+	align-items: center
+	font-weight: 600
+
+#search-empty
+	color: #454545
+	padding: 7px 15px 10px 15px
+	text-align: left
+
+.highlight-color
+	width: 30px
+	height: 31px
+	position: absolute
+	background-color: $main-color
+	z-index: -99
+	top: -3px
+	left: -2px
+	border-radius: 3px
+
+.ps-product__brand
+	img
+		max-height: 60px
+		border-radius: 4px
+		box-shadow: 1.3px 2px 6px -2px rgba(0, 0, 0, 0.5)

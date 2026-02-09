@@ -1,0 +1,50 @@
+
+
+{% set _currentPage = paginator.currentPage %}
+{% set _lastPage = paginator.lastPage %}
+
+{% if paginator.lastPage > 1 %}
+<nav id="reviews-pagination">
+  <ul class="pagination justify-content-center">
+      <li class="page-item{{ _currentPage <= 1 ? ' disabled' : '' }}">
+        <span class="page-link" aria-label="Previous">
+            &laquo; {{ "Previous"|trans }}
+        </span>
+      </li>
+      {% set startPage = max(1, _currentPage - 2) %}
+      {% set endPage = min(_lastPage, startPage + 4) %}
+      {% if startPage > 1 %}
+          <li class="page-item">
+            <span class="page-link" data-link
+              data-url="/reviews/{{product}}/1">1</span>
+          </li>
+          {% if startPage > 2 %}
+          <li class="page-item disabled">
+            <span class="page-link">...</span>
+          </li>
+          {% endif %}
+      {% endif %}
+      {% for i in startPage..endPage %}
+          <li class="page-item {% if i == _currentPage %}active{% endif %}">
+            <span class="page-link" data-link
+              data-url="/reviews/{{product}}/{{ i }}">{{ i }}</span>
+          </li>
+      {% endfor %}
+      {% if endPage < _lastPage %}
+          {% if endPage < _lastPage - 1 %}
+          <li class="page-item disabled">
+            <span class="page-link">...</span>
+          </li>
+          {% endif %}
+          <li class="page-item">
+            <span class="page-link">{{ _lastPage }}</span>
+          </li>
+      {% endif %}
+      <li class="page-item {{ _currentPage >= paginator.lastPage ? ' disabled' : '' }}">
+        <span class="page-link" aria-label="Next">
+          {{ "Next"|trans }} &raquo;
+        </span>
+      </li>
+  </ul>
+</nav>
+{% endif %}

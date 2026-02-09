@@ -1,0 +1,65 @@
+
+
+
+<!-- main starts -->
+<main class="ps-main">
+
+<div class="profile-container">
+
+    <div class="row">
+
+        <!-- Sidebar menu -->
+        <div class="col-md-3">
+            {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+        </div>
+
+        <!-- Middle section form -->
+        <div class="col-md-7 ml-30 mr-20  border-right">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="text-right">Reset your password</h4>
+          </div>
+
+         {{ form_start(resetForm) }}
+            <!-- First name & Last name -->
+            <div class="row">
+
+                <!-- First Name -->
+                <div class="col-md-10">
+
+                  {{ form_label(resetForm.plainPassword, null, {
+                      'label': 'Password ',
+                      'label_attr': {'class': ''}
+                  }) }}
+
+                  {{ form_widget(
+                        resetForm.plainPassword,
+                            {'attr':
+                              {'class': ' ',
+                               'placeholder': 'Enter a new password',
+                               'autocomplete': 'on',
+                               'autofocus':'on' }}) }}
+
+
+                  {# render only the error for password #}
+                  {{ form_errors(resetForm.plainPassword) }}
+
+                </div>
+            </div>
+
+            <div class="row">
+              <div class="col-2 mt-50 text-right">
+              {# {{ form_widget(resetForm._token,)}} #}
+                <button class="btn btn-primary">Reset password</button>
+              </div>
+            </div>
+
+         {{ form_end(resetForm) }}
+
+        </div>
+    </div>
+ </div>
+
+  {% include 'store/partials/footer/subscribe.html.twig' %}
+
+</main>
+<!-- main ends -->

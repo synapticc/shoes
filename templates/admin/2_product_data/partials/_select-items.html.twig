@@ -1,0 +1,30 @@
+
+<div class="row justify-content-between align-items-end mt-4">
+  {% include 'admin/_partials/select-items-body.html.twig' %}
+  <div class="col-10 col-sm-3 col-md-3 col-lg-3 text-right">
+    {% if productData.getTotalItemCount > 0 %}
+    <!-- Thumbnnails of others colors -->
+    <div class="d-flex flex-row justify-content-end">
+      {% if productData.0.pc is defined %}
+        {% for pc in productData.0.pc %}
+        <div class="text-center {% if pc.ppcId == productData.0.colorId %}detail-thumbnnail{% else %}detail-not-thumbnnail{% endif %}">
+          <a href="{{ path('admin_product_data_color',{'pc': pc.ppcId}) }}">
+        <img title="{{pc.pcolors_full}}" src="{% if pc.pimageMedium %}{{asset(pc.pimageMedium) }}{% endif %}"></a>
+        </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+    {% else %}
+      {% if thumbnails %}
+      <div class="d-flex flex-row justify-content-end">
+      {% for pc in thumbnails %}
+        <div class="text-center {{pc.colorId == app.request.attributes.get('pc') ? 'detail-thumbnnail' : 'detail-not-thumbnnail' }}">
+            <a href="{{ path('admin_product_data_color',{'pc': pc.colorId}) }}">
+          <img title="{{pc.colors_full}}" src="{% if pc.imageMedium %}{{asset(pc.imageMedium) }}{% endif %}"></a>
+        </div>
+      {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+  </div>
+</div>

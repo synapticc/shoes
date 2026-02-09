@@ -1,0 +1,103 @@
+
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+        <li class="breadcrumb-item"><a href="#"><span class="fas fa-home"></span></a></li>
+        <li class="breadcrumb-item"><a href="#">{{item|capitalize}}</a></li>
+        <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page"><a href="{{ path(route_index) }}"><span>All {{item}}s</span></a></li>
+      </ol>
+  </nav>
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    <!-- Page overview -->
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <!-- Main heading -->
+      <h1 class="h4 pb-3">{{item|capitalize}}s</h1>
+      <!-- Features list -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    <div class="col-6 d-flex align-items-center">
+      <div class="row justify-content-start">
+        {{ form_start(searchForm,
+          {'attr': {
+            'class': 'd-flex justify-content-start',
+            'data-turbo':"false"}}) }}
+          <div class="col-6">
+            <div class="input-group">
+              <span class="input-group-text" id="topbar-addon"><span class="fas fa-search"></span></span>
+              <!-- Search input -->
+              {{ form_widget(searchForm.q, {'attr':
+                {'class': 'form-control',
+                 'placeholder': search,
+                 'aria-label': 'Search',
+                 'aria-describedby': 'search'}}) }}
+            </div>
+            <!-- Exact checkbox -->
+            <div class="form-check">
+              {{ form_label(
+                  searchForm._exact, null,
+                  {'label': 'exact phrase',
+                    'class': 'form-check-label'}) }}
+
+              {{ form_widget(searchForm._exact, {'attr':
+                {'class': 'form-check-input',
+                 'aria-label': 'Check exact search',
+                 'aria-describedby': 'checkbox'}}) }}
+            </div>
+          </div>
+          {% if brand %}
+          <div class="col-3">
+            {% if brand == 'multiple' %}
+              <!-- Brands select -->
+              {{ form_widget(searchForm.search_brands, {'attr':
+                {'class': '',
+                 'placeholder': 'Choose brands',
+                 'aria-label': 'Brand',
+                 'aria-describedby': 'Brand'}}) }}
+            {% else %}
+              {% if brand == 'single' %}
+              <!-- Brand select -->
+              {{ form_widget(searchForm.search_brands, {'attr':
+                {'class': '',
+                 'placeholder': 'Choose brand',
+                 'aria-label': 'Brand',
+                 'aria-describedby': 'Brand'}}) }}
+              {% endif %}
+            {% endif %}
+          </div>
+          <div class="col-3">
+            <!-- Supplier select -->
+            {{ form_widget(searchForm.search_suppliers, {'attr':
+              {'class': 'form-control',
+               'placeholder': 'Choose supplier',
+               'aria-label': 'Supplier',
+               'aria-describedby': 'Supplier'}}) }}
+          </div>
+          {% endif %}
+          {# Retrieve current query parameters to passed again  #}
+          {% set get = app.request.query %}
+          {% for key, query in get %}
+            {% if key != 'q' and key != 'brand' and key != 'search_brands' and query != '_exact' and query != 'page' %}
+              {% if query is iterable %}
+                {% for ky, q in query %}
+                  <input name="{{key}}[{{ky}}]" value="{{q}}" hidden=hidden>
+                {% endfor %}
+              {% else %}
+                <input name="{{key}}" value="{{query}}" hidden=hidden>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          <div class="col">
+            <!-- Search button -->
+            <button title="Search for a product by name or by brand" type="submit" class="btn btn-{{ app.user.theme == 'light' ? 'white' : 'gray' }} ml-2 px-2">Search</button>
+          </div>
+        {{ form_end(searchForm, {render_rest: false}) }}
+      </div>
+    </div>
+  </div>

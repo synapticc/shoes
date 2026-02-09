@@ -1,0 +1,1127 @@
+  <!-- Main starts -->
+  <main class="ps-main">
+    <div class="ps-product--detail pt-20">
+      <div class="mb-50">
+        <!-- Carousel-banner -->
+        {% include 'store/partials/footer/banner-services.html.twig' %}
+      </div>
+      {% include 'store/partials/cart/cart-exist.html.twig' %}
+      <!-- Container -->
+      <div class="ps-container">
+        <div class="row">
+          <div class="col-lg-10 col-md-12 col-lg-offset-1">
+            <!-- Main thumbnail slider -->
+            <div class="ps-product__thumbnail">
+              <div class="ps-product__preview">
+                <div class="ps-product__variants">
+                  <!-- Large image 1 -->
+                  <div class="item">
+                    <img src="{{asset(product.image ? product.image : 'build/images/store/shoe/1.jpg') }}" alt="{{product.name}} (front cover)">
+                  </div>
+
+                  {% if product.image2 %}
+                  <!-- Large image 2 -->
+                  <div class="item">
+                    <img src="{{asset(product.image2) }}" alt="Image 2: {{product.name}} (front cover)">
+                  </div>
+                  {% endif %}
+
+                  {% if product.image3 %}
+                  <!-- Large image 3 -->
+                   <div class="item">
+                     <img src="{{asset(product.image3) }}" alt="Image 3: {{product.name}} (front cover)">
+                   </div>
+                   {% endif %}
+
+                  {% if product.image4 %}
+                  <!-- Large image 4 -->
+                  <div class="item">
+                    <img src="{{asset(product.image4) }}" alt="Image 4: {{product.name}} (front cover)">
+                  </div>
+                  {% endif %}
+
+                  {% if product.image5 %}
+                  <!-- Large image 5 -->
+                  <div class="item">
+                    <img src="{{asset(product.image5) }}" alt="Image 5: {{product.name}} (front cover)">
+                  </div>
+                  {% endif %}
+                </div>
+                <!-- Video popup -->
+                <a class="popup-youtube ps-product__video"
+                   href="{% if product.vidUrl %}{{product.vidUrl}}{% elseif product.videoUrl %}{{product.videoUrl}}{% else %}'https://www.youtube.com/watch?v=R9UZ7-zKLT4'{% endif %}">
+                  <img src="{{asset(product.imageSmall ? product.imageSmall : 'build/images/store/shoe/1.jpg') }}" alt="{{product.name}} (front cover)">
+                  <!-- Play icon -->
+                  <i class="fa fa-play"></i>
+                </a>
+              </div>
+              <!-- Product images (zoom) -->
+              <div class="ps-product__image">
+                <!-- Large image 1 -->
+                <div class="item">
+                  <img class="zoom"
+                    data-zoom-image="{{asset(product.image ? product.image : 'build/images/store/shoe/1.jpg') }}"
+                    src="{{asset(product.image ? product.image : 'build/images/store/shoe/1.jpg') }}"
+                    alt="{{product.name}} (front cover)">
+                </div>
+
+                {% if product.image2 %}
+                <!-- Large image 2 -->
+                <div class="item">
+                  <img class="zoom"
+                    data-zoom-image="{{asset(product.image2) }}"
+                    src="{{asset(product.image2) }}" alt="{{product.name}} (front cover)">
+                </div>
+                {% endif %}
+
+                {% if product.image3 %}
+                <!-- Large image 3 -->
+                <div class="item">
+                  <img class="zoom"
+                    data-zoom-image="{{asset(product.image3) }}"
+                    src="{{asset(product.image3) }}" alt="{{product.name}} (front cover)">
+                </div>
+                {% endif %}
+
+                {% if product.image4 %}
+                <!-- Large image 4 -->
+                <div class="item">
+                  <img class="zoom"
+                    data-zoom-image="{{asset(product.image4) }}"
+                    src="{{asset(product.image4) }}" alt="{{product.name}} (front cover)">
+                </div>
+                {% endif %}
+
+                {% if product.image5 %}
+                <!-- Large image 5 -->
+                <div class="item">
+                  <img class="zoom"
+                  data-zoom-image="{{asset(product.image5) }}"
+                  src="{{asset(product.image5) }}" alt="{{product.name}} (front cover)">
+                </div>
+                {% endif %}
+
+              </div>
+            </div>
+            <!-- Mobile thumbnail slider -->
+            <div class="ps-product__thumbnail--mobile">
+              <div class="ps-product__main-img">
+                  <!-- Mobile thumbnail (large) -->
+                  <div class="item">
+                    <img src="{% if product.image %}{{asset(product.image) }}{% else %}{{asset('build/images/store/shoe/1.jpg')}}{% endif %}" alt="{{product.name}} (front cover)">
+                  </div>
+              </div>
+              <div class="ps-product__preview owl-slider"
+                  data-owl-auto="true"
+                  data-owl-loop="true"
+                  data-owl-speed="5000"
+                  data-owl-gap="20"
+                  data-owl-nav="true"
+                  data-owl-dots="false"
+                  data-owl-item="3"
+                  data-owl-item-xs="3"
+                  data-owl-item-sm="3"
+                  data-owl-item-md="3"
+                  data-owl-item-lg="3"
+                  data-owl-duration="1000"
+                  data-owl-mousedrag="on">
+                  <!-- Mobile image 1 (medium) -->
+                  <img src="{% if product.imageMedium %}{{asset(product.imageMedium) }}{% else %}{{asset('build/images/store/shoe/1.jpg')}}{% endif %}"
+                      alt="{{product.name}}">
+                  <!-- Mobile image 2 (medium) -->
+                  <img src="{% if product.imageMedium2 %}{{asset(product.imageMedium2) }}{% else %}{{asset('build/images/store/shoe/1.jpg')}}{% endif %}"
+                      alt="{{product.name}}">
+                  <!-- Mobile image 3 (medium) -->
+                  <img src="{% if product.imageMedium3 %}{{asset(product.imageMedium3) }}{% else %}{{asset('build/images/store/shoe/1.jpg')}}{% endif %}"
+                      alt="{{product.name}}">
+                </div>
+            </div>
+            <!-- Product Info -->
+            <div class="ps-product__info">
+              {% if isProductInCart %}
+              <!-- Product exists in cart  -->
+              <div class="added-to-cart">
+                <span>This item has already been added to your cart.</span>
+              </div>
+              {% endif %}
+
+              {% if countReviews %}
+              <!-- Rating -->
+              <div class="ps-product__rating mb-10">
+                {% if meanRating %}
+                 {% for i in 1..meanRating %}
+                 {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-yellow', 'label': 'Rating: ' ~ meanRating ~ '/5'} only %}
+                 {% endfor %}
+               {% endif %}<a href="#ps-review-header">(Read {{countReviews == 1 ? 'the review': countReviews > 1 ?  'all ' ~ countReviews ~ ' reviews'}})</a>
+              </div>
+              {% endif %}
+
+              <!-- Product name -->
+              <h1 {% if get.q is defined %}  data-search-terms="{{get.q}}" data-text="{{ product.name}}  {{product.type_full}}" id="text-highlight"{% endif %}>
+              {{product.name}} {{product.type_full}}</h1>
+
+              <!-- Brand logo -->
+              <div title="Search all {{product.brand_full}} products" class="ps-product__brand mb-3">
+                <div class="my-1">
+                  <a href="{{ path('store', { 'brand[]': product.brand}) }}">
+                    <img src="{{asset('build/images/store/color-patches/' ~ product.brand ~ '.webp') }}"
+                        alt="image: {{product.brand_full}}">
+                    </a>
+                </div>
+              </div>
+
+              <!-- Quick links -->
+              <p>
+                <!-- Category -->
+                <a title="Search all {{product.category_full}} products" href="{{ path('store', { 'category[]': product.category}) }}"
+                    target="_blank">{{product.category_full}}</a>,
+                <!-- Occasion -->
+                <a title="Search all {{product.occasion_full|first}} products" href="{{ path('store', { 'occasion[]': product.occasion|first}) }}"
+                    target="_blank">{{product.occasion_full|first}}</a>,
+                <!-- Type -->
+                <a title="Search all {{product.type_full}} products" href="{{ path('store', { 'type[]': product.type}) }}"
+                    target="_blank">{{product.type_full}}</a>
+              </p>
+
+              <!-- Selling Price -->
+              <h3 class="ps-product__price">Rs {{product.sellingPrice|format_number({fraction_digit: 2})}}
+              {# <del>Rs {{product.sellingPrice * 1.4}}</del> #}
+              </h3>
+
+              <!-- Quick Overview (review or description or features) -->
+              <div class="ps-product__block ps-product__quickview">
+                <!-- The latest review -->
+                {% if bestReview %}
+                <h4>QUICK REVIEW: {{bestReview.headline}}</h4>
+                <p>{{bestReview.comment|nl2br}}</p>
+                <h6>- {{bestReview.firstName}} {{bestReview.lastName}}</h6>
+
+                {% else %}
+                {% if product.description %}
+                <h4>DESCRIPTION</h4>
+                {# The nl2br filter inserts HTML line breaks before all newlines in a string: #}
+                <p class="text-justify" {% if get.q is defined %}
+                data-search-terms="{{get.q}}" data-text="{{product.description}}" id="text-highlight"{% endif %}>{{product.description|sentence(300)|nl2br}}</p>
+
+                {% else %}
+                <!-- Product Features  -->
+                {% if product.features %}
+                  <h4>FEATURES</h4>
+                  <ul>
+                    {% for feature in product.features %}
+                    <li {% if get.q is defined %}
+                  data-search-terms="{{get.q}}" data-text="{{feature}}" id="text-highlight"{% endif %}>{{feature|capitalize}}.</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+                {% endif %}
+                {% endif %}
+              </div>
+
+              <!-- Choose others colors -->
+              <div class="ps-product__block ps-product__style" id="ps-product__others">
+                <h4>CHOOSE YOUR STYLE</h4>
+                <!-- List colors  -->
+                <ul class="pl-0">
+                {% for otherColor in otherColors %}
+                <li class="text-center">
+                  <a href="{{
+                    path('store_details',{
+                         'brand': otherColor.brand_full|slug,
+                         'name': (otherColor.name|title)|slug,
+                         'id': nzo_encrypt(otherColor.id)
+                          }) }}"
+                      title="{{ otherColor.colors_full}}"
+                      target="_self"
+                      class="{{ otherColor.pcId == product.pcId ? 'active-thumbnail' }}">
+                    <img src="{% if otherColor.imageSmall %}{{asset(otherColor.imageSmall) }}{% else %}{{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}"
+                    alt="{{product.name}}">
+                  </a>
+                  <p>{{ otherColor.colors_full}}
+                      <br>
+                      <span>{{otherColor.fabrics_full|lower}}</span>
+                  </p>
+                </li>
+                {% endfor %}
+                </ul>
+              </div>
+            {# {{ form_start(cartForm) }} #}
+            <!-- Cart form starts -->
+            <form
+                name="add_to_cart_form"
+                method="get"
+                hx-get="/add-to-cart/{{product.id}}"
+                hx-target="#cart-listing"
+                hx-swap="outerHTML"
+                hx-trigger="submit"
+                data-turbo="false"
+                class="">
+              <!-- Choose size -->
+              <div class="ps-product__block ps-product__size">
+                <h4>CHOOSE SIZE<a href="#">Size chart</a></h4>
+                <select class="ps-select selectpicker" id="size-picker">
+                {% for size in sizeAll %}
+                {% if size in sizes|keys %}
+                {% if product.size == size %}
+                  <option value="{{size}}" class="text-bold" selected>{{size}} (current)</option>
+                {% else %}
+                  <option
+                    value="{{size}}"
+                    data-redirect="{{
+                      path( 'store_details',{
+                            'brand': sizes[size].brand|slug,
+                            'name': sizes[size].name|slug,
+                            'id': nzo_encrypt(sizes[size].id)}) }}"
+                            >{{size ~ ' (' ~ sizes[size].qty ~ ' pcs)'}}
+                  </option>
+                {% endif %}
+                {% else %}
+                  <option value="{{size}}" disabled>{{size}}</option>
+                {% endif %}
+                {% endfor %}
+                </select>
+                {# <div class="form-group">
+                  {{ form_widget(cartForm.quantity,
+                    {'attr': { 'class': 'form-control', 'value': 1, 'min':1,
+                                'max':product.qtyInStock,}}) }}
+                  {{ form_widget(cartForm._token)}}
+                </div> #}
+                <div class="form-group">
+                  <input type="number" title="Enter a value between 1 and {{product.qtyInStock}}"
+                    id="add_to_cart_form_quantity"
+                    name="qty" required="required"
+                    class="form-control text-center"
+                    value="1" min="1" max="{{product.qtyInStock}}">
+                </div>
+              </div>
+
+              <!-- Quantity available -->
+              <div class="ps-product__block">
+                <h6>Quantity available: {{product.qtyInStock}} pcs</h6>
+              </div>
+
+              <!-- Add to cart button -->
+              <div class="ps-product__shopping">
+                <button
+                  title="Add to cart"
+                  id="add_to_cart_form_add"
+                  type="submit"
+                  class="inline-block ps-btn mb-10"
+                  >Add to cart<i class="ps-icon-next"></i></button>
+                {# <a class="ps-btn mb-10" href="cart.html">Add to cart<i class="ps-icon-next"></i></a> #}
+                <div class="ps-product__actions">
+                  <a class="mr-10" href="#"><i class="ps-icon-heart"></i></a><a href="#"><i class="ps-icon-share"></i></a>
+                </div>
+              </div>
+            {# {{ form_end(cartForm, {render_rest: false}) }} #}
+            </form>
+            <!-- Cart form ends -->
+            </div>
+
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+      {% if similarProduct %}
+      <!-- Similar products slider -->
+      <div class="ps-section ps-section--top-sales ps-owl-root pt-40 pb-10">
+        <div class="ps-container">
+          <div class="ps-section__header mb-50">
+            <div class="row">
+              <!-- Title -->
+              <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 ">
+                <h3 class="ps-section__title" data-mask="Related">- YOU MAY ALSO LIKE</h3>
+              </div>
+              <!-- Previous & next buttons -->
+              <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+                <div class="ps-owl-actions"><a class="ps-prev" href="#"><i class="ps-icon-arrow-right"></i>Prev</a><a class="ps-next" href="#">Next<i class="ps-icon-arrow-left"></i></a></div>
+              </div>
+            </div>
+          </div>
+          <div class="ps-section__content">
+            <div class="ps-owl--colection owl-slider"
+                data-owl-auto="true"
+                data-owl-loop="true"
+                data-owl-speed="2200"
+                data-owl-gap="30"
+                data-owl-nav="false"
+                data-owl-dots="false"
+                data-owl-item="4"
+                data-owl-item-xs="1"
+                data-owl-item-sm="2"
+                data-owl-item-md="3"
+                data-owl-item-lg="4"
+                data-owl-duration="1200"
+                data-owl-mousedrag="on">
+              <!-- Products -->
+              {% for product in similarProduct %}
+              <div class="ps-shoes--carousel">
+                {# <div class="ps-shoe"> #}
+                <div class id="similar">
+                  <!-- Thumbnail -->
+                  <div class="ps-shoe__thumbnail">
+                    <!-- New badge -->
+                    <div class="ps-badge"><span>New</span></div>
+                    <!-- Discount badge -->
+                    {% if product.discount %}
+                    <div class="ps-badge ps-badge--sale ps-badge--2nd"><span>-{{product.discount}}%</span></div>
+                    {% endif %}
+                    {# <!-- Heart icon -->
+                    <a class="ps-shoe__favorite" href="#"><i class="ps-icon-heart"></i>
+                    </a> #}
+                    <!-- Medium image 1 -->
+                    <img src="{% if product.imageMedium %}{{asset(product.imageMedium) }}{% else %}{{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}"
+                        alt="{{product.name}} (front cover)">
+                    <a title="Color: {{product.colors_full}}"
+                        class="ps-shoe__overlay"
+                        target="_blank"
+                        href="{{ path('store_details', {
+                                      'brand': product.brand_full|slug,
+                                      'name': (product.name|title)|slug,
+                                      'id': nzo_encrypt(product.id)
+                                      }) }}"></a>
+                  </div>
+                  <div class="ps-shoe__content">
+                    <div class="ps-shoe__variants">
+                      <div class="ps-shoe__variant normal">
+                        {# <!-- Medium image 1 -->
+                        <img
+                            src="{% if product.imageMedium %}{{asset(product.imageMedium) }}{% else %}{{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}"
+                            alt="{{product.name}} (front cover)"> #}
+
+                      </div>
+                      <!-- Rating -->
+                      {# <select class="ps-rating ps-shoe__rating">
+                        <option value="1">1</option>
+                        <option value="1">2</option>
+                        <option value="1">3</option>
+                        <option value="1">4</option>
+                        <option value="2">5</option>
+                      </select> #}
+                    </div>
+                    <!-- Product info -->
+                    <div class="ps-shoe__detail">
+                      <a class="ps-shoe__name" href="{{ path('store_details', {
+                                    'brand': product.brand_full|slug,
+                                    'name': (product.name|title)|slug,
+                                    'id': nzo_encrypt(product.id)
+                                    }) }}"
+                                    target="_blank">{{product.name}}</a>
+
+                      <!-- Quick links -->
+                      <p class="ps-shoe__categories">
+                        <!-- Brand -->
+                        <a title="Search all {{product.brand_full}} products" href="{{ path('store', { 'brand[]': product.brand}) }}"
+                            target="_blank">{{product.brand_full}}</a>,
+                        <!-- Occasion -->
+                        <a title="Search all {{product.occasion_full_set|first}} products" href="{{ path('store', { 'occasion[]': product.occasion|first}) }}"
+                            target="_blank">{{product.occasion_full_set|first}}</a>,
+                        <!-- Type -->
+                        <a title="Search all {{product.type_full}} products" href="{{ path('store', { 'type[]': product.type}) }}"
+                            target="_blank">{{product.type_full}}</a>
+                      </p>
+                      <span class="ps-shoe__price">Rs {{product.sellingPrice}}</span>
+                    </div>
+                    <!-- Color patch -->
+                    <div class="color-patch mb-10" id="listing-patch">
+                    {% if product.colors_full_set|length > 1 %}
+                      <span title="Color: {{product.colors_full}}"
+                            class="single-patch"
+                            style="background-image:
+                                    url({{asset('build/images/store/color-patches/' ~ product.colors_set.0 ~ '.webp')}} ),
+                                    url({{asset('build/images/store/color-patches/' ~ product.colors_set.1 ~ '.webp')}});"></span>
+                    {% else %}
+                      <img
+                        title="Color: {{product.colors_full}}"
+                        class=""
+                        src="{{asset('build/images/store/color-patches/' ~ product.color ~ '.webp')}}" alt="{{product.colors_full }}">
+                    {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+             </div>
+          </div>
+        </div>
+      </div>
+      <!-- Similar products ends -->
+      {% endif %}
+
+      <!-- Overview starts -->
+      <div class="ps-container">
+        <div class="row">
+          <div class="col-lg-10 col-md-12 col-lg-offset-1">
+            <!-- Additional info -->
+            <div class="ps-product__content mt-50">
+              <ul class="tab-list m-0" role="tablist">
+                <li class="active"><a href="#tab_01" aria-controls="tab_01" role="tab" data-toggle="tab">Overview</a></li>
+                <li><a href="#tab_02" aria-controls="tab_02" role="tab" data-toggle="tab">{{reviewer ? 'Edit your' : 'Add a'}} review</a></li>
+              </ul>
+            </div>
+            <!-- Tabs -->
+            <div class="tab-content pt-40 px-50 p-20 mb-60">
+        <!-- Tab 1: Description & Features -->
+        <div class="tab-pane active" role="tabpanel" id="tab_01">
+
+          {% if product.description|length > 300 %}
+          <p class="product-description">{{product.description|nl2br}}</p>
+
+          <!-- Hidden content -->
+          <section class="collapse product-features" id="collapse-description">
+          {% if product.features %}
+            <ul>
+              {% for feature in product.features %}
+                <li {% if get.q is defined %}
+              data-search-terms="{{get.q}}" data-text="{{feature}}" id="text-highlight"{% endif %}>{{feature|capitalize}}.</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          {% if product.occasion_full %}
+          <h6>Occasions:</h6>
+            <ul>
+              {% for occasion, occasion_full in product.occasion_full %}
+                <li {% if get.q is defined %}
+                data-search-terms="{{get.q}}" data-text="{{occasion}}" id="text-highlight"{% endif %}>
+                <a href="{{ path('store', { 'occasion[]': occasion}) }}"
+                    target="_blank"
+                    {% if get.q is defined %}
+                  data-search-terms="{{get.q}}" data-text="{{occasion}}" id="text-highlight"{% endif %}>
+                  <section class="hover-tooltip">
+                  {{occasion_full|capitalize}}.
+                    <div class="top"><p>{{occasion_full}} products</p><i></i></div>
+                  </section>
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          {% if product.fabrics_full_set %}
+          <h6>Fabrics:</h6>
+            <ul>
+              {% for fabric, fabrics_full in product.fabrics_full_set %}
+                <li {% if get.q is defined %}
+                data-search-terms="{{get.q}}" data-text="{{fabric}}" id="text-highlight"{% endif %}>
+                  <a title="Search all {{fabrics_full}} products"
+                      href="{{ path('store', { 'fabrics[]': fabric}) }}"
+                      target="_blank"
+                      {% if get.q is defined %}
+                    data-search-terms="{{get.q}}" data-text="{{fabric}}" id="text-highlight"{% endif %}>{{fabrics_full|capitalize}}.</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          {% if product.textures_full_set is defined %}
+          <h6>Textures:</h6>
+            <ul>
+              {% for texture, textures_full in product.textures_full_set %}
+                <li {% if get.q is defined %}
+                data-search-terms="{{get.q}}" data-text="{{texture}}" id="text-highlight"{% endif %}>
+                <a title="Search all {{textures_full}} products"
+                    href="{{ path('store', { 'textures[]': texture}) }}"
+                    target="_blank"
+                    {% if get.q is defined %}
+                  data-search-terms="{{get.q}}" data-text="{{texture}}" id="text-highlight"{% endif %}>{{textures_full|capitalize}}.</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          {% if product.tags_full_set is defined %}
+          <h6>Tags:</h6>
+          <p>
+            {% for tag, tags_full in product.tags_full_set %}
+            <a title="Search all {{tags_full}} products"
+                href="{{ path('store', { 'tags[]': tag}) }}"
+                target="_blank"
+                {% if get.q is defined %}
+                data-search-terms="{{get.q}}" data-text="{{tag}}" id="text-highlight"{% endif %}>#{{tags_full|lower}}</a>
+            {% endfor %}
+          </p>
+          {% endif %}
+
+          </section>
+          <!-- Show/Hide button -->
+          <p>
+            <button class="toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-description" data-toggler="#collapse-description" id="data-toggler" data-text-more='Show more' data-text-less='Show less' aria-expanded="false" aria-controls="collapse-description">
+              Show more
+            </button>
+          </p>
+          {% else %}
+          <p class="product-description" {% if get.q is defined %}data-search-terms="{{get.q}}" data-text="{{product.description}}" id="text-highlight"{% endif %}>{{product.description|nl2br}} </p>
+          <section class="product-features">
+
+            {% if product.features %}
+            <ul>
+              {% for feature in product.features %}
+                <li {% if get.q is defined %}
+              data-search-terms="{{get.q}}" data-text="{{feature}}" id="text-highlight"{% endif %}>{{feature|capitalize}}.</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if product.occasion_full %}
+            <h6>Occasions:</h6>
+              <ul>
+                {% for occasion, occasion_full in product.occasion_full %}
+                  <li {% if get.q is defined %}
+                  data-search-terms="{{get.q}}" data-text="{{occasion}}" id="text-highlight"{% endif %}>
+                  <a title="Search all {{occasion_full}} products"
+                      href="{{ path('store', { 'occasion[]': occasion}) }}"
+                      target="_blank"
+                      {% if get.q is defined %}
+                    data-search-terms="{{get.q}}" data-text="{{occasion}}" id="text-highlight"{% endif %}>{{occasion_full|capitalize}}.</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+            {% if product.fabrics_full_set %}
+            <h6>Fabrics:</h6>
+              <ul>
+                {% for fabric, fabrics_full in product.fabrics_full_set %}
+                  <li {% if get.q is defined %}
+                  data-search-terms="{{get.q}}" data-text="{{fabric}}" id="text-highlight"{% endif %}>
+                    <a title="Search all {{fabrics_full}} products"
+                        href="{{ path('store', { 'fabrics[]': fabric}) }}"
+                        target="_blank"
+                        {% if get.q is defined %}
+                      data-search-terms="{{get.q}}" data-text="{{fabric}}" id="text-highlight"{% endif %}>{{fabrics_full|capitalize}}.</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+            {% if product.textures_full_set is defined %}
+            <h6>Textures:</h6>
+              <ul>
+                {% for texture, textures_full in product.textures_full_set %}
+                  <li {% if get.q is defined %}
+                  data-search-terms="{{get.q}}" data-text="{{texture}}" id="text-highlight"{% endif %}>
+                  <a title="Search all {{textures_full}} products"
+                      href="{{ path('store', { 'textures[]': texture}) }}"
+                      target="_blank"
+                      {% if get.q is defined %}
+                    data-search-terms="{{get.q}}" data-text="{{texture}}" id="text-highlight"{% endif %}>{{textures_full|capitalize}}.</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+            {% if product.tags_full_set is defined %}
+            <h6>Tags:</h6>
+            <p>
+              {% for tag, tags_full in product.tags_full_set %}
+              <a title="Search all {{tags_full}} products"
+                  href="{{ path('store', { 'tags[]': tag}) }}"
+                  target="_blank"
+                  {% if get.q is defined %}
+                  data-search-terms="{{get.q}}" data-text="{{tag}}" id="text-highlight"{% endif %}>#{{tags_full|lower}}</a>
+              {% endfor %}
+            </p>
+            {% endif %}
+          </section>
+          {% endif %}
+        </div>
+        <!--  Tab 2: Add a review  -->
+        <div class="tab-pane" role="tabpanel" id="tab_02">
+          {% if reviewer %}
+          <div class="d-flex justify-content-between">
+            <div class="col">
+              <p class="mb-20">You reviewed <span class="text-bold text-underline">{{product.brand_full}} {{product.name}} {{product.type_full}}</span> {{reviewer.updated ? reviewer.updated|ago : reviewer.created|ago}}. </p>
+            </div>
+            <div class="col-2 d-flex justify-content-end" data-turbo=false>
+              <a href="{{ path('review_edit', {'review': reviewer.id, 'redirect_url': app.request.pathInfo}) }}">
+                <button title="Edit your review" type="button" class="btn btn-warning">Edit review</button></a>
+            </div>
+          </div>
+          <div class="ps-review reviewer--review" id="ps-review">
+            <div class="ps-review__content">
+              <header class="d-flex justify-content-between">
+                <div class="">
+                 {% if reviewer.rating %}
+                  {% for i in 1..reviewer.rating %}
+                  {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-yellow', 'label': 'Rating: ' ~ reviewer.rating ~ '/5'} only %}
+                  {% endfor %}
+                 {% endif %}
+               </div>
+               <p title="{{reviewer.created|ago }}">{{reviewer.created|format_datetime('short', 'short', locale='en')}}</p>
+              </header>
+              <h5 class="text-black pb-20">{{reviewer.headline}}</h5>
+              <div class="row justify-content-between">
+                <div class="col-{{reviewer.reviewImage ? 4 : 7}}">
+                  <p>{{reviewer.comment|nl2br}}</p>
+                  <p class="reviewer">- {{reviewer.firstName}} {{reviewer.lastName}}</p>
+                </div>
+                {% if reviewer.reviewImage %}
+                <div class="col text-center">
+                  <!-- Thumbnail -->
+                  <img class="review-img"
+                      src="{{asset(reviewer.reviewImage) }}"
+                      alt="{{reviewer.headline}}: {{reviewer.comment|nl2br}} - {{reviewer.firstName}} {{reviewer.lastName}}"
+                      title="Click to enlarge"
+                      zoombox>
+                </div>
+                {% endif %}
+                <div class="col-5">
+                  <!-- Fit -->
+                  <div class="row justify-content-center mb-4" id="slider-square">
+                    <div class="col-2">
+                      <span>Fit:</span>
+                    </div>
+                    <div class="col-9">
+                      <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                       <div class="noUi-base">
+                         <div class="noUi-connects"></div>
+                         <div class="noUi-origin" style="transform: translate(-{{translate[reviewer.fit]}}%, 0px); z-index: 4;">
+                           <div title="Fit: {{sliderFit[reviewer.fit]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                             <div class="noUi-touch-area"></div>
+                           </div>
+                         </div>
+                       </div>
+                       <div class="noUi-pips noUi-pips-horizontal">
+                       {% set x = 0 %}
+                       {% for fit in 1..5 %}
+                         <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(fit == 1 or fit == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                         <div class="noUi-value noUi-value-horizontal noUi-value-{{(fit == 1 or fit == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderFit[fit]}}</div>
+                         {% set x = x + 25 %}
+                       {% endfor %}
+                       </div>
+                     </div>
+                    </div>
+                  </div>
+                  <!-- Width -->
+                  <div class="row justify-content-center mb-4" id="slider-square">
+                    <div class="col-2">
+                      <span>Width:</span>
+                    </div>
+                   <div class="col-9">
+                     <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                       <div class="noUi-base">
+                         <div class="noUi-connects"></div>
+                         <div class="noUi-origin" style="transform: translate(-{{translate[reviewer.width]}}%, 0px); z-index: 4;">
+                           <div title="Width: {{sliderWidth[reviewer.width]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                             <div class="noUi-touch-area"></div>
+                           </div>
+                         </div>
+                       </div>
+                       <div class="noUi-pips noUi-pips-horizontal">
+                       {% set x = 0 %}
+                       {% for width in 1..5 %}
+                         <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(width == 1 or width == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                         <div class="noUi-value noUi-value-horizontal noUi-value-{{(width == 1 or width == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderWidth[width]}}</div>
+                         {% set x = x + 25 %}
+                       {% endfor %}
+                       </div>
+                     </div>
+                   </div>
+                  </div>
+                  <!-- Comfort -->
+                  <div class="row justify-content-center mb-4" id="slider-square">
+                    <div class="col-2">
+                      <span>Comfort:</span>
+                    </div>
+                   <div class="col-9">
+                     <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                       <div class="noUi-base">
+                         <div class="noUi-connects"></div>
+                         <div class="noUi-origin" style="transform: translate(-{{translate[reviewer.comfort]}}%, 0px); z-index: 4;">
+                           <div title="Comfort: {{sliderComfort[reviewer.comfort]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                             <div class="noUi-touch-area"></div>
+                           </div>
+                         </div>
+                       </div>
+                       <div class="noUi-pips noUi-pips-horizontal">
+                         {% set x = 0 %}
+                         {% for comfort in 1..5 %}
+                           <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(comfort == 1 or comfort == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                           <div class="noUi-value noUi-value-horizontal noUi-value-{{(comfort == 1 or comfort == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderComfort[comfort]}}</div>
+                           {% set x = x + 25 %}
+                         {% endfor %}
+                       </div>
+                     </div>
+                   </div>
+                  </div>
+                </div>
+
+              </div>
+              <footer class="d-flex justify-content-between mt-20">
+                <div class="col-4 d-flex flex-column">
+                  <div class="col">
+                    <p class="payment-img"><img src="{{asset('build/images/store/payment/purchase.png')}}" alt="verified purchase image"><span class="text-bold">Verified purchase</span></p>
+                  </div>
+                  <div class="col d-flex flex-row">
+                    {# {% for thumbnail in reviewer.thumbnails %}
+                    <a href="{{ path(
+                                'store_details',
+                                { 'brand': product.brand_full|slug,
+                                  'name': (product.name|title)|slug,
+                                  'id': nzo_encrypt(thumbnail.productDataId)
+                                }) }}"
+                       target="_self"
+                       title="Visit {{product.name|title}} ({{thumbnail.colors_full}})">
+                    <div class="col card text-center mx-1 reviewer-thumbnail" id="reviewer-thumbnail">
+                      <img src="{{asset(thumbnail.imageSmall)}}" alt="reviewer thumbnail {{loop.index}}" class="card-img-top">
+                      <div class="">
+                        <p class="card-text text-center"><span class="text-bold">{{thumbnail.colors_full}}</span></p>
+                      </div>
+                    </div>
+                    </a>
+                    {% endfor %} #}
+                  </div>
+                </div>
+                <div class="col-1 d-flex justify-content-end">
+                 <p>
+                   {% if reviewer.like %}
+                    {% include '__icons/i-l/_love.html.twig' with {  'class': 'fill-main', 'label': 'Like the product', 'id':'like-icon' ,'width': 20, 'height': 20} only %}
+                   {% elseif reviewer.like is same as(null) %}
+                    {% elseif reviewer.like is same as(false) %}
+                      {% include '__icons/i-l/_love_not.html.twig' with { 'class': 'fill-yellow',  'label': 'Dislike the product', 'id':'dislike-icon' ,'width': 20, 'height': 20} only %}
+                   {% endif %}
+
+                   {% if reviewer.delivery %}
+                    {% include '__icons/q-t/_thumbs-up.html.twig' with {  'class': 'fill-main', 'label': 'Delivery satisfactory', 'id':'helpful-icon' ,'width': 20, 'height': 20} only %}
+                   {% elseif reviewer.delivery is same as(null) %}
+                    {% elseif reviewer.delivery is same as(false) %}
+                      {% include '__icons/q-t/_thumbs-down.html.twig' with {
+                     'class': 'fill-yellow', 'label': 'Delivery disappointing', 'id':'not-helpful-icon' ,'width': 20, 'height': 20} only %}
+                   {% endif %}
+
+                   {% if reviewer.recommend %}
+                    {% include '__icons/m-p/_others_solid.html.twig' with {'class':'fill-main', 'label': 'Would recommend to others', 'id':'recommend-icon' ,'width': 20, 'height': 20} only %}
+                   {% elseif reviewer.recommend is same as(null) %}
+                    {% elseif reviewer.recommend is same as(false) %}
+                      {% include '__icons/m-p/_others_not_solid.html.twig' with { 'class':'fill-yellow', 'label': 'Would not recommend to others', 'id':'not-recommend-icon' ,'width': 20, 'height': 20} only %}
+                   {% endif %}
+                 </p>
+                </div>
+              </footer>
+            </div>
+          </div>
+          {% else %}
+          <div class="d-flex justify-content-between align-items-center review-tab">
+            {% if checkPurchase.purchase is same as(true) and reviewer is not null %}
+            <div class="col">
+              <p class="mb-20">You have already purchased <span class="text-bold text-underline">{{product.brand_full}} {{product.name}} {{product.type_full}}</span> but not yet reviewed it.</p>
+            </div>
+            <div class="col-2 d-flex justify-content-end" data-turbo=false>
+              <a href="{{ path('review_new', {'product': product.productId}) }}" title="Post a new review">
+                <button type="button" class="btn btn-info">Post review</button></a>
+            </div>
+            {% else %}
+            <div class="col">
+              <p class="mb-20">Review <span class="text-bold text-underline">{{product.brand_full}} {{product.name}} {{product.type_full}}</span>  if you have already purchased it.</p>
+              <p>Otherwise, add it to your cart today, to review it.</p>
+            </div>
+            <div class="col-2 d-flex justify-content-end" data-turbo=false>
+              <a href="{{ path('review_new_list') }}">
+                <button title="Your reviews" type="button" class="btn btn-info">Your reviews</button></a>
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+          </div>
+        </div>
+      </div>
+      <!-- Overview ends -->
+
+
+      {% if reviews.totalItems > 0 %}
+      <!-- Reviews starts -->
+      <div class="ps-container">
+        <div class="row">
+          <div class="col-lg-10 col-md-12 col-lg-offset-1">
+            <!-- Reviews -->
+            <div class="ps-review-header" id="ps-review-header">
+              <h4 class="text-center">Reviews</h4>
+            </div>
+            <div class="ps-product__content mt-20" id="reviews">
+              <div class="loader-content">
+                <!-- Loader overlay -->
+                <div class="loader-overlay" id="loader-overlay">
+                  <div class="loader-overlay-content">
+                    <img src="{{asset('build/images/store/spinner.gif')}}" alt="Loading...">
+                  </div>
+                </div>
+                {% for review in reviews.items %}
+                <div class="ps-review {{reviewer ? reviewer.id == review.id ? 'reviewer--review'}}" id="ps-review">
+                  <div class="ps-review__content">
+                    <header class="d-flex justify-content-between">
+                      <div class="">
+                       {% if review.rating %}
+                        {% for i in 1..review.rating %}
+                        {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-yellow', 'label': 'Rating: ' ~ review.rating ~ '/5'} only %}
+                        {% endfor %}
+                       {% endif %}
+                     </div>
+                     <p title="{{review.created|ago }}">{{review.created|format_datetime('short', 'short', locale='en')}}</p>
+                    </header>
+                    <h5 class="pb-20">{{review.headline}}</h5>
+                    <div class="row justify-content-between">
+                      <div class="col-{{review.reviewImage and review.reviewImage.image ? 4 : 7}}">
+                        <p>{{review.comment|nl2br}}</p>
+                        <p class="reviewer">- {{review.users.firstName}} {{review.users.lastName}}</p>
+                      </div>
+                      {% if review.reviewImage and review.reviewImage.image %}
+                      <div class="col text-center">
+                        <!-- Thumbnail -->
+                        <img class="review-img"
+                            src="{{asset(review.reviewImage.image) }}"
+                            alt="<span class='text-bold'>{{review.headline}}</span>
+                            <br> {{review.comment|nl2br}}
+                            <br>
+                            <span class='d-flex justify-content-end'>
+                            - [{{review.users.firstName}} {{review.users.lastName}}]
+                            </span>"
+                            title="Click to enlarge"
+                            zoombox>
+                      </div>
+                      {% endif %}
+                      <div class="col-5">
+                        <!-- Fit -->
+                        <div class="row justify-content-center mb-4" id="slider-square">
+                          <div class="col-2">
+                            <span>Fit:</span>
+                          </div>
+                          <div class="col-9">
+                            <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                             <div class="noUi-base">
+                               <div class="noUi-connects"></div>
+                               <div class="noUi-origin" style="transform: translate(-{{translate[review.fit]}}%, 0px); z-index: 4;">
+                                 <div title="Fit: {{sliderFit[review.fit]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                                   <div class="noUi-touch-area"></div>
+                                 </div>
+                               </div>
+                             </div>
+                             <div class="noUi-pips noUi-pips-horizontal">
+                             {% set x = 0 %}
+                             {% for fit in 1..5 %}
+                               <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(fit == 1 or fit == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                               <div class="noUi-value noUi-value-horizontal noUi-value-{{(fit == 1 or fit == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderFit[fit]}}</div>
+                               {% set x = x + 25 %}
+                             {% endfor %}
+                             </div>
+                           </div>
+                          </div>
+                        </div>
+                        <!-- Width -->
+                        <div class="row justify-content-center mb-4" id="slider-square">
+                          <div class="col-2">
+                            <span>Width:</span>
+                          </div>
+                         <div class="col-9">
+                           <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                             <div class="noUi-base">
+                               <div class="noUi-connects"></div>
+                               <div class="noUi-origin" style="transform: translate(-{{translate[review.width]}}%, 0px); z-index: 4;">
+                                 <div title="Width: {{sliderWidth[review.width]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                                   <div class="noUi-touch-area"></div>
+                                 </div>
+                               </div>
+                             </div>
+                             <div class="noUi-pips noUi-pips-horizontal">
+                             {% set x = 0 %}
+                             {% for width in 1..5 %}
+                               <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(width == 1 or width == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                               <div class="noUi-value noUi-value-horizontal noUi-value-{{(width == 1 or width == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderWidth[width]}}</div>
+                               {% set x = x + 25 %}
+                             {% endfor %}
+                             </div>
+                           </div>
+                         </div>
+                        </div>
+                        <!-- Comfort -->
+                        <div class="row justify-content-center mb-4" id="slider-square">
+                          <div class="col-2">
+                            <span>Comfort:</span>
+                          </div>
+                         <div class="col-9">
+                           <div class="slider-square noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" id="review_data_form_slider_fit">
+                             <div class="noUi-base">
+                               <div class="noUi-connects"></div>
+                               <div class="noUi-origin" style="transform: translate(-{{translate[review.comfort]}}%, 0px); z-index: 4;">
+                                 <div title="Comfort: {{sliderComfort[review.comfort]|capitalize}}" class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider">
+                                   <div class="noUi-touch-area"></div>
+                                 </div>
+                               </div>
+                             </div>
+                             <div class="noUi-pips noUi-pips-horizontal">
+                               {% set x = 0 %}
+                               {% for comfort in 1..5 %}
+                                 <div class="noUi-marker noUi-marker-horizontal noUi-marker-{{(comfort == 1 or comfort == 5) ? 'large': 'sub'}}" style="left: {{x}}%;"></div>
+                                 <div class="noUi-value noUi-value-horizontal noUi-value-{{(comfort == 1 or comfort == 5) ? 'large': 'sub'}}" style="left: {{x}}%;">{{sliderComfort[comfort]}}</div>
+                                 {% set x = x + 25 %}
+                               {% endfor %}
+                             </div>
+                           </div>
+                         </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <footer class="d-flex justify-content-end mt-10">
+                     <p>
+                     {% if review.reviewLike is not null %}
+                     {% if review.reviewLike.like is same as(true) %}
+                      {% include '__icons/i-l/_love.html.twig' with {  'class': 'fill-main', 'label': 'Like the product', 'id':'like-icon' ,'width': 20, 'height': 20} only %}
+                     {% elseif review.reviewLike.like is same as(null) %}
+                      {% elseif review.reviewLike.like is same as(false) %}
+                        {% include '__icons/i-l/_love_not.html.twig' with { 'class': 'fill-yellow',  'label': 'Dislike the product', 'id':'dislike-icon' ,'width': 20, 'height': 20} only %}
+                     {% endif %}
+                     {% endif %}
+
+                     {% if review.reviewDelivery is not null %}
+                     {% if review.reviewDelivery.delivery is same as(true) %}
+                      {% include '__icons/q-t/_thumbs-up.html.twig' with {  'class': 'fill-main', 'label': 'Delivery satisfactory', 'id':'helpful-icon' ,'width': 20, 'height': 20} only %}
+                     {% elseif review.reviewDelivery.delivery is same as(null) %}
+                      {% elseif review.reviewDelivery.delivery is same as(false) %}
+                        {% include '__icons/q-t/_thumbs-down.html.twig' with {
+                       'class': 'fill-yellow', 'label': 'Delivery disappointing', 'id':'not-helpful-icon' ,'width': 20, 'height': 20} only %}
+                     {% endif %}
+                     {% endif %}
+
+                     {% if review.reviewRecommend is not null %}
+                     {% if review.reviewRecommend.recommend is same as(true) %}
+                      {% include '__icons/m-p/_others_solid.html.twig' with {'class':'fill-main', 'label': 'Would recommend to others', 'id':'recommend-icon' ,'width': 20, 'height': 20} only %}
+                     {% elseif review.reviewRecommend.recommend is same as(null) %}
+                      {% elseif review.reviewRecommend.recommend is same as(false) %}
+                        {% include '__icons/m-p/_others_not_solid.html.twig' with {'class': 'fill-yellow', 'label': 'Would not recommend to others', 'id':'not-recommend-icon' ,'width': 20, 'height': 20} only %}
+                     {% endif %}
+                     {% endif %}
+
+                     </p>
+                    </footer>
+                    <!-- Reviewer ribbon -->
+                  {% if reviewer %}{% if reviewer.id == review.id %}<div class="ribbon-detail">You reviewed this item.</div>{% endif %}{% endif %}
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              <!-- Pagination -->
+              <div class="d-flex justify-content-end align-items-center" id="pagination" data-turbo=false>
+                {% include 'store/partials/pagination/pagination.html.twig'
+                   with { 'paginator': reviews, 'product': product.productId } only %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+    {% if recentProduct %}
+      <!-- Recent products slider -->
+      <div class="ps-section ps-section--top-sales ps-owl-root mt-80 pt-80 pb-80">
+        <div class="ps-container">
+          <div class="ps-section__header mb-50">
+            <div class="row">
+                  <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 ">
+                    <h3 class="ps-section__title" data-mask="Recent">- You just visited</h3>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+                    <div class="ps-owl-actions"><a class="ps-prev" href="#"><i class="ps-icon-arrow-right"></i>Prev</a><a class="ps-next" href="#">Next<i class="ps-icon-arrow-left"></i></a></div>
+                  </div>
+            </div>
+          </div>
+          <div class="ps-section__content">
+            <div
+              class="ps-owl--colection owl-slider"
+              data-owl-rtl="false"
+              data-owl-auto="true"
+              data-owl-loop="true"
+              data-owl-speed="2000"
+              data-owl-gap="30"
+              data-owl-nav="false"
+              data-owl-dots="false"
+              data-owl-item="5"
+              data-owl-item-xs="1"
+              data-owl-item-sm="3"
+              data-owl-item-md="4"
+              data-owl-item-lg="5"
+              data-owl-duration="1000"
+              data-owl-mousedrag="on">
+              <!-- recent products -->
+              {% for product in recentProduct %}
+                <div class="ps-shoes--carousel">
+                  <div class="" id="recent">
+                    <div class="ps-shoe__thumbnail">
+                      {# <div class="ps-badge"><span>New</span></div>
+                      <div class="ps-badge ps-badge--sale ps-badge--2nd"><span>-35%</span></div>
+                      <a class="ps-shoe__favorite" href="#"><i class="ps-icon-heart"></i>
+                      </a> #}
+                      <!-- Medium image 1 -->
+                      <img
+                          src="{% if product.imageMedium %}{{asset(product.imageMedium) }}{% else %}{{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}"
+                          alt="{{product.name}} (front cover)">
+                      <a
+                          title="Color: {{product.color|replace({'-': ' | '})}}"
+                          class="ps-shoe__overlay"
+                          href="{{ path('store_details', {
+                                        'brand': product.brand_full|slug,
+                                        'name': (product.name|title)|slug,
+                                        'id': nzo_encrypt(product.id)
+                                        }) }}"
+                          target="_blank"></a>
+                    </div>
+                    <div class="ps-shoe__content">
+                      <div class="ps-shoe__variants">
+                        <div class="ps-shoe__variant normal">
+                          {#
+                          <!-- Medium image 1 -->
+                          <img
+                              src="{% if product.imageMedium %}{{asset(product.imageMedium) }}{% else %}{{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}"
+                              alt="{{product.name}} (front cover)"> #}
+
+                        </div>
+                        {# <select class="ps-rating ps-shoe__rating">
+                          <option value="1">1</option>
+                          <option value="1">2</option>
+                          <option value="1">3</option>
+                          <option value="1">4</option>
+                          <option value="2">5</option>
+                        </select> #}
+                      </div>
+                      <div class="ps-shoe__detail">
+                        <a class="ps-shoe__name" href="{{ path('store_details', {
+                                      'brand': product.brand_full|slug,
+                                      'name': (product.name|title)|slug,
+                                      'id': nzo_encrypt(product.id)
+                                      }) }}">{{product.name}} (Size {{product.size}})</a>
+                        <p class="ps-shoe__categories">
+                          <a href="{{ path('store', { 'brand[]': product.brand}) }}">{{product.brand_full}}</a>,
+                          <a href="{{ path('store', { 'category[]': product.category}) }}"> {{product.category_full}}</a>
+                          <a href="{{ path('store', { 'type[]': product.type}) }}"> {{product.type_full}}</a>
+                        </p>
+                          <span class="ps-shoe__price">Rs {{product.sellingPrice|format_number({fraction_digit: 0})}}</span>
+                      </div>
+                      <div class="color-patch mb-10" id="listing-patch">
+                        {% if '-' in product.color %}
+                        <span
+                          title="Color: {{product.colors_full}}"
+                          class="single-patch"
+                          style="background-image:
+                            url({{asset('build/images/store/color-patches/' ~     product.colors_set[0] ~ '.webp')}} ),
+                            url({{asset('build/images/store/color-patches/' ~ product.colors_set[1] ~ '.webp')}});"></span>
+                        {% else %}
+                        <img
+                          title="Color: {{product.colors_full}}"
+                          class=""
+                          src="{{asset('build/images/store/color-patches/' ~ product.colors_set[0] ~ '.webp')}}" alt="{{product.colors_full }}">
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}{# for product in recentProduct #}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}{# if recentProduct #}
+    {% include 'store/partials/footer/subscribe.html.twig' %}
+  </main>
+  <!-- main ends -->

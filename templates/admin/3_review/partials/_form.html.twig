@@ -1,0 +1,154 @@
+<!-- Main starts -->
+<main class="content">
+  <!-- Top navigation bar -->
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Review</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        {% if app.current_route == 'admin_review_edit' %}
+          <a href="{{ path('admin_review_edit', {'id': review.id}) }}">Edit Review</a>
+        {% endif %}
+      </li>
+    </ol>
+  </nav>
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Edit the headline and comment',
+         'Delete the review',] %}
+    <!-- Page overview -->
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <!-- Main heading -->
+      <h1 class="h4 pb-3">Reviews</h1>
+      <!-- Features list -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/3_review/partials/_search-form.html.twig' %}
+  </div>
+
+  <!-- Review Form row starts-->
+  <div class="row mt-1">
+    <div class="col-8 grid-margin stretch-card">
+      <div class="card {{ app.user.theme == 'dark' ? 'bg-gray-300' }} border-light shadow-sm components-section">
+        <div class="card-body">
+        <div class="row justify-content-between align-items-end">
+          <div class="col-5">
+            <p><label class="pr-1">Customer: </label><a class="border-hover" title="Search all reviews from {{review.users.email}}" href="{{ path('admin_review_index', {'user': review.users.id}) }}"> {{review.users.email}}</a></p>
+          </div>
+          <div class="col-2">
+            {% include 'admin/3_review/partials/_delete_form.html.twig' with {'review': review} %}
+          </div>
+        </div>
+        <!-- Form starts -->
+        {{ form_start(form) }}
+        <div class="row">
+          <div class="col-9">
+            <!-- Active checkbox -->
+            <div class="form-group mb-4">
+              {{ form_label( form.active, null,
+                {'label': 'Active: ',}) }}
+              {{ form_widget( form.active, {'attr':
+                {'class': 'form-check-input ml-2 p-3'}}) }}
+              {{ form_errors(form.active) }}
+            </div>
+            <!-- Headline -->
+            <div class="form-group mb-4">
+              {{ form_label( form.headline, null,
+                {'label': 'Headline: ',}) }}
+              {{ form_widget( form.headline, {'attr':
+                {'class': 'form-control',
+                 'placeholder': 'Enter headline'}}) }}
+              {{ form_errors(form.headline) }}
+            </div>
+            <!-- Comment textarea -->
+            <div class="form-group mb-4">
+              {{ form_label( form.comment, null,
+                  {'label': 'Description: ',}) }}
+              {{ form_widget( form.comment, {'attr':
+                  {'class': 'form-control',
+                   'placeholder': 'Enter comment',
+                   'rows': '6'}})}}
+              {{ form_errors(form.comment) }}
+            </div>
+          </div>
+          <div class="col-3 d-flex flex-column justify-content-end pb-3">
+            {% if review.reviewImage and review.reviewImage.image %}
+            <div class="mb-4">
+              <img src="{{asset(review.reviewImage.image)}}"
+                class="img-fluid img-border-hover"
+                alt="{{review.product.name}}">
+            </div>
+            {% endif %}
+            <!-- Rating -->
+            <div class="">
+              <p>
+              <span>Rating: </span>
+              {% if review.rating %}
+                {% for i in 1..review.rating %}
+                  {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-yellow', 'label': 'Rating ' ~ review.rating ~ '/5' } only %}
+                {% endfor %}
+                {% if review.rating is not same as(5) %}
+                {% for i in 1..(5 - review.rating) %}
+                  {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-grey', 'label': 'Rating ' ~ review.rating ~ '/5'} only %}
+                {% endfor %}
+                {% endif %}
+              {% else %}
+                <span title="Not voted">---</span>
+              {% endif %}
+              </p>
+            </div>
+            <!-- Like/Dislike icon -->
+            <div class="">
+              <p><span>Like: </span>{% if review.reviewLike.like is same as true %}
+                {% include '__icons/i-l/_love.html.twig' with { 'class': 'fill-main', 'label': "Liked the product", 'id':'like-icon' ,'width': 20, 'height': 20} only %}
+              {% elseif review.reviewLike.like is same as false %}
+                {% include '__icons/i-l/_love_not.html.twig' with { 'class': 'fill-yellow',  'label': "Disliked the product", 'id':'dislike-icon' ,'width': 20, 'height': 20} only %}
+              {% elseif review.reviewLike.like is same as null %}
+                <span title="Not voted">---</span>
+              {% endif %}</p>
+            </div>
+            <!-- Delivery/Not Delivery icon -->
+            <div class="">
+              <p><span>Delivery:</span>{% if review.reviewDelivery.delivery is same as true %}
+                {% include '__icons/q-t/_thumbs-up.html.twig' with { 'class': 'fill-main',  'label': "Delivery description", 'id':'helpful-icon' ,'width': 20, 'height': 20} only %}
+              {% elseif review.reviewDelivery.delivery is same as false %}
+                {% include '__icons/q-t/_thumbs-down.html.twig' with {
+                'class': 'fill-yellow', 'label': "Non-Delivery description", 'id':'not-helpful-icon' ,'width': 20, 'height': 20} only %}
+              {% elseif review.reviewDelivery.delivery is same as null %}
+                <span title="Not voted">---</span>
+              {% endif %}</p>
+            </div>
+            <!-- Recommend/Not Recommend icon -->
+            <div class="">
+              <p><span>Recommend:</span>{% if review.reviewRecommend.recommend is same as true %}
+                {% include '__icons/m-p/_others_solid.html.twig' with {  'class': 'fill-main',  'label': 'Would recommend to others', 'id':'recommend-icon' ,'width': 20, 'height': 20} only %}
+              {% elseif review.reviewRecommend.recommend is same as false %}
+                {% include '__icons/m-p/_others_not_solid.html.twig' with {'class': 'fill-yellow', 'label': 'Would not recommend to others', 'id':'not-recommend-icon' ,'width': 20, 'height': 20} only %}
+              {% elseif review.reviewRecommend.recommend is same as null %}
+                <span title="Not voted">---</span>
+              {% endif %}</p>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-end pt-3">
+          <!-- Update button -->
+          <button title="Update review" class="col-2 btn btn-success mr-3">{{ button_label|default('Update') }}</button>
+        </div>
+        {{ form_end(form, {render_rest: true}) }}
+        <!-- Form ends -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Footer -->
+  {% include 'admin/_partials/footer.html.twig' %}
+</main>

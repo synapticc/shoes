@@ -1,0 +1,52 @@
+{% if filters is defined and filters is not empty %}
+  <div class="col-10 col-sm-5 col-md-5 col-lg-5 mb-2">
+      <span class="{{ app.user.theme == 'dark' ? 'text-white' }}">Filter:</span>
+        {% if filters.column == 'brand' %}
+          <img class="brand-img-filter"
+               src="{{asset('build/images/store/color-patches/' ~ filters.value ~ '.webp') }}"
+               alt="filter: "
+               title="filter: ">
+        {% elseif filters.column == 'pc_url' %}
+          {% set name = app.request.query.get('pc_name') %}
+          <img class="brand-img-filter"
+               src="{{asset(filters.value) }}"
+               alt="filter: {{name}}"
+               title="filter: {{name}}">
+          <span class="filter-unit">{{name}}</span>
+        {% elseif filters.column == 'colors' %}
+          {% set colors = app.request.query.get('colors')|split('-') %}
+          {% for color in colors %}
+          <img class="color-img-filter"
+               src="{{asset('build/images/store/color-patches/' ~ color ~ '.webp')}}"
+               alt="filter: {{color}}"
+               title="filter: {{color}}">
+          {% endfor %}
+          <span class="filter-unit">
+            {{filters.value}}
+          </span>
+        {% elseif filters.column == 'customer_email'  %}
+          {% set image = app.request.query.get('customer_url') %}
+          <img class="img-fluid user-avatar-filter xl-avatar m-auto mb-1 border-radius-5"
+               src="{{asset(image ? image : 'build/images/admin/man.png')}}"
+               alt="filter: "
+               title="filter: ">
+          <span class="filter-unit">{{filters.value}}</span>
+        {% elseif filters.column == 'purchased_item'  %}
+          <span class="filter-unit">
+            {{filters.value|split('(purchased')[0]}}
+            <br>
+            ({% include '__icons/q-t/_shopping-bag-thin.html.twig' with {'width': 22,  'height': 22, 'class': 'fill-white', 'label': '  purchased '} %} {{filters.value|split('(purchased')[1]}}
+          </span>
+        {% else %}
+          <span class="filter-unit">
+            {{filters.value}}
+          </span>
+        {% endif %}
+      <!-- Remove icon -->
+      <span class="{{ app.user.theme == 'dark' ? 'bg-white p-1 border-radius-3' }}">
+        <a href="{{ path(route_index) }}">
+          {% include '__icons/q-t/_square-delete-inv.html.twig' with {'label': 'Remove filter', 'dataset': 'data-remove-other-color', 'width': 15, 'height': 15} only %}
+        </a>
+      </span>
+  </div>
+{% endif %}

@@ -1,0 +1,85 @@
+<!-- Main starts -->
+<main class="content" data-turbo=false>
+  <!-- Top navigation bar -->
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  {% include 'admin/_partials/navbar-breadcrumbs.html.twig'
+     with { 'item' : 'user',  'route': '', 'route_index': 'admin_users_index' } %}
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Activate/Deactivate a user',
+         'Edit user roles'] %}
+    <!-- Page overview -->
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <!-- Main heading -->
+      <h1 class="h4 pb-3">Edit user</h1>
+      <!-- Features list -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/5_user/partials/_search-form.html.twig' %}
+  </div>
+  <!-- User form row starts -->
+  <div class="row">
+    <div class="col-xl-8 col-lg-9 col-md-11 mb-4">
+      <div class="card {{ app.user.theme == 'dark' ? 'bg-gray-500' }} border-light shadow-sm components-section">
+        <div class="card-body">
+          {% if app.current_route == 'admin_product_edit' and deleteProduct %}
+          <!-- 'Delete product' button row -->
+          <div class="row justify-content-end">
+            <div class="col-4 d-flex justify-content-end">
+              {% include 'admin/1_product/partials/form/_delete_form.html.twig' %}
+            </div>
+          </div>
+          {% endif %}
+          <!-- Form row -->
+          <div class="row mb-4">
+            <section class="forms-sample">
+              <!-- Form starts -->
+              {{ form_start(form) }}
+              {# Allow only the moderator to assign roles #}
+              {% if 'ROLE_MODERATOR' in app.user.roles  %}
+              <!-- Roles -->
+              <div class="form-group">
+                {{ form_label(form.roles, null,
+                        {'label': 'Roles: ',}) }}
+                {{ form_widget(form.roles,{'attr':
+                  {'aria-label': 'Roles',
+                   'aria-describedby': 'Roles',
+                   'slim-select': '',
+                   'data-placeholder': 'Roles',
+                   'data-selected': 'Roles',
+                   'data-show-search': 'true',
+                   'data-search-msg': 'No record found.',
+                   'data-allow-deselect': 'true',
+                   'data-search-highlight': 'true'
+                  }}) }}
+              </div>
+              {% endif %}
+
+              <!-- Activate/Deactivate toggle -->
+              <div class="form-group">
+                {{ form_label(form.userDeactivate.deactivate, null,
+                  {'label': 'Deactivate: ',}) }}
+                {{ form_widget(form.userDeactivate.deactivate,{'attr':
+                  {'class': 'p-3 form-check-input',}}) }}
+              </div>
+
+              <!-- Update button -->
+              <button class="btn btn-success px-5 py-2">{{ button_label|default('Update') }}</button>
+
+            {{ form_end(form, {render_rest: false}) }}
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- User form row starts -->
+  {% include 'admin/_partials/footer.html.twig' %}
+</main>
+<!-- Main ends -->

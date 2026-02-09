@@ -1,0 +1,82 @@
+
+<!-- main starts -->
+<main class="ps-main">
+
+<div class="profile-container rounded bg-white mt-5 mb-5">
+    <div class="row">
+      <!-- Sidebar menu -->
+      <div class="col-md-3">
+          {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+      </div>
+      <!-- Middle section form -->
+      <div class="col-md-8 ml-30 border-right">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+           <h3 class="text-left mb-30 ">Invoices</h3>
+        </div>
+        {% if invoices %}
+          {% set checkout = app.request.query.get('checkout') ?: '' %}
+          <div class="pdf-grid" style="grid-template-columns: repeat(
+            {% if invoices|length is same as(1) %}1 , 100%
+            {% elseif invoices|length is same as(2)
+               or invoices|length is same as(3) %}{{invoices|length}},30%
+            {% endif %})">
+
+          {% for invoice in invoices|slice(0, 3) %}
+            <div class="pdf-item" id="{{invoice.id}}">
+              {% set fileName = invoice.invoicePath |split('/', 5) %}
+              <a href="{% if invoice.invoicePath %}{{asset(invoice.invoicePath) }}{% endif %}">
+              <img src="{% if invoice.invoiceThumbnail %}{{asset(invoice.invoiceThumbnail)}}{% endif %}" class="pdf-invoiceThumbnail{{checkout == invoice.id ? '-active'}}" title="
+
+            Rs {{invoice.invoiceTotal|format_number({fraction_digit: 2})}} billed on {{ invoice.purchaseDate|format_datetime('medium', 'none', locale='en') }}">
+              </a>
+
+              <div class="text-center mt-20 mb-30">
+                <a href="{% if invoice.invoicePath %}{{asset(invoice.invoicePath) }}{% endif %}" target="_blank">
+                  <button title="View invoice online" class="btn btn-primary" type="button">View</button>
+                </a>
+
+                <a href="{% if invoice.invoicePath %}{{asset(invoice.invoicePath) }}{% endif %}" download="{{fileName[4]}}" target="_blank">
+                  <button title="Download invoice as PDF | {{asset(invoice.invoicePath)|fileSize}}" class="btn btn-primary" type="button">Download ({{asset(invoice.invoicePath)|fileSize}})</button>
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+          </div>
+
+          {% if invoices|length > 3 %}
+          <div class="pdf-grid mt-5" style="grid-template-columns: repeat({% if invoices|length > 3 %}3 , {{100/3}}%{% else %}{{invoices|length}},{{100/invoices|length}}%{% endif %})">
+              {% for invoice in invoices|slice(3, invoices.getItemNumberPerPage) %}
+                <div class="pdf-item">
+                  {% set fileName = invoice.invoicePath |split('/', 5) %}
+                  <a href="{% if invoice.invoicePath %}{{asset(invoice.invoicePath) }}{% endif %}">
+                    <img src="{% if invoice.invoiceThumbnail %}{{asset(invoice.invoiceThumbnail)}}{% endif %}" class="pdf-invoiceThumbnail" title="Filename : {{fileName[4]}}">
+                  </a>
+
+                  <div class="text-center mt-20 mb-30">
+                    <a href="{% if invoice.invoicePath %}{{asset(invoice.invoicePath) }}{% endif %}" target="_blank">
+                      <button class="btn btn-primary" type="button">View</button>
+                    </a>
+
+                    <a href="{% if invoice.invoicePath %}{{asset(invoice.invoicePath) }}{% endif %}" download="{{fileName[4]}}" target="_blank">
+                      <button class="btn btn-primary" type="button">Download</button>
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endif %}
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center">
+          <div class="col-4">
+            {% if invoices %}{{ knp_pagination_render(invoices) }}{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% include 'store/partials/footer/subscribe.html.twig' %}
+
+</main>
+<!-- main ends -->

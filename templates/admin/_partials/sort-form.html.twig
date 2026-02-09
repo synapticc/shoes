@@ -1,0 +1,45 @@
+<!-- Sort form starts -->
+<form title="Sort {{label|capitalize}} in {{(items.params.order is defined)?((items.params.order == 'DESC')?'ascending':'descending'):'descending' }} order" method="get" data-turbo=true>
+    {% for key, query in get %}
+      {% if key != 'sort' and  key != 'order' %}
+        {% if query is iterable %}
+          {% for ky, q in query %}
+            <input name="{{key}}[{{ky}}]" value="{{q}}" hidden=hidden>
+          {% endfor %}
+        {% else %}
+          <input name="{{key}}" value="{{query}}" hidden=hidden>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    <!-- Hidden sort value -->
+    <input type="hidden" name="sort" value="{{sort_param}}">
+
+    {% if items.items|length > 1 %}
+      {% if items.params.order is defined %}
+        {% if items.params.order == 'DESC' %}
+          <!-- Hidden order value 'ASC' -->
+          <input type="hidden" name="order" value="ASC">
+          <!-- Up button -->
+          <button class="transparent-btn" type="submit">
+          {% include '__icons/u-z/_up-icon.html.twig' %}</button>
+        {% else %}
+          {% if items.params.order == 'ASC' %}
+            <!-- Hidden order value 'DESC' -->
+            <input type="hidden" name="order" value="DESC">
+            <!-- Down button -->
+            <button class="transparent-btn" type="submit">
+              {% include '__icons/a-d/_down-icon.html.twig' %}
+            </button>
+          {% endif %}
+        {% endif %}
+      {% else %}
+        <!-- Hidden order value 'DESC' -->
+        <input type="hidden" name="order" value="DESC">
+        <!-- Down button -->
+        <button class="transparent-btn" type="submit">
+          {% include '__icons/a-d/_down-icon.html.twig' %}
+          </button>
+      {% endif %}
+    {% endif %}
+</form>
+<!-- Sort form ends -->

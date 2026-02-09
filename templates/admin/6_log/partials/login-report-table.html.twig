@@ -1,0 +1,120 @@
+
+<main class="content">
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Logs</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        <a href="{{ path('admin_login_report_index') }}">All logins</a>
+      </li>
+    </ol>
+  </nav>
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% set features =
+        ['Display a complete list of logins',
+         'Access the traffic report of each user'] %}
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <h1 class="h4 pb-3">Logins</h1>
+      <!-- Features -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/6_log/partials/_search-form.html.twig' %}
+  </div>
+  <!-- No. of items per page> -->
+  {% include 'admin/_partials/select-items.html.twig'
+     with { 'items' : loginReport, 'item' : 'product', 'route_index': 'admin_login_report_index', 'route': '' } %}
+  <div class="row mt-1">
+    <div class="col-12 mb-1">
+      <div class="card border-light shadow-sm mb-4">
+        <div class="card-body">
+          <div class="table-responsive" id="users-table">
+            <table class="table table-centered table-nowrap mb-0 rounded">
+              <thead class="thead-light">
+                <tr>
+                  <th class="border-0">
+                    <span>ID</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : loginReport, 'sort_param': 'lg.id', 'label': 'ID'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Username</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : loginReport, 'sort_param': 'lg.email', 'label': 'Email'} %}</span>
+                    </th>
+                  <th class="border-0">
+                    <span>Logged in</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : loginReport, 'sort_param': 'lg.created', 'label': 'Login time'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Logged out</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : loginReport, 'sort_param': 'lo.created', 'label': 'Logout time'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span class="item-0">Duration</span>
+                  </th>
+                  <th class="border-0">
+                    <span>Ip Address</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : loginReport, 'sort_param': 'lg.ipAddress', 'label': 'IP address'} %}</span>
+                  </th>
+                  <th class="border-0">
+                    <span>User Agent</span>
+                    <span>{% include 'admin/_partials/sort-form.html.twig' with {'items' : loginReport, 'sort_param': 'lg.userAgent', 'label': 'User agent'} %}</span>
+                  </th>
+                  <th class="border-0"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tbody>
+                  {% for report in loginReport %}
+                  <tr>
+                    <td>{{report.id}}</td>
+                    <td>
+                      <a href="{{ path('admin_login_report_index', {'user': report.userId})}}"
+                      {% if search %}
+                      data-search-terms="{{search}}"
+                      data-text="{{report.email}}"
+                      data-exact="{{(app.request.get('_exact')) ? true : false}}"
+                      id="text-highlight"
+                      {% endif %}>{{report.email}}</a>
+                    </td>
+                    <td class="font-weight-bold text-success">{{report.login|format_datetime('none', 'short', locale='fr')}} ({{report.login|ago}})</td>
+                    <td class="font-weight-bold text-danger">{% if report.logout %}
+                      {{report.logout|format_datetime('none', 'short', locale='fr')}} ({{report.logout|ago}}){% else %}
+                          ---{% endif %}</td>
+                    <td class="font-weight-bold text-primary">{% if report.logout %}
+                      {{report.logout|visit(report.login)|format_number({fraction_digit: 1})}} min
+                      {% else %}
+                       ---
+                      {% endif %}
+                      </td>
+                    <td>{{report.ipAddress}}</td>
+                    <td>{{report.userAgent|browser}}</td>
+                    <td class="table-actions border-0 text-center">
+                      <a href="{{ path('admin_users_show', {'id': report.userId}) }}">
+                        <button type="button" class="btn btn-light">show</button>
+                      </a>
+                    </td>
+                  </tr>
+                  {% else %}
+                    <tr><td colspan="7" id="empty-cell" class="{{app.user.theme == 'dark' ? 'text-gray'}}">No login found</td></tr>
+                  {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Pagination -->
+    <div class="d-flex justify-content-end">
+      {{ knp_pagination_render(loginReport) }}
+    </div>
+  </div>
+  {% include 'admin/_partials/footer.html.twig' %}
+</main>

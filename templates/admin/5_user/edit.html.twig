@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+  {% block meta %}{% include 'admin/_partials/meta.html.twig' %}{% endblock %}
+
+  {% block title %}
+    {% if user.firstName and user.lastName %}
+        {{user.firstName}} {{user.lastName }} | Edit profile
+    {% elseif user.firstName %}
+        {{user.firstName}} | Edit profile
+    {% elseif user.lastName %}
+        {{user.lastName}} | Edit profile
+    {% else %}
+        {{user.email}} | Edit profile
+    {% endif %}
+  {% endblock %}
+
+  {% block stylesheets %}{{ encore_entry_link_tags('admin') }}{% endblock %}
+
+{% block body %}
+
+  <div class="bg-soft">
+    <!-- top navigation -->
+    {% include 'admin/_partials/navbar.html.twig' %}
+
+    <div class="container-fluid bg-{{ app.user.theme == 'light' ? 'soft' : 'dark' }}">
+       <div class="row">
+          <div class="col-12">
+
+          <!-- Left sidebar  -->
+          {% include 'admin/_partials/left-sidebar.html.twig' %}
+
+          <!-- edit content  -->
+          {% include 'admin/5_user/partials/_edit-form.html.twig' with {'button_label': 'Update'} %}
+
+
+          <a href="{{ path('admin_users_index') }}">back to list</a>
+
+          {% include 'admin/5_user/partials/_delete_form.html.twig' %}
+          </div>
+       </div>
+    </div>
+  </div>
+
+  {% block javascripts %}{{ encore_entry_script_tags('admin') }}{% endblock %}
+
+{% endblock %}

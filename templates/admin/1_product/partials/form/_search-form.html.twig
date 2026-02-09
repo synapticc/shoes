@@ -1,0 +1,158 @@
+
+<div class="col-6">
+{{ form_start(searchForm,
+  {'attr': {
+    'class': 'search-form-product',
+    'data-turbo':"false"}}) }}
+  <div class="row justify-content-start">
+      <div class="col-8 pr-0">
+        <div class="input-group">
+          <span class="input-group-text" id="topbar-addon"><span class="fas fa-search"></span></span>
+          <!-- Search input -->
+          {{ form_widget(searchForm.q, {'attr':
+            {'class': 'form-control',
+             'placeholder': search,
+             'aria-label': 'Search',
+             'title': 'Search',
+             'aria-describedby': 'search'}}) }}
+        </div>
+        <div class="form-check">
+          {{ form_label(
+              searchForm._exact, null,
+              {'label': 'exact phrase',
+              'label_attr': {
+                'class': app.user.theme == 'dark' ? 'form-check-label text-gray-500',
+                'title': 'Search for exact phrase.'}}) }}
+
+          {{ form_widget(searchForm._exact, {'attr':
+            {'class': 'form-check-input',
+             'aria-label': 'Check exact search',
+             'aria-describedby': 'checkbox'}}) }}
+        </div>
+      </div>
+
+      <div class="col px-0">
+        <!-- Search button -->
+        <button title="Search for a product by name or by brand" type="submit" class="btn px-5 btn-{{ app.user.theme == 'light' ? 'white' : 'gray' }} ml-2">Search</button>
+      </div>
+
+  </div>
+  <div class="row justify-content-start">
+    <!-- Brands select -->
+    <div class="col-3 pr-1">
+      {{ form_widget(searchForm.search_brands, {'attr':
+          {'aria-label': 'Brands',
+           'aria-describedby': 'Brands',
+           'slim-select': '',
+           'data-placeholder': 'Brands',
+           'data-show-search': 'true',
+           'data-search-msg': 'No record found.',
+           'data-allow-deselect': 'true',
+           'data-search-highlight': 'true',
+           'data-selected': get.search_brands is defined ? 'Brands',
+           }}) }}
+    </div>
+    <!-- Category select -->
+    <div class="col-3 px-0 pr-1">
+      {{ form_widget(searchForm.search_categories, {'attr':
+          {'aria-label': 'Categories',
+           'aria-describedby': 'Categories',
+           'slim-select': '',
+           'data-placeholder': 'Categories',
+           'data-show-search': 'true',
+           'data-search-msg': 'No record found.',
+           'data-allow-deselect': 'true',
+           'data-search-highlight': 'true',
+           'data-selected': get.search_categories is defined ? 'Categories',
+           }}) }}
+    </div>
+    <!-- Occasion select -->
+    <div class="col-3 px-0">
+      {{ form_widget(searchForm.search_occasions, {'attr':
+          {'aria-label': 'Occasions',
+           'aria-describedby': 'Occasions',
+           'slim-select': '',
+           'data-placeholder': 'Occasions',
+           'data-show-search': 'true',
+           'data-search-msg': 'No record found.',
+           'data-allow-deselect': 'true',
+           'data-search-highlight': 'true',
+           'data-selected': get.search_occasions is defined ? 'Occasions',
+           }}) }}
+    </div>
+    <!-- Type select -->
+    <div class="col-3 pl-1">
+      {{ form_widget(searchForm.search_types, {'attr':
+          {'aria-label': 'Types',
+           'aria-describedby': 'Types',
+           'slim-select': '',
+           'data-placeholder': 'Types',
+           'data-show-search': 'true',
+           'data-search-msg': 'No record found.',
+           'data-allow-deselect': 'true',
+           'data-search-highlight': 'true',
+           'data-selected': get.search_types is defined ? 'Types',
+           }}) }}
+    </div>
+  </div>
+
+  <div class="row justify-content-start mt-1">
+    <!-- Colors select -->
+    <div class="col-3 pr-1">
+      {{ form_widget(searchForm.search_colors, {'attr':
+          {'aria-label': 'Colors',
+           'aria-describedby': 'Colors',
+           'slim-select': '',
+           'data-placeholder': 'Colors',
+           'data-show-search': 'true',
+           'data-search-msg': 'No record found.',
+           'data-allow-deselect': 'true',
+           'data-search-highlight': 'true',
+           'data-selected': get.search_colors is defined ? 'Colors',
+           }}) }}
+    </div>
+    <!-- Fabrics select -->
+    <div class="col-3 px-0 pr-1">
+      {{ form_widget(searchForm.search_fabrics, {'attr':
+          {'aria-label': 'Fabrics',
+           'aria-describedby': 'Fabrics',
+           'slim-select': '',
+           'data-placeholder': 'Fabrics',
+           'data-show-search': 'true',
+           'data-search-msg': 'No record found.',
+           'data-allow-deselect': 'true',
+           'data-search-highlight': 'true',
+           'data-selected': get.search_fabrics is defined ? 'Fabrics',
+           }}) }}
+    </div>
+    <!-- Textures select -->
+    <div class="col-3 px-0">
+      {{ form_widget(searchForm.search_textures, {'attr':
+          {'aria-label': 'Textures',
+           'aria-describedby': 'Textures',
+           'slim-select': '',
+           'data-placeholder': 'Textures',
+           'data-show-search': 'true',
+           'data-search-msg': 'No record found.',
+           'data-allow-deselect': 'true',
+           'data-search-highlight': 'true',
+           'data-selected': get.search_textures is defined ? 'Textures',
+           }}) }}
+    </div>
+    <!-- Tags select -->
+    <div class="col-3 pl-1">
+      {{ form_widget(searchForm.search_tags, {'attr':
+          {'aria-label': 'Tags',
+           'aria-describedby': 'Tags',
+           'slim-select': '',
+           'data-placeholder': 'Tags',
+           'data-show-search': 'true',
+           'data-search-msg': 'No record found.',
+           'data-allow-deselect': 'true',
+           'data-search-highlight': 'true',
+           'data-selected': get.search_tags is defined ? 'Tags',
+           }}) }}
+    </div>
+  </div>
+  {{ form_end(searchForm, {render_rest: false}) }}
+</div>

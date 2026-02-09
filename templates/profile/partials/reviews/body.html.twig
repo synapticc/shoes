@@ -1,0 +1,152 @@
+
+<!-- main starts -->
+<main class="ps-main">
+  <div class="profile-container rounded bg-white mt-5 mb-5">
+    <div class="row">
+      <!-- Sidebar menu -->
+      <div class="col-md-3">
+        {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+      </div>
+      <!-- Middle section form -->
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center mb-30 mt-30">
+          <h3 class="text-left">Reviews</h3>
+        </div>
+        <div class="ps-cart-listing">
+          <table class="table ps-cart__table" id="cart-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Product</th>
+                <th>Uploaded</th>
+                <th>Thumbnail</th>
+                <th>Reviews</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for review in reviews %}
+             <tr>
+              <td>{{loop.index}}</td>
+              <td><a class="ps-product__preview"
+                 href="{{ path(
+                          'store_details',
+                          { 'brand': review.brand_full|slug,
+                            'name': (review.name|title)|slug,
+                            'id': nzo_encrypt(review.productDataId)
+                          }) }}"
+                 target="_blank">{{review.brand_full}} {{review.name}} {{review.type_full}}</a></td>
+              <td>
+                {% if review.image %}
+                <div class="d-flex justify-content-start">
+                  <div class="card text-center mx-1 review-thumbnail">
+                    <img title="Click to enlarge" src="{{asset(review.image)}}" class="card-img-top" alt="{{review.brand_full}} {{review.name}} {{review.type_full}}" zoombox>
+                    <div class="card-body text-center">
+                      <p class="card-text">{{review.pic_created|format_datetime('short', 'short', locale='en')}} </p>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              </td>
+              <td>
+                <div class="d-flex justify-content-center">
+                {% for thumbnail in review.thumbnails %}
+                  <div class="card text-center mx-1 review-thumbnail">
+                    <img src="{{asset(thumbnail.imageMedium)}}" class="card-img-top" alt="">
+                    <div class="card-body text-center">
+                      <p class="card-text"><span class="text-bold">{{thumbnail.colors_full}}</span><br> ({{thumbnail.fabrics_full}})</p>
+                      <p class="card-text">{{thumbnail.qty}}pcs : Rs {{thumbnail.total|number_format(2, '.', ',')}} </p>
+                    </div>
+                  </div>
+                {% endfor %}
+                </div>
+               </td>
+               <td>
+                 <div class="ps-review" id="ps-review">
+                   <div class="ps-review__content">
+                     <header class="d-flex justify-content-between">
+                      <div class="">
+                        {% if review.rating %}
+                          {% for i in 1..review.rating %}
+                            {% include '/__icons/q-t/_star.html.twig' with {'width': 20, 'height': 20, 'class': 'fill-yellow', 'label': 'Rating: ' ~ review.rating ~ '/5'} only %}
+                          {% endfor %}
+                        {% endif %}
+                      </div>
+                      <p title="{{review.created|ago }}">{{review.created|format_datetime('short', 'short', locale='en')}}</p>
+                     </header>
+                     <h5 class="pb-20">{{review.headline}}</h5>
+                     <p>{{review.comment}}</p>
+                     <footer class="d-flex justify-content-end">
+                      <p>
+                      {% if review.like %}
+                        {% include '__icons/i-l/_love.html.twig' with { 'class': 'fill-main', 'label': 'Like the product', 'id':'like-icon' ,'width': 20, 'height': 20} only %}
+                      {% elseif review.like is same as(null) %}
+                      {% elseif review.like is same as(false) %}
+                        {% include '__icons/i-l/_love_not.html.twig' with { 'class': 'fill-yellow',  'label': 'Dislike the product', 'id':'dislike-icon' ,'width': 20, 'height': 20} only %}
+                      {% endif %}
+
+                      {% if review.delivery %}
+                        {% include '__icons/q-t/_thumbs-up.html.twig' with {  'class': 'fill-main', 'label': 'Delivery satisfactory', 'id':'helpful-icon' ,'width': 20, 'height': 20} only %}
+                      {% elseif review.delivery is same as(null) %}
+                      {% elseif review.delivery is same as(false) %}
+                        {% include '__icons/q-t/_thumbs-down.html.twig' with {
+                        'class': 'fill-yellow', 'label': 'Delivery disappointing', 'id':'not-helpful-icon' ,'width': 20, 'height': 20} only %}
+                      {% endif %}
+
+                      {% if review.recommend %}
+                        {% include '__icons/m-p/_others_solid.html.twig' with {'class':'fill-main', 'label': 'Would recommend to others', 'id':'recommend-icon' ,'width': 20, 'height': 20} only %}
+                      {% elseif review.recommend is same as(null) %}
+                      {% elseif review.recommend is same as(false) %}
+                        {% include '__icons/m-p/_others_not_solid.html.twig' with { 'class':'fill-yellow','label': 'Would not recommend to others', 'id':'not-recommend-icon' ,'width': 20, 'height': 20} only %}
+                      {% endif %}
+                      </p>
+                     </footer>
+
+
+                    <!-- Fit -->
+                    <div class="row justify-content-center" id="slider-square">
+                      <div class="col">
+                        <span class="">Fitness: <span class="text-bold"> {{sliderFit[review.fit]|capitalize}}</span></span>
+                      </div>
+                    </div>
+                     <!-- Width -->
+                     <div class="row justify-content-center" id="slider-square">
+                       <div class="col">
+                         <span class="">Width:
+                            <span class="text-bold">{{sliderWidth[review.width]|capitalize}}
+                            </span>
+                          </span>
+                       </div>
+                     </div>
+                     <!-- Comfort -->
+                     <div class="row justify-content-center" id="slider-square">
+                       <div class="col">
+                         <span class="">Comfort:
+                            <span class="text-bold">{{sliderComfort[review.comfort]|capitalize}}
+                            </span>
+                        </span>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+                 <div class="d-flex justify-content-end" data-turbo=false>
+                  <a href="{{ path('review_edit', {'review': review.id}) }}" title="Edit your review">
+                    <button type="button" class="btn btn-warning">edit</button></a>
+               </div>
+               </td>
+             </tr>
+             {% else %}
+               <!-- No results message -->
+               <tr><td colspan="5" id="empty-cell" class="text-gray">No review found.
+               <button type="button" name="button" class="btn btn-transparent btn-info text-white">
+                <a title="Post a review"  class="" href="{{ path('review_new_list') }}"><span>{% include '/__icons/a-d/_bar-chart.html.twig' with {'label': 'Add a new review',  'width': 24, 'height': 24} only %}</span>Post Review</a></button> </td></tr>
+            {% endfor %}
+
+            </tbody>
+           </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>
+<!-- main ends -->

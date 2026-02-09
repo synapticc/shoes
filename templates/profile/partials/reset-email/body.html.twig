@@ -1,0 +1,52 @@
+<!-- Main starts -->
+<main class="ps-main">
+  <div class="profile-container">
+    <div class="row">
+      <!-- Sidebar menu -->
+      <div class="col-md-3">
+          {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+      </div>
+      <!-- Middle section form -->
+      <div class="col-md-7 ml-30 mr-20  border-right">
+        <!-- Main heading -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-right">Reset your email</h4>
+        </div>
+        <!-- Sub heading -->
+        <h5 class="pb-20 pb-30">Enter a new email.</h5>
+        <!-- Main message -->
+        <p>After submittting the new email, your previous email will be deactivated and should not be used for authentication.</p>
+        <!-- Form starts -->
+        {{ form_start(requestForm) }}
+          <!-- Email -->
+          <div class="row">
+            <div class="col-md-10">
+              {{ form_label(requestForm.email, null, {
+                  'label': 'Email',
+                  'label_attr': {'class': ''}}) }}
+              {{ form_widget(requestForm.email, {'attr': {
+                  'class': 'form-style',
+                   'placeholder': 'Enter your new email',
+                   'autocomplete': 'on',
+                   'autofocus':'on' }}) }}
+              {{ form_errors(requestForm.email) }}
+
+              {% for flash_error in app.flashes('same_email_error') %}
+                <div class="alert alert-danger text-center text-white mt-1" role="alert">{{ flash_error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+          <!-- Save button -->
+          <div class="row">
+            <div class="col-2 mt-50 text-right">
+              <button class="btn btn-warning">Submit New Email</button>
+            </div>
+          </div>
+       {{ form_end(requestForm) }}
+       <!-- Form ends -->
+      </div>
+    </div>
+  </div>
+  {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>
+<!-- Main ends -->

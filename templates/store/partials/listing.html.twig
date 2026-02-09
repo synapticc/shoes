@@ -1,0 +1,162 @@
+{# templates/store/partials/listing.html.twig #}
+{% include 'store/partials/footer/banner-services.html.twig' %}
+
+<main class="ps-main">
+    <div class="products-wrap pt-80 pb-80">
+        <!-- Filter Sidebar -->
+        <form class="products-sidebar" ps-sidebar method="get" id="filter">
+            {% if get.q is defined %}
+                <input name="q" value="{{ get.q }}" hidden>
+            {% endif %}
+
+            {# Set cache variables for better performance #}
+            {% set hasActiveFilters = app.request.query.all|length > 0 %}
+            {% set brandCount = count.brand|keys %}
+            {% set colorCount = count.color|keys %}
+            {% set categoryCount = count.category|keys %}
+            {% set fabricCount = count.fabric|keys %}
+            {% set textureCount = count.texture|keys %}
+            {% set typeCount = count.type|keys %}
+            {% set occasionCount = count.occasion|keys %}
+            {% set activeBrands = get.brand|default([]) %}
+            {% set activeColors = get.color|default([]) %}
+            {% set activeCategories = get.category|default([]) %}
+            {% set activeFabrics = get.fabrics|default([]) %}
+            {% set activeTextures = get.textures|default([]) %}
+            {% set activeTypes = get.type|default([]) %}
+            {% set activeOccasions = get.occasion|default([]) %}
+
+            <!-- Reset All Filters Button -->
+            {% if hasActiveFilters %}
+                <aside class="ps-widget--sidebar">
+                    <div class="ps-widget__header mt-40">
+                        <h4>
+                            <button title="Reset all filters" class="btn btn-warning" id="filter-reset-all" type="button">
+                                Reset all
+                            </button>
+                        </h4>
+                    </div>
+                </aside>
+            {% endif %}
+
+            <!-- Brand Filter -->
+            {% include 'store/partials/filters/filter-brand.html.twig' with {
+                brands: brands,
+                brandShow: brandShow,
+                brandHidden: brandHidden,
+                activeBrands: activeBrands,
+                brandCount: brandCount,
+                brandPair: brandPair,
+                brandCounts: count.brand
+            } only %}
+
+            <!-- Color Filter -->
+            {% include 'store/partials/filters/filter-color.html.twig' with {
+                colors: colors,
+                activeColors: activeColors,
+                colorCount: colorCount,
+                colorPair: colorPair,
+                colorExclude: get.color_exclude|default([]),
+                colorCounts: count.color
+            } only %}
+
+            <!-- Size Filter -->
+            {# {% include 'store/partials/filters/filter-size.html.twig' with {
+                kidSizes: kidSizes,
+                adultSizes: adultSizes,
+                sockSizes: sockSizes,
+                activeSizes: get.size|default([]),
+                sizePair: sizePair
+            } only %}
+
+            <!-- Price Range Filter -->
+            {% include 'store/partials/filters/filter-price.html.twig' with {
+                priceRange: price_range,
+                price: get.price|default({min: 500, max: 25000, order: 'nameAsc'})
+            } only %}
+
+            <!-- Category Filter -->
+            {% include 'store/partials/filters/filter-category.html.twig' with {
+                categories: categories,
+                activeCategories: activeCategories,
+                categoryCount: categoryCount,
+                categoryPair: categoryPair,
+                categoryCounts: count.category
+            } only %}
+
+            <!-- Fabrics Filter -->
+            {% include 'store/partials/filters/filter-fabrics.html.twig' with {
+                fabrics: fabrics,
+                activeFabrics: activeFabrics,
+                fabricCount: fabricCount,
+                fabricPair: fabricPair,
+                fabricCounts: count.fabrics
+            } only %}
+
+            <!-- Textures Filter -->
+            {% include 'store/partials/filters/filter-textures.html.twig' with {
+                textures: textures,
+                activeTextures: activeTextures,
+                textureCount: textureCount,
+                texturePair: texturePair,
+                textureCounts: count.textures
+            } only %}
+
+            <!-- Occasions Filter -->
+            {% include 'store/partials/filters/filter-occasions.html.twig' with {
+                occasions: occasions,
+                activeOccasions: activeOccasions,
+                occasionCount: occasionCount,
+                occasionPair: occasionPair,
+                occasionCounts: count.occasion
+            } only %}
+
+            <!-- Types Filter -->
+            {% include 'store/partials/filters/filter-types.html.twig' with {
+                types: types,
+                activeTypes: activeTypes,
+                typeCount: typeCount,
+                typePair: typePair,
+                typeCounts: count.type
+            } only %}
+
+            <!-- Tags Filter -->
+            {% include 'store/partials/filters/filter-tags.html.twig' with {
+                tags: tags,
+                activeTags: get.tags|default([])
+            } only %}
+        </form>
+
+        <!-- Products Section -->
+        <div class="products-contents" ps-products>
+            <!-- Sort and Filter Actions -->
+            {% include 'store/partials/products/product-actions.html.twig' with {
+                sorting: sorting,
+                sortOrder: get.price.order|default('nameAsc'),
+                searchQuery: get.q|default(null)
+            } only %}
+
+            <!-- Product Results Count -->
+            {% include 'store/partials/products/product-results.html.twig' with {
+                productData: productData
+            } only %}
+
+            <!-- Products Grid -->
+            {% include 'store/partials/products/product-grid.html.twig' with {
+                products: productData,
+                searchQuery: get.q|default(null),
+                filters: get
+            } only %} #}
+
+            <!-- Pagination -->
+            {% if productData %}
+                <div class="ps-product-action">
+                    {{ knp_pagination_render(productData, 'store/partials/pagination/ps-pagination.html.twig') }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Subscribe Section -->
+    {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>

@@ -1,0 +1,216 @@
+
+  <!-- header sidebar  -->
+  {# <div class="header--sidebar"></div> #}
+
+  <!-- header starts -->
+  <header class="header">
+    <div class="container-fluid">
+      {% for flash_message in app.flashes('email_verified') %}
+      <div class="alert alert-success text-center" role="alert">{{ flash_message }}</div>
+      {% endfor %}
+
+      {% for password_reset in app.flashes('password_reset') %}
+      <div class="row justify-content-center">
+        <div class="col-9 mt-4">
+          <div class="alert alert-success text-white text-center" role="alert">{{ password_reset }}<a href="{{ path('app_login') }}">Login</a> with the new password.</div>
+        </div>
+      </div>
+      {% endfor %}
+      <div class="header__top">
+          <div class="row">
+                <div class="col-lg-6 col-md-8 col-sm-6 col-xs-12 ">
+                  <p>75, Old Ripailles Street, Plaines Wilhems, Mauritius  -  Hotline: 435-7345 - 466-8266</p>
+                </div>
+                <div class="col-lg-6 col-md-4 col-sm-6 col-xs-12 ">
+                  <div class="header__actions">
+
+                  {# Logged user in nav bar #}
+                  {% if app.user %}
+                      {# Extract username from email #}
+                      {% set user = app.user.username |split('@', 2) %}
+                          <a
+                              href="{{path( 'user_profile') }}"
+                              target="_self">{{user[0]}}</a>
+                          <a href="{{ path('app_logout') }}"
+                             data-turbo="false">Logout</a>
+                  {% else %}
+                        <a href="{{ path('app_login') }}">Login</a>
+                        <a href="{{ path('app_register') }}">Sign Up</a>
+                  {% endif %}
+
+                    <div class="btn-group ps-dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">USD<i class="fa fa-angle-down"></i></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#"><img src="{{asset('build/images/store/flag/usa.svg') }}" alt=""> USD</a></li>
+                        <li><a href="#"><img src="{{asset('build/images/store/flag/singapore.svg') }}" alt=""> SGD</a></li>
+                        <li><a href="#"><img src="{{asset('build/images/store/flag/japan.svg') }}" alt=""> JPN</a></li>
+                      </ul>
+                    </div>
+                    <div class="btn-group ps-dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Language<i class="fa fa-angle-down"></i></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">English</a></li>
+                        <li><a href="#">Japanese</a></li>
+                        <li><a href="#">Chinese</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+          </div>
+        </div>
+    </div>
+
+    <nav class="navigation">
+      <div class="container-fluid">
+        {% if app.user %}
+            {% if app.user.userDelete %}
+                {% if app.user.userDelete.toBeDeleted is same as(true) %}
+                  <div class="row my-3">
+                    <div class="col justify-content-right">
+                        <h4 class="text-right">{% include 'profile/partials/sidebar/delete/_undo_delete_form.html.twig' %}</h4>
+                    </div>
+                  </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+        <div class="navigation__column left">
+          <div class="header__logo"><a class="ps-logo" href="{{ path('store') }}"><img src="{{asset('build/images/store/logo.png')}}" alt=""></a></div>
+        </div>
+
+        {% include 'store/partials/header/_navigation-center.html.twig' %}
+
+        <div class="navigation__column right">
+          {% if app.current_route  == 'store_details' %}
+          <form method="get" class="ps-search--header" action="{{ path('store') }}">
+            <!-- search input -->
+            <input type="text" name="q" class="form-control"
+               placeholder="Search Product…" aria-describedby="search"
+               value="" hx-target="#search-results" hx-get="/search"
+               hx-swap="outerHTML"
+               hx-trigger="keyup changed delay:10ms, search">
+
+             <!-- search button -->
+             <button><i class="ps-icon-search"></i></button>
+          </form>
+          {% elseif app.current_route  == 'store' %}
+          <form method="get" class="ps-search--header" action="{{ path('store') }}">
+             <!-- search input -->
+             <input type="text" name="q" class="form-control"
+               placeholder="Search Product…" aria-describedby="search"
+               value="{% if get.q is defined %}{{get.q}}{% else %}{% endif %}" hx-target="#search-results" hx-get="/search"
+               hx-swap="outerHTML"
+               hx-trigger="keyup changed delay:10ms, search">
+
+             <!-- search button -->
+             <button><i class="ps-icon-search"></i></button>
+          </form>
+
+                <!-- Search form -->
+            {#   {{ form_start(searchForm, {'attr':
+                    {'class': 'ps-search--header'}}) }}
+
+                      <!-- search input -->
+                     {{ form_widget(searchForm.q, {'attr':
+                        {'class': 'form-control',
+                         'placeholder': 'Search Product…',
+                         'aria-label': 'Search Product…',
+                         'aria-describedby': 'search',
+                         'hx-target': '#search-results',
+                         'hx-get': '/search',
+                         'hx-swap': 'outerHTML'
+                         }}) }}
+
+                         #}
+
+                    {% for query in get|keys %}
+                      {% if get[query] is iterable %}
+                        {% for qry in get[query] %}
+                          <input hidden name="{{query}}[]" value="{{qry}}">
+                        {% endfor %}
+                      {% else %}
+                          {% if query != 'q' %}
+                            {% if query == 'minPrice' %}
+                                <input hidden name="price[min]" value="{{get[query]}}">
+                            {% elseif query == 'maxPrice' %}
+                              <input hidden name="price[max]" value="{{get[query]}}">
+                            {% elseif query == 'orderPrice'%}
+                            <input hidden name="price[order]" value="{{get[query]}}">
+                            {% else %}
+                              <input hidden name="{{query}}" value="{{get[query]}}">
+                          {% endif %}
+                          {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                    {#
+                  {{ form_end(searchForm, {render_rest: false}) }}
+
+                  #}
+                  <!-- end search form -->
+          {% endif %}
+          <div id="search-results"></div>
+          <div class="ps-cart" id="cart-listing" data-cart={{ cartTray ? cartTray.updated}}>
+          {# Logged user  #}
+          {% if app.user %}
+          {# Display the cart content for the first cart #}
+          <a class="ps-cart__toggle" href="{{ path('cart') }}" target="_blank"><span><i>{{ cartTray ? cartTray.items is defined ?  cartTray.items|length : 0 : 0}}</i></span><i class="ps-icon-shopping-cart"></i></a>
+            <div class="ps-cart__listing" >
+              <div class="ps-cart__content">
+              {% if cartTray %}{% if cartTray.items is defined %}
+                {% for product in cartTray.items|slice(0, 2) %}
+                <div class="ps-cart-item"></a>
+                  <div class="ps-cart-item__thumbnail">
+                    <a
+                      href="{{ path('store_details', {
+                                    'brand': product.brand_full|slug,
+                                    'name': (product.name|title)|slug,
+                                    'id': nzo_encrypt(product.productDataId)
+                                    }) }}"></a>
+                    <img
+                        src="{% if product.imageSmall %}{{asset(product.imageSmall) }}{% else %} {{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}"
+                        alt="{{product.name}}  - (cart preview)">
+
+                  </div>
+                  <div class="ps-cart-item__content">
+                    <a class="ps-cart-item__title"   href="{{ path('store_details', {
+                                  'brand': product.brand_full|slug,
+                                  'name': (product.name|title)|slug,
+                                  'id': nzo_encrypt(product.productDataId)
+                                  }) }}">{{product.name}} (Size {{product.size}})</a>
+                    <p><span>Quantity: <i>{{product.quantity}}</i></span>
+                       <br>
+                      <span>Total:<i>Rs {{(product.sellingPrice * product.quantity)|format_number({fraction_digit: 0})}}</i></span></p>
+                  </div>
+                </div>
+                {% endfor %}
+              {% endif %}{% endif %}
+              </div>
+              <div class="ps-cart__total">
+                <p>Number of items:<span>{{ cartTray ? cartTray.totalQty : 0 }}</span></p>
+                <p>Total:<span>Rs {{ cartTray ? cartTray.total|format_number({fraction_digit: 2}) : '0.00' }}</span></p>
+              </div>
+              <div class="ps-cart__footer"><a class="ps-btn"  href="{{ path('cart') }}" target="_blank">Check out<i class="ps-icon-arrow-left"></i></a></div>
+            </div>
+          </div>
+          {# Anonymous #}
+          {% else %}
+            <a class="ps-cart__toggle" href="{{ path('cart') }}" target="_blank"><span><i>{{ cartTray ? cartTray.items is defined ? cartTray.items|length : 0 : 0}}</i></span><i class="ps-icon-shopping-cart"></i></a>
+            <div class="ps-cart__listing">
+              <div class="ps-cart__content">
+                  <div class="ps-cart-item">
+                  <div class="ps-cart-item__thumbnail"><a href="product-detail.html"></a><img src="images/cart-preview/1.jpg" alt=""></div>
+                  <div class="ps-cart-item__content">
+                    <a class="ps-cart-item__title" href="{{ path('cart') }}" target="_blank">
+                      <span>Only logged users can access the cart.</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="ps-cart__footer"><a class="ps-btn" href="{{ path('cart') }}" target="_blank">Sign in<i class="ps-icon-arrow-left"></i></a></div>
+            </div>
+          {% endif %}
+          </div>
+          <div class="menu-toggle"><span></span></div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <!-- header ends -->

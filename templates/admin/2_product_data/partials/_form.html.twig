@@ -1,0 +1,509 @@
+<!-- Main starts -->
+<main class="content">
+  <!-- Topmost navbar -->
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+        <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+      </li>
+      <li class="breadcrumb-item">Product details</li>
+      <li class="breadcrumb-item active {{ app.user.theme == 'dark' ? 'text-gray-700' }}" aria-current="page">
+        {% if app.current_route == 'admin_product_data_edit' %}
+          <a href="{{ path('admin_product_data_edit', {'id': app.request.get('id'), 'supplier': app.request.get('supplier') }) }}">Edit Detail</a>
+        {% else %}
+          <a href="{{ path('admin_product_data_new', {'product': app.request.get('product'), 'supplier': app.request.get('supplier')}) }}">New Detail</a>
+        {% endif %}
+      </li>
+
+    </ol>
+  </nav>
+  <!-- Page overview & Search bar -->
+  <div class="d-flex justify-content-start w-100 flex-wrap">
+    {% if app.current_route == 'admin_product_data_new' %}
+      {% set features =
+          ['Create a new product detail',
+           'Configure bottom "Related Product" slider'] %}
+    {% else %}
+      {% set features =
+          ['Edit product detail',
+           'Configure bottom "Related Product" slider'] %}
+    {% endif %}
+
+    <!-- Page overview -->
+    <div class="col-3 mb-3 mb-lg-0 pr-3">
+      <!-- Main heading -->
+      <h1 class="h4 pb-3">{{app.current_route =='admin_product_data_new' ?  'New' : 'Edit'}} detail</h1>
+      <!-- Features list -->
+      <ul>
+        {% for feature in features %}
+        <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <!-- Search form -->
+    {% include 'admin/2_product_data/partials/_search-form.html.twig' %}
+  </div>
+  <!-- Product Data form starts -->
+  <div class="row">
+    <div class="col-xl-8 col-lg-9 col-md-10 mb-4">
+      <div class="card border-light shadow-sm components-section">
+        <div class="card-body {{ app.user.theme == 'dark' ? 'bg-gray-200'  }}">
+          {% if app.current_route  == 'admin_product_data_edit' and delete %}
+          <!-- 'Delete product data' button row -->
+          <div class="row justify-content-end">
+            <div class="col-2 d-flex justify-content-end">
+              {% include 'admin/2_product_data/partials/_delete_form.html.twig' %}
+            </div>
+          </div>
+          {% endif %}
+          <!-- Form row -->
+          <div class="row mb-4 mt-1">
+            <section class="forms-sample">
+              <!-- Form starts -->
+              {{ form_start(form,
+                {'attr':
+                  {'id': app.current_route=='admin_product_data_new'
+                        ? 'admin_product_data_new' : 'admin_product_data_edit',
+                    'novalidate': 'novalidate'}}) }}
+              <!-- Product -->
+              <div class="form-group">
+                {# {{ form_label(form.product, 'Product: ') }} #}
+                <div class="row">
+                  <!-- Product brand icon -->
+                  <div class="col-3"  id="brand-icon" {% if product.brand is defined %}style="background-image: url({{asset('build/images/store/color-patches/' ~ product.brand ~ '.webp')}} )" {% endif %}></div>
+                  <!-- Product name -->
+                  <div class="col-6 align-self-center">
+                    <select
+                      id="product_data_form_product"
+                      name="product_data_form[product]"
+                      class="form-control"
+                      data-product>
+                      <option value="{{product.productId}}">
+                    {{product.productId}} : {{product.category_full}}'s {{product.brand_full}} {{' ' ~ product.name ~ ' ' ~ product.type_full  }}
+                      </option>
+                    </select>
+                  </div>
+                  <!-- Actions buttons -->
+                  <div class="col-3 p-0">
+                    <!-- Edit button -->
+                    <a title="Edit main product" href="{{ path('admin_product_edit',{'id': product.productId}) }}"><button type="button" class="btn btn-warning">edit</button>
+                    </a>
+                    <!-- Show button -->
+                    <a title="Show main product" href="{{ path('admin_product_show',{'id': product.productId}) }}"><button type="button" class="btn btn-success">show</button>
+                    </a>
+                    <!-- List button -->
+                    <a title="List all {{product.name ~ ' ' ~ product.type_full}} products" href="{{ path('admin_product_data_index', {'product': product.productId, 'product_name': product.category_full ~ ' ' ~ product.name ~ ' ' ~ product.type_full }) }}">
+                      <button type="button" class="btn btn-lighten">list</button>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <!-- Supplier & Color & Size -->
+              <div class="row mb-3 mt-3">
+                <!-- Supplier -->
+                <div class="col-12 col-lg-5">
+                  {{ form_label(form.supplier, null,
+                          {'label': 'Supplier: ',}) }}
+                  {% if app.request.get('supplier') %}
+                  <select
+                    id="product_data_form_supplier_supplier"
+                     name="product_data_form[supplier][supplier]"
+                     class=""
+                     required
+                     placeholder="Choose color"
+                     data-suppliers="{{suppliers ? suppliers|json_encode()}}"
+                     data-sizes="{{sizes ? sizes|json_encode()}}"
+                     data-all-sizes="{{allSizes ? allSizes|json_encode()}}"
+                     data-all-colors="{{allColors ? allColors|json_encode()}}"
+                     data-qty-by-supplier="{{qtyBySupplier ? qtyBySupplier|json_encode()}}"
+                     data-supplier-status="true">
+                    {% for option in form.supplier.supplier.vars.choices %}
+                        <option value="{{option.value}}" {{ option.value== app.request.get('supplier') ? 'selected' }} >{{option.label}}</option>
+                    {% endfor %}
+                  </select>
+                  {% else %}
+                  {{ form_widget(form.supplier.supplier,
+                     {'attr':
+                      {'class': '',
+                        'placeholder': 'Choose color',
+                        'data-suppliers':  suppliers ? suppliers|json_encode(),
+                        'data-sizes':  sizes ? sizes|json_encode(),
+                        'data-all-sizes':  allSizes ? allSizes|json_encode(),
+                        'data-all-colors':  allColors ? allColors|json_encode(),
+                        'data-qty-by-supplier':  qtyBySupplier ? qtyBySupplier|json_encode(),
+                        'data-supplier-status': 'false' }}) }}
+                  {% endif %}
+                </div>
+
+                <!-- Color -->
+                <div class="col-8 col-lg-4" title="Choose a supplier first.">
+                 {{ form_label(form.color, null,
+                    {'label': 'Color: ',}) }}
+                  {{ form_widget(form.color,
+                    {'attr':
+                      {'class': 'ml-1',}}) }}
+                </div>
+
+                <!-- Size -->
+                <div class="col-4 col-lg-3" title="Choose a supplier and color first.">
+                  {{ form_label(form.size, null,
+                      {'label': 'Size: ',}) }}
+                  {{ form_widget(form.size, {'attr':
+                      {'class': '',
+                       'data-original-size': product.size is defined ? product.size : '',
+                       'data-original-color':  product.colorId is defined ? product.colorId : '' }})}}
+                </div>
+              </div>
+              <!-- Images set -->
+              {% for pc in product.colors %}
+              <div class="row hide" data-color="{{pc.pcId}}" id="select-thumbnail">
+                <div class="thumbnail-cell">
+                  <div class="d-flex justify-content-start">
+                    <!-- Image 1 -->
+                    <div class="card d-flex justify-content-center text-center mx-1 my-3">
+                      <img class="img-fluid rounded-start"
+                          src="{% if pc.imageMedium %}{{asset(pc.imageMedium) }}{% else %}
+                              {{asset('build/images/store/cart-preview/1.jpg') }}{% endif %}" alt="">
+                    </div>
+                    <!-- Image 2 -->
+                    <div class="card d-flex justify-content-center text-center mx-1 my-3">
+                      <img class="img-fluid rounded-start"
+                          src="{% if pc.imageMedium2 %}{{asset(pc.imageMedium2) }}{% else %}
+                              {{asset('build/images/store/cart-preview/1.jpg') }}{% endif %}" alt="">
+                    </div>
+                    <!-- Image 3 -->
+                    <div class="card d-flex justify-content-center text-center mx-1 my-3">
+                      <img class="img-fluid rounded-start"
+                          src="{% if pc.imageMedium3 %}{{asset(pc.imageMedium3) }}{% else %}
+                              {{asset('build/images/store/cart-preview/1.jpg') }}{% endif %}" alt="">
+                    </div>
+                    <!-- Image 4 -->
+                    <div class="card d-flex justify-content-center text-center mx-1 my-3">
+                      <img class="img-fluid rounded-start"
+                          src="{% if pc.imageMedium4 %}{{asset(pc.imageMedium4) }}{% else %}
+                              {{asset('build/images/store/cart-preview/1.jpg') }}{% endif %}" alt="">
+                    </div>
+                    <!-- Image 5 -->
+                    <div class="card d-flex justify-content-center text-center mx-1 my-3">
+                      <img class="img-fluid rounded-start" src="{% if pc.imageMedium5 %}{{asset(pc.imageMedium5) }}{% else %}
+                        {{asset('build/images/store/cart-preview/1.jpg') }}{% endif %}" alt="">
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-start">
+                    <div class="col">
+                      <h6 class="card-title text-center">
+                        {% if pc.pcId in form.color.vars.choices|keys %}
+                          {{form.color.vars.choices[pc.pcId].label}}
+                        {% endif %}
+                        <!-- Edit button -->
+                        <a title="Edit product color" href="{{ path('admin_product_edit', {'id': product.productId}) ~ '#' ~ pc.pcId }}"><button type="button" class="btn btn-warning">Edit color</button></a>
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+              <!-- Column 1: Profit margin & Cost price & Selling price
+                   Column 2: Quantity (stock) & Quantity (order) & Reorder level -->
+              <div class="row mt-3 mb-3">
+                <div class="col-6">
+                  <!-- Profit margin -->
+                  <div class="col mb-2">
+                    <div class="row">
+                      <div class="col-4">
+                        {{ form_label(form.profit, null,
+                          {'label': 'Profit margin: ',}) }}
+                      </div>
+                      <div class="col-5">
+                        <div class="input-group">
+                          <span class="input-group-text">%</span>
+                          {{ form_widget(form.profit,
+                            {'attr':
+                              {'class': 'form-inline w-50',}}) }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Cost price -->
+                  <div class="col mb-2">
+                    <div class="row">
+                      <div class="col-4">
+                        {{ form_label(form.costPrice, null,
+                          {'label': 'Cost price: ',}) }}
+                      </div>
+                      <div class="col-8">
+                        <div class="input-group">
+                          <span class="input-group-text">Rs</span>
+                          {{ form_widget(form.costPrice,
+                            {'attr':
+                              {'class': 'form-inline w-50',}}) }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Selling price -->
+                  <div class="col mb-2">
+                    <div class="row">
+                      <div class="col-4">
+                        {{ form_label(form.sellingPrice, null,
+                          {'label': 'Selling price:',}) }}
+                      </div>
+                      <div class="col-8">
+                        <div class="input-group">
+                          <span class="input-group-text">Rs</span>
+                          {% if app.current_route  == 'admin_product_data_new' %}
+                            {{form_widget(form.sellingPrice,
+                              {'attr':
+                                {'class': 'form-inline w-50'}}) }}
+                          {% elseif app.current_route  == 'admin_product_data_edit' %}
+                            {{ form_widget(form.sellingPrice,
+                              {'attr':
+                                {'class': 'form-inline w-50',
+                                'data-original-price':  product.sellingPrice
+                                }}) }}
+                          {% endif %}
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Quantity in stock -->
+                <div class="col-6">
+                  <div class="col mb-2">
+                    <div class="row">
+                      <div class="col-5">
+                        {{ form_label(form.qtyInStock, null,
+                          {'label': 'Quantity (stock): ',}) }}
+                      </div>
+                      <div class="col-7">
+                        <div class="input-group">
+                          <span class="input-group-text">pcs</span>
+                          {{ form_widget(form.qtyInStock,
+                            {'attr':
+                              {'class': 'form-inline w-50',}}) }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Quantity on order -->
+                  <div class="col mb-2">
+                    <div class="row">
+                      <div class="col-5">
+                        {{ form_label(form.productDataOrder.qtyOnOrder, null,
+                          {'label': 'Quantity (order): ',}) }}
+                      </div>
+                      <div class="col-7">
+                        <div class="input-group">
+                          <span class="input-group-text">pcs</span>
+                          {{ form_widget(form.productDataOrder.qtyOnOrder,
+                            {'attr':
+                              {'class': 'form-inline w-50',}}) }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Reorder level -->
+                  <div class="col">
+                    <div class="row">
+                      <div class="col-5">
+                        {{ form_label(form.productDataOrder.reorderLevel, null,
+                          {'label': 'Reorder level: ',}) }}
+                      </div>
+                      <div class="col-7">
+                        <div class="input-group">
+                          <span class="input-group-text">pcs</span>
+                          {{ form_widget(form.productDataOrder.reorderLevel,
+                            {'attr':
+                              {'class': 'form-inline w-50',}}) }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Similar show button-->
+              <section>
+                <button
+                  type="button"
+                  class="transparent-btn section-hide"
+                  data-toggle="collapse"
+                  data-target="#similar-product"
+                  data-turbo=false
+                  data-color='bs-indigo'
+                  data-width=35
+                  data-height=35
+                  id="arrow-button">{% include '__icons/a-d/_arrow-down.html.twig' with {'width': 35, 'height': 35, 'class': 'bs-indigo','dataset': ''} %}</button>
+                <h5>Similar</h5>
+                <hr class="hr">
+              </section>
+
+              <!-- Similar product hidden  -->
+              <section class="collapse form-control mb-3 p-3 py-4" id="similar-product">
+                <!-- Maximum slider quantity -->
+                <div class="row mb-4">
+                  <div class="col-8">
+                    <div class="row">
+                      <div class="col-4">
+                        {{ form_label(form.similarProductData.qtySlider, null,
+                          {'label': 'Maximum slider count: ',}) }}
+                      </div>
+                      <div class="col-3">
+                        <div class="input-group">
+                          <span class="input-group-text">items</span>
+                          {{ form_widget(form.similarProductData.qtySlider,
+                            {'attr':
+                              {'class': 'form-inline w-50',}}) }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Similar selects & quantities -->
+                <div class="row mt-3 mb-3">
+                  <!-- Similar size -->
+                  <div class="col-6">
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-3">
+                          {{ form_label(form.similarProductData.sameSize, null,
+                            {'label': 'Same size: ',}) }}
+                        </div>
+                        <div class="col-2">
+                          {{ form_widget(form.similarProductData.sameSize,
+                            {'attr':
+                              {'class': 'p-3 form-check-input bs-indigo'}}) }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Quantity (size) -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-3">
+                          {{ form_label(form.similarProductData.qtySize, null,
+                            {'label': 'Quantity (size): ',}) }}
+                        </div>
+                        <div class="col-4">
+                          <div class="input-group">
+                            <span class="input-group-text">items</span>
+                            {{ form_widget(form.similarProductData.qtySize,
+                              {'attr':
+                                {'class': 'form-inline w-50',}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Sizes -->
+                    <div class="col">
+                      <div class="row">
+                        <div class="col-3">
+                          {{ form_label(form.similarProductData.sizes, null,
+                            {'label': 'Sizes: ',}) }}
+                        </div>
+                        <div class="col-6">
+                          {{ form_widget(form.similarProductData.sizes,{'attr':
+                             {'aria-label': 'Sizes',
+                              'aria-describedby': 'Sizes',
+                              'slim-select': '',
+                              'data-placeholder': 'Sizes',
+                              'data-selected': 'Sizes',
+                              'data-show-search': 'true',
+                              'data-search-msg': 'No record found.',
+                              'data-allow-deselect': 'true',
+                              'data-search-highlight': 'true'}}) }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                    <!-- Same price checkbox -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProductData.samePrice, null,
+                            {'label': 'Same price: ',}) }}
+                        </div>
+                        <div class="col-2">
+                          {{ form_widget(form.similarProductData.samePrice,
+                            {'attr':
+                              {'class': 'p-3 form-check-input bs-indigo'}}) }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Minimum price -->
+                    <div class="col mb-2">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProductData.minPrice, null,
+                            {'label': 'Min. price: ',}) }}
+                        </div>
+                        <div class="col-6">
+                          <div class="input-group">
+                            <span class="input-group-text">Rs</span>
+                            {{ form_widget(form.similarProductData.minPrice,
+                              {'attr':
+                                {'class': 'form-inline w-75',}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Maximum price -->
+                    <div class="col">
+                      <div class="row">
+                        <div class="col-4">
+                          {{ form_label(form.similarProductData.maxPrice, null,
+                            {'label': 'Max. price: ',}) }}
+                        </div>
+                        <div class="col-6">
+                          <div class="input-group">
+                            <span class="input-group-text">Rs</span>
+                            {{ form_widget(form.similarProductData.maxPrice,
+                              {'attr':
+                                {'class': 'form-inline w-75',}}) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- CSRF Token -->
+              {{form_widget(form._token)}}
+
+              <div class="mt-5 row justify-content-end">
+                <!-- Save & create new (with the same supplier) -->
+                {{ form_widget(form.new,
+                  {'attr':
+                    {'class': 'col-3 ml-3 btn btn-lg btn-gray',
+                    },
+                  'label': 'New'})}}
+
+                <!-- Save new & exit -->
+                {{ form_widget(form.save,
+                  {'attr':
+                    {'class': app.current_route == 'admin_product_data_new' ? 'col-2 ml-3 btn btn-lg btn-info' : 'col-2 ml-3 btn btn-lg btn-success',
+                     },
+                   'label': app.current_route == 'admin_product_data_new' ? 'Save' : 'Update'})}}
+              </div>
+
+             {{ form_end(form, {render_rest: false}) }}
+             <!-- Form ends -->
+             </section>
+           </div>
+         </div>
+        </div>
+      </div>
+    </div>
+    <!-- Product Data form (row) ends -->
+    {% include 'admin/_partials/footer.html.twig' %}
+</main>
+<!-- Main panel ends -->

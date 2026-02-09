@@ -1,0 +1,43 @@
+<!-- Main starts -->
+<main class="ps-main">
+  <div class="profile-container">
+    <div class="row">
+      <!-- Sidebar menu -->
+      <div class="col-md-3">
+          {% include 'profile/partials/sidebar/profile-left-sidebar.html.twig' %}
+      </div>
+      <!-- Middle section form -->
+      <div class="col-md-7 ml-30 mr-20  border-right">
+        <!-- Main heading -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-right">Reset your password</h4>
+        </div>
+        {% for flash_error in app.flashes('reset_password_error') %}
+        <!-- Reset password error -->
+        <div class="alert alert-danger" role="alert">{{ flash_error }}<div>
+        {% endfor %}
+        <!-- Form starts -->
+        {{ form_start(requestForm) }}
+          <div class="row">
+            <div class="col-md-10">
+              <p>Before changing your password, we need to confirm if it's really you. We will send an confirmation email to <span class="font-weight-bold">{{app.user.email}}</span> </p>
+                <!-- Email -->
+              {{ form_widget(requestForm.email) }}
+              {{ form_errors(requestForm.email) }}
+            </div>
+          </div>
+          <!-- Send button -->
+          <div class="row">
+            <div class="col-2 mt-50 text-right">
+            {{ form_widget(requestForm.send,
+              {'attr':
+                {'class': 'btn btn-primary'}}) }}
+            </div>
+          </div>
+       {{ form_end(requestForm) }}
+      </div>
+    </div>
+  </div>
+  {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>
+<!-- Main ends -->

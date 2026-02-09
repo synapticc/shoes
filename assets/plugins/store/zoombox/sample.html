@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>zoombox Preview</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- add cdd filr over here -->
+    <link rel="stylesheet" href="css/zoombox.min.css">
+    <!-- extrenal css goes here -->
+    <style rel="stylesheet">
+      .zoombox-logo{
+        margin-top: 30px;
+      }
+      h1{
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        text-align: center;
+      }
+      .images{
+        max-width: 600px;
+        margin: 50px auto;
+        display: grid;
+        grid-template-columns : 1fr 1fr;
+        column-gap: 10px;
+        row-gap: 10px;
+      }
+        .image img{
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+        @media only screen and (max-width:768px){
+          .images{
+            grid-template-columns: 1fr;
+          }
+        }
+    </style>
+  </head>
+  <body>
+    <center>
+      <img class="zoombox-logo" src="https://worldsofashishpatel.com/projects/docs/ZoomBox--An-Interactive-and-feature-rich-vanilla-JavaScript-image-viewer-plugin-for-developers/images/zoombox_logo.png" width="150" alt="">
+    </center>
+    <h1>Click images</h1>
+    <div class="images">     
+      <img src="https://picsum.photos/id/180/300/200" src2="https://picsum.photos/id/180/1300/700" zoombox>
+      <img src="https://picsum.photos/id/230/300/200" src2="https://picsum.photos/id/230/1300/700" zoombox>
+      <img src="https://picsum.photos/id/143/300/200" src2="https://picsum.photos/id/143/1300/700" zoombox>
+      <img src="https://picsum.photos/id/301/300/200" src2="https://picsum.photos/id/301/1300/700" zoombox>
+    </div>
+    <!-- add zoombox.js over here -->
+    <script src="js/zoombox.min.js"></script>
+    <!-- additional zoombox.option() method to use options goes below the included js file -->
+    <script>
+        zoombox.option({
+          backgroundOpacity : 0.9,
+          imageTransTimimg : '.5s',
+          slideShowInterval :2,
+          lockBodyScroll : true,
+          enableZoomButton : true,  
+          enableScrollZoom : 3,
+          hideWatermark : false,
+          enableTouchControl : true,
+          enableNavigation : true,
+          enableSlideShow : true,
+          hasRoot:false,
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,185 @@
+{% include 'store/partials/cart/cart-exist.html.twig' %}
+<main class="ps-main">
+  <span id="item-alert" hidden></span>
+  <span id="item-undo-alert" hidden></span>
+  <div class="ps-content pt-80 pb-80">
+    <div class="ps-container">
+      <div class="row justify-items-between mb-5">
+        <div class="col">
+          <h2>Your Cart{% if not cartList or (cartList and cartList|length == 1) %}
+            <button type="submit"
+              title="Add a new cart"
+              class="btn-transparent new-cart-btn"
+              hx-get="/new-cart"
+              hx-trigger="click"
+              hx-target="#cart-table"
+              hx-swap="afterbegin">
+              {% include '/__icons/m-p/_plus-circle.html.twig' with {'color': 'fill-white', 'label': 'Add a new cart', 'width': 30, 'height': 30} only %}
+              New cart
+            </button>
+          {% endif %}</h2>
+        </div>
+
+      </div>
+      <div class="ps-cart-listing" id="cart-table" data-turbo="false">
+      {% for key, cart in cartList %}
+      <section id="cart-table-{{cart.id}}">
+        <div class="d-flex justify-content-end">
+          <p class="active-cart">Active Cart: </p>
+        	<div class="checkbox-container yellow">
+        		<input type="checkbox" {{cart.activeStatus ? 'checked'}} id="toggle-cart-{{loop.index0}}" data-cart-status data-cart={{cart.id}}>
+        		<label for="toggle-cart-{{loop.index0}}"></label>
+        	</div>
+          <button title="Clear cart" type="button" data-cart={{cart.id}}
+              class="clear-cart-btn" data-cart-items="tbody-{{cart.id}}" id="clear-cart">Clear</button>
+          {% if not loop.first %}
+          <button title="Delete cart" type="button" data-cart={{cart.id}}
+              class="delete-cart-btn" data-cart-table="cart-table-{{cart.id}}" id="delete-cart">Delete</button>
+          {% endif %}
+
+        </div>
+        <div class="row justify-content-between">
+          <!-- Items table -->
+          <table class="table ps-cart__table"
+            data-items="{{cart.totalQty}}"
+            data-paginate id="table-{{cart.id}}"
+            data-total="total-{{cart.id}}">
+            <thead>
+               <tr>
+                 <th id="items-count-{{cart.id}}">Products ({{cart.totalItems}} items)</th>
+                 <th class="text-center">Price (Rs)</th>
+                 <th class="text-center">Quantity</th>
+                 <th class="text-center">Total</th>
+                 <th></th>
+               </tr>
+            </thead>
+            <tbody id="tbody-{{cart.id}}" data-cart-listing data-active-cart={{cart.activeStatus ? 'active' : 'inactive'}} data-items-count="items-count-{{cart.id}}" data-table="table-{{cart.id}}">
+
+            {% if cart.items is defined %}
+            {% for key, product in cart.items %}
+              <tr id="cart-row-{{product.itemId}}" data-cart-row="{{product.itemId}}">
+                <!-- Cart name -->
+                <td>
+                  <a class="ps-product__preview"
+                     target="_blank"
+                     href="{{path(
+                              'store_details',
+                              { 'brand': product.brand_full|slug,
+                                'name': (product.name|title)|slug,
+                                'id': nzo_encrypt(product.productDataId)
+                              }) }}">
+                    <img src="{% if product.imageSmall %}{{asset(product.imageSmall) }}{% else %}{{asset('build/images/store/shoe-detail/1.jpg') }}{% endif %}"
+                        alt="{{product.name}}  - (cart preview)">
+                    <span class="pl-10">{{product.name}} {{product.type_full}} ({{product.category_full}} {{product.brand_full}})</span>
+                  </a>
+                  <div class="row justify-items-start pt-10">
+                    <span class="col-3 cart-info">Color: {{product.colors_full}}</span>
+                    <span class="col-2 cart-info">Size: {{product.size}}</span>
+                    <span class="col-3 cart-info">Available: {{product.qtyInStock}} pcs</span>
+                  </div>
+                </td>
+                <!-- Cart selling price -->
+                <td class="text-center"><span id="item-price" data-item-price="{{product.sellingPrice}}">{{product.sellingPrice|format_number({fraction_digit: 2})}}</span></td>
+                <!-- Cart qty  -->
+                <td class="text-center">
+                  <div class="form-group--number">
+                    <!-- Decrease button -->
+                    <button
+                      title="Decrement quantity by 1"
+                      class="minus {{product.quantity == 1  ? 'disabled-cart-btn'}}"
+                      id="decreaseQty"
+                      type="button"
+                      data-url="/cart-item/{{product.itemId}}"
+                      data-cart-row="cart-row-{{product.itemId}}"
+                      data-target="cart_item_quantity_{{product.itemId}}"
+                      data-table="table-{{cart.id}}"
+                      data-total="total-{{cart.id}}"
+                      data-cart="{{cart.id}}"> - </button>
+                    <!-- Quantity input -->
+                    <input type="number"
+                      id="cart_item_quantity_{{product.itemId}}"
+                      name="quantity" class="form-control form-control-sm"
+                      min="1" max="{{product.qtyInStock}}"
+                      data-cart-qty data-original-qty="{{product.quantity}}" value="{{product.quantity}}"
+                      data-cart-row="cart-row-{{product.itemId}}"
+                      data-url="/cart-item/{{product.itemId}}"
+                      data-table="table-{{cart.id}}"
+                      data-total="total-{{cart.id}}"
+                      data-cart="{{cart.id}}"
+                      data-checkout="checkout-{{cart.id}}">
+                    <!-- Increase button -->
+                    <button
+                      title="Increment quantity by 1"
+                      class="plus {{product.quantity == product.qtyInStock  ? 'disabled-cart-btn'}}"
+                      id="increaseQty"
+                      type="button"
+                      data-url="/cart-item/{{product.itemId}}"
+                      data-cart-row="cart-row-{{product.itemId}}"
+                      data-target="cart_item_quantity_{{product.itemId}}"
+                      data-table="table-{{cart.id}}"
+                      data-total="total-{{cart.id}}"
+                      data-cart="{{cart.id}}"> + </button>
+                  </div>
+                </td>
+                <!-- Items sum -->
+                <td class="text-center" id="items-sum" data-item-sum="{{product.quantity *  product.sellingPrice }}">Rs {{(product.quantity *  product.sellingPrice)|format_number({fraction_digit: 2})}}</td>
+                <!-- Remove item button -->
+                <td>
+                  <button
+                    type="button" id="cart_item_remove"
+                    class="ps-remove"
+                    data-url="/remove-item/{{product.itemId}}"
+                    data-undo="item-undo-{{cart.id}}"
+                    data-quantity="cart_item_quantity_{{product.itemId}}"
+                    data-table="table-{{cart.id}}"
+                    data-total="total-{{cart.id}}"
+                    data-cart="{{cart.id}}"
+                    data-items-count="items-count-{{cart.id}}"></button>
+                </td>
+              </tr>
+            {% endfor %}
+            <div id="item-undo-{{cart.id}}" data-id="item-undo" class="row justify-content-start align-items-center align-self-start"></div>
+            {% else %}
+              <tr>
+                <td colSpan="5">
+                  <p>Your cart is empty. Go to the <a href="{{ path('store') }}">product list</a>.</p>
+                </td>
+              </tr>
+            {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <div class="ps-cart__actions mb-50 d-flex justify-items-end">
+          <div class="ps-cart__total cart-body-total">
+            <h3>Total Price: <span id="total-{{cart.id}}">Rs {% if cart %}
+                {{ cart.total|format_number({fraction_digit: 2}) }}
+              {% else %}
+                  0
+              {% endif %}
+                </span>
+              </h3>
+            {% if cart %}
+            {% if not app.user.isVerified  %}
+              <h4 class="bg-warning email-check">Confirm your email before checking out.</h4>
+            {% endif %}
+            <div class="row justify-content-end">
+              <div class="col-6">
+                <a id="checkout-{{cart.id}}"
+                    class="mt-4 {{app.user.isVerified ? 'ps-btn' : 'ps-btn-disabled'}}"
+                    {% if app.user.isVerified  %}
+                        href="{{ path('store_billing', {'paidOrder': nzo_encrypt(cart.id)}) }}"
+                    {% endif %}
+                    target="_blank">Checkout<i class="ps-icon-next"></i></a>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </section>
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+    {% include 'store/partials/footer/subscribe.html.twig' %}
+</main>
+<!-- main ends -->

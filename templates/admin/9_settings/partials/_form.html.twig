@@ -1,0 +1,415 @@
+<main class="content">
+  {% include 'admin/_partials/navbar-top.html.twig'  %}
+  <!-- New button -->
+  {% include 'admin/9_settings/partials/_new-button.html.twig' %}
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+        <li class="breadcrumb-item">
+          <a href="{{ path('admin')}}"><span class="fas fa-home"></span></a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{{ path('admin_settings') }}">Settings</a>
+        </li>
+      </ol>
+    </nav>
+    <!-- Page overview & Search bar -->
+    <div class="d-flex justify-content-start w-100 flex-wrap">
+      {% set features =
+          ['Edit basic User info',
+          'Edit admin dashboard theme',
+           'Set the maximum number of items to be displayed',
+           'Set the maximum number of recent items'] %}
+
+      <!-- Page overview -->
+      <div class="col-3 mb-3 mb-lg-0 pr-3">
+        <!-- Main heading -->
+        <h1 class="h4 pb-3 {{ app.user.theme == 'dark' ? 'text-white' }}">Settings</h1>
+        <!-- Features list -->
+        <ul>
+          {% for feature in features %}
+          <li class="mb-0 {{ app.user.theme == 'dark' ? 'text-gray-500'  }}">{{feature|capitalize}}.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+  <!-- UserInfo form row starts-->
+  <div class="row">
+    <!-- Form column -->
+    <div class="col">
+      <div class="row">
+        <div class="col">
+        <!-- Form (User info) starts -->
+        {{ form_start(form, {'attr': {'class': 'admin_user_info_form','novalidate': 'novalidate', 'data-form': 'admin' }}) }}
+          <div class="card card-body bg-{{ app.user.theme == 'light' ? 'white' : 'gray-500'  }} border-light shadow-sm mb-4">
+            <h2 class="h5 mb-4">Personal info</h2>
+            <!-- First name & Last name row -->
+            <div class="row">
+              <!-- Title -->
+              <div class="col-md-1 mb-3 ">
+                {{ form_label(form.title, 'Title',
+                      {'label_attr': {'class': 'labels'}}) }}
+                {{ form_widget(form.title, {'attr':
+                  {'class': 'form-select mb-0',
+                   'placeholder': 'title',
+                   'aria-label': 'Select your gender'}}) }}
+              </div>
+              <!-- First Name -->
+              <div class="col-md-3 mb-3">
+                <div>
+                  {{ form_label(form.firstName, null, {
+                      'label':  'First Name : ',
+                      'label_attr': {'class': 'foo'}}) }}
+                  {{ form_widget(form.firstName, {'attr':
+                      {'class': 'form-control ',
+                       'placeholder': 'first name',
+                       'autocomplete': 'on', }}) }}
+                  {{ form_errors(form.firstName) }}
+                </div>
+              </div>
+              <!-- Middle Name -->
+              <div class="col-md-2 mb-3">
+                {{ form_label(form.middleName, 'Middle Name ',
+                    {'label_attr': {'class': ''}}) }}
+                {{ form_widget(form.middleName, {'attr':
+                    {'class': 'form-control',
+                     'placeholder': 'middle name'}}) }}
+
+                {{ form_errors(form.middleName) }}
+              </div>
+              <!-- Last Name -->
+              <div class="col-md-3 mb-3">
+                <div>
+                  {{ form_label(form.lastName, null, {
+                      'label': 'Last Name ',
+                      'label_attr': {'class': 'foo'}}) }}
+                  {{ form_widget(form.lastName, {'attr':
+                      {'class': 'form-control',
+                       'placeholder': 'last name',
+                       'autocomplete': 'on'}}) }}
+                </div>
+              </div>
+              <!--  Job Position -->
+              <div class="col-md-3">
+                <div>
+                  {{ form_label(form.userPosition.jobPosition, null, {
+                      'label': 'Job position ',
+                      'label_attr': {'class': ''}}) }}
+                  {{ form_widget(form.userPosition.jobPosition, {'attr':
+                      {'aria-label': 'job position',
+                       'aria-describedby': 'job position',
+                       'slim-select': '',
+                       'data-placeholder': 'job position',
+                       'data-selected': app.user.userPosition ? app.user.userPosition.jobPosition ? app.user.userPosition.jobPosition,
+                       'data-show-search': 'true',
+                       'data-search-msg': 'No record found.',
+                       'data-allow-deselect': 'true',
+                       'data-search-highlight': 'true' }}) }}
+                </div>
+              </div>
+            </div>
+            <!-- Birthday, Email & Mobile row -->
+            <div class="row justify-content-between align-items-center mt-3">
+              <!-- Birthday -->
+              <div class="col-md-3">
+                {{ form_label(form.birthday, null, {
+                    'label': 'Birthday:'
+                }) }}
+
+                <div class="input-group" title="Display date">
+                  <span class="input-group-text">
+                     <span class="far fa-calendar-alt"></span>
+                  </span>
+                  {{ form_widget(form.birthday,
+                    {'attr': {
+                      'class': 'form-control',
+                          }}) }}
+                </div>
+              </div>
+              <!-- Mobile -->
+              <div class="col-md-4 mobile-row">
+                <div class="form-group">
+                  {{ form_label(form.userPhone.mobile, 'Mobile: ') }}
+                  <div class="d-flex flex-column flex-sm-row" data-phone data-phone-type="mobile">
+                    {{ form_widget(form.userPhone.mobile.country,{'attr':
+                       {'class': '',
+                       'placeholder': 'code',
+                       'data-country-code':'',
+                       'data-target': 'admin_user_info_form_userPhone_mobile_number',
+                       'data-selected': app.user.userAddress ?  app.user.userAddress.country ? app.user.userAddress.country }})}}
+
+                    {{ form_widget(form.userPhone.mobile.number,{'attr':
+                      {'class': 'ml-1 form-control',
+                       'data-phone-number':'',
+                       'data-phone-type': 'mobile',
+                       'data-target': 'admin_user_info_form_userPhone_mobile_country',
+                       'data-original-number': app.user.userPhone ?  (app.user.userPhone.mobile ? app.user.userPhone.mobile|phone_number_format('NATIONAL')),
+                       'data-original-country': app.user.userAddress ?  app.user.userAddress.country ? app.user.userAddress.country,
+                       'value': app.user.userPhone ?  (app.user.userPhone.mobile ? app.user.userPhone.mobile|phone_number_format('NATIONAL'))}}) }}
+                  </div>
+                  <div class="row justify-content-end">
+                    <div class="col text-right">
+                      <span class="phone-format" id="phone-format"></span>
+                    </div>
+                  </div>
+                  <span class="text-danger" role="alert">{{ form_errors(form.userPhone.mobile) }}</span>
+                  {% for flash_error in app.flashes('mobile_error') %}
+                    <span class="text-danger" role="alert">{{ flash_error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <!-- Landline -->
+              <div class="col-md-4">
+                <div class="form-group">
+                  {{ form_label(form.userPhone.landline, 'Landline: ') }}
+                  <div class="d-flex flex-column flex-sm-row" data-phone data-phone-type="landline">
+                    {{ form_widget(form.userPhone.landline.country,{'attr':
+                       {'class': '',
+                       'data-country-code':'',
+                       'data-target': 'admin_user_info_form_userPhone_landline_number',
+                       'data-selected': app.user.userAddress ? app.user.userAddress.country ? app.user.userAddress.country}})}}
+
+                    {{ form_widget(form.userPhone.landline.number,{'attr':
+                      {'class': 'ml-1 form-control',
+                       'data-phone-number':'',
+                       'data-phone-type':'landline',
+                       'data-original-number': app.user.userPhone ?  (app.user.userPhone.landline ? app.user.userPhone.landline|phone_number_format('NATIONAL')),
+                       'data-original-country': app.user.userAddress ?  app.user.userAddress.country ? app.user.userAddress.country,
+                       'data-target': 'admin_user_info_form_userPhone_landline_country',
+                       'value': app.user.userPhone ?  (app.user.userPhone.landline ? app.user.userPhone.landline|phone_number_format('NATIONAL'))}}) }}
+                  </div>
+                  <span class="text-danger" role="alert">{{ form_errors(form.userPhone.landline) }}</span>
+                  {% for flash_error in app.flashes('landline_error') %}
+                    <span class="text-danger" role="alert">{{ flash_error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <h2 class="h5 mt-4">Address</h2>
+            <!-- Address row -->
+            <div class="row justify-content-between align-items-center">
+              <!-- Street -->
+              <div class="col-sm-4">
+                <div class="form-group">
+                  {{ form_label(form.userAddress.street, null,
+                    {'label': 'Street ',
+                     'label_attr': {'class': ''}})}}
+                  {{ form_widget(form.userAddress.street, {'attr':
+                   {'class': 'form-control',
+                    'placeholder': 'street'}}) }}
+                </div>
+              </div>
+              <!-- City -->
+              <div class="col-sm-2">
+                <div class="form-group">
+                  {{ form_label(form.userAddress.city, 'City ',
+                     {'label_attr': {'class': ''}}) }}
+                  {{ form_widget(form.userAddress.city, {'attr':
+                    {'class': '',
+                     'placeholder': 'city',
+                     'data-city': '',
+                     'data-selected': user.userAddress ? user.userAddress.city ? user.userAddress.city }
+                    }) }}
+                  {{ form_errors(form.userAddress.city) }}
+                </div>
+              </div>
+              <!-- ZIP -->
+              <div class="col-sm-2">
+                <div class="form-group">
+                  {{ form_label(form.userAddress.zip, null, {
+                     'label': 'ZIP ',
+                     'label_attr': {'class': ''}}) }}
+                  {{ form_widget(form.userAddress.zip,{'attr':
+                    {'class': 'form-control',
+                     'placeholder': 'zip'}}) }}
+                  </div>
+              </div>
+              <!-- Country -->
+              <div class="col-sm-3">
+                <div class="form-group">
+                  {{ form_label(form.userAddress.country, 'Country ',
+                      {'label_attr': {'class': ''}}) }}
+                  {{ form_widget(form.userAddress.country, {'attr':
+                    {'class': '',
+                     'placeholder': 'country',
+                     'data-country': '',
+                     }}) }}
+                </div>
+              </div>
+            </div>
+
+            <!-- CSRF Token -->
+            {{ form_widget(form._token,)}}
+
+            <!-- Save button -->
+            <div class="mt-4 d-flex justify-content-end">
+              <button title="Save User Info" type="submit" class="btn btn-primary px-5">Save</button>
+            </div>
+          </div>
+        {{ form_end(form, {render_rest: false}) }}
+        <!-- Form (User info) ends -->
+        </div>
+      </div>
+    </div>
+    <!-- Profile picture column -->
+    <div class="col profile-pic">
+      <div class="row">
+        <div class="col-12 mb-4">
+          <div class="card border-light bg-{{ app.user.theme == 'light' ? 'white' : 'gray-500'  }} text-center p-0">
+            <div class="profile-cover rounded-top"
+                style="background-image: url('{{asset('build/images/admin/background-desk.webp') }}');"></div>
+            <div class="card-body pb-5">
+              <!-- Profile picture -->
+              <a href="{% if app.user.userImage %}{% if app.user.userImage.image %}{{asset(app.user.userImage.image) }}{% else %}{{asset('build/images/admin/team/profile-picture-5.jpg') }}{% endif %}{% else %}{{asset('build/images/admin/team/profile-picture-5.jpg') }}{% endif %}" target="_blank">
+                   <img src="{% if app.user.userImage %}{% if app.user.userImage.image %}{{asset(app.user.userImage.image) }}{% else %}{{asset('build/images/admin/team/profile-picture-5.jpg') }}{% endif %}{% else %}{{asset('build/images/admin/team/profile-picture-5.jpg') }}{% endif %}" class="user-avatar large-avatar mx-auto mt-n7 mb-4" alt="Neil Portrait">
+              </a>
+              <!-- User First & Last name -->
+              <h4 class="h3">{{app.user.firstName ? app.user.firstName|capitalize }} {{app.user.lastName ? app.user.lastName|capitalize }}</h4>
+              <!-- User Position -->
+              <h5 class="font-weight-normal">{{app.user.userPosition ? app.user.userPosition.jobPosition}}</h5>
+              <!-- User Address -->
+              <p class="text-gray mb-4">{{app.user.userAddress ? app.user.userAddress.street ? app.user.userAddress.street|title ~ ', '}} {{app.user.userAddress ? app.user.userAddress.city ? app.user.userAddress.city|capitalize }}</p>
+              <!-- Connect & Send Message buttons (inactive) -->
+              <a class="btn btn-sm btn-primary mr-2" href="#"><span class="fas fa-user-plus mr-1"></span> Connect</a>
+              <a class="btn btn-sm btn-secondary" href="#">Send Message</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- UserInfo form row ends -->
+
+  <!-- ThemeForm & MaxForm row starts -->
+  <div class="row">
+    <div class="col-8 col-xl-3">
+      <!-- ThemeForm starts -->
+      {{ form_start(themeForm, {'attr': {'class': '' }}) }}
+        <div class="card card-body bg-{{ app.user.theme == 'light' ? 'white' : 'gray-500'  }} border-0 shadow">
+          <h2 class="h5 mb-4">Theme</h2>
+          <!-- Light/Dark toggle -->
+          <ul class="list-group list-group-flush">
+            <!-- Light toggle -->
+            <li class="form-control d-flex align-items-center justify-content-between px-2 border-bottom">
+              <div>
+                <h3 class="h6 mb-1">Light</h3>
+              </div>
+              <div>
+                <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  name="admin_theme_form[theme]"
+                  type="checkbox"
+                  id="admin_theme_form_theme_0"
+                  admin-theme-radio
+                  value="light"
+                  {% if app.user.theme is same as 'light' %}checked{% endif %}>
+                <label class="form-check-label" for="admin_theme_form_theme_0"></label>
+                </div>
+              </div>
+            </li>
+            <!-- Dark toggle -->
+            <li class="form-control d-flex align-items-center justify-content-between px-2 mt-1 border-bottom">
+              <div>
+                <h3 class="h6 mb-1">Dark</h3>
+              </div>
+              <div>
+                <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  name="admin_theme_form[theme]"
+                  type="checkbox"
+                  id="admin_theme_form_theme_1"
+                  admin-theme-radio
+                  value="dark"
+                {% if app.user.theme is same as 'dark' %}checked=checked{% endif %}>
+                <label class="form-check-label" for="admin_theme_form_theme_1"></label>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <!-- CSRF Token -->
+          {{form_widget(themeForm._token)}}
+
+          <!-- Save button -->
+          <div class="mt-3 d-flex justify-content-end">
+            <button title="Save Theme" type="submit" class="btn btn-primary mt-3 mr-1 px-5">Save</button>
+          </div>
+        </div>
+        {{ form_end(themeForm, {render_rest: false}) }}
+        <!-- Theme Form ends -->
+    </div>
+
+    <div class="col-8 col-xl-4">
+      <!-- MaxForm starts -->
+      {{ form_start(maxForm, {'attr': {'class': '','novalidate': 'novalidate'  }}) }}
+        <div class="card card-body bg-{{ app.user.theme == 'light' ? 'white' : 'gray-500'  }} border-0 shadow">
+          <h2 class="h5 mb-4">Max items</h2>
+          <div class="row">
+            <div class="col">
+              <!-- Maximum listing -->
+              <div class="row justify-content-between mb-2">
+                <div class="col">
+                  {{ form_label(maxForm.listing, null, {
+                      'label':  'Maximum items on homepage:',
+                      'label_attr': {'class': ''}}) }}
+                </div>
+                <div class="col-2 text-center max-item-col">
+                  {{ form_widget(maxForm.listing, {'attr':
+                      {'class': 'form-control text-center',
+                       'placeholder': '',
+                       'autocomplete': 'on', }}) }}
+                </div>
+                {{ form_errors(maxForm.listing) }}
+              </div>
+              <!-- Maximum reviews -->
+              <div class="row mb-2">
+                <div class="col">
+                  {{ form_label(maxForm.reviews, null, {
+                      'label':  'Maximum reviews on product page:',
+                      'label_attr': {'class': ''}}) }}
+                </div>
+                <div class="col-2 text-center max-item-col">
+                {{ form_widget(maxForm.reviews, {'attr':
+                    {'class': 'form-control text-center',
+                     'placeholder': '',
+                     'autocomplete': 'on', }}) }}
+                </div>
+                {{ form_errors(maxForm.reviews) }}
+              </div>
+              <!-- Maximum recent items -->
+              <div class="row mb-2">
+                <div class="col">
+                {{ form_label(maxForm.recent, null, {
+                    'label':  'Maximum recent products (slider): ',
+                    'label_attr': {'class': ''}}) }}
+                </div>
+                <div class="col-2 text-center max-item-col">
+                {{ form_widget(maxForm.recent, {'attr':
+                    {'class': 'form-control text-center',
+                     'placeholder': '',
+                     'autocomplete': 'on', }}) }}
+                </div>
+               {{ form_errors(maxForm.recent) }}
+              </div>
+            </div>
+          </div>
+
+          <!-- CSRF Token -->
+          {{form_widget(maxForm._token)}}
+
+          <div class="mt-3 d-flex justify-content-end">
+            <button title="Save Maximum Items" type="submit" class="btn btn-primary mt-3 mr-1 px-5">Save</button>
+          </div>
+        </div>
+      {{ form_end(maxForm, {render_rest: false}) }}
+      <!-- MaxForm ends -->
+    </div>
+  </div>
+  <!-- ThemeForm & MaxForm row starts -->
+
+<!-- Footer -->
+{% include 'admin/_partials/footer.html.twig' %}
+</main>

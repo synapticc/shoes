@@ -1,0 +1,4 @@
+# config/packages/property_info.yaml
+framework:
+    property_info:
+        with_constructor_extractor: true

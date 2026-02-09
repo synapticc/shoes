@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+  {% block meta %}{% include 'store/partials/meta.html.twig' %}{% endblock %}
+
+{% block title %}{{product.name}} | {{product.brand_full }} | {{product.colors_full}} (Rs {{product.sellingPrice|format_number({fraction_digit: 2})}}){% endblock %}
+
+  {% block stylesheets %}{{ encore_entry_link_tags('store') }}{% endblock %}
+
+{% block body %}
+  {% include 'store/partials/header/header.html.twig' %}
+  {% include 'store/partials/detail.html.twig' %}
+
+  {% block javascripts %}{{ encore_entry_script_tags('store') }}{% endblock %}
+{% endblock %}
